@@ -1,0 +1,269 @@
+"""Entity extraction for industrial documents using spaCy + regex.
+
+Extracts equipment tags, permit numbers, regulation references, personnel,
+plants, and incident types from text content.
+"""
+
+import re
+from typing import Optional
+from loguru import logger
+
+try:
+    import spacy
+    nlp = spacy.load("en_core_web_sm")
+    SPACY_AVAILABLE = True
+    logger.info("spaCy NLP model loaded successfully")
+except Exception as e:
+    nlp = None
+    SPACY_AVAILABLE = False
+    logger.warning(f"spaCy not available, using regex-only extraction: {e}")
+
+
+# --- Regex patterns for domain-specific entities ---
+
+# Equipment tags: EQ-1001, PUMP-A01, COMP-C01, HX-D01, VAN-V01, TNK-T01, FIL-F01, MTR-M01
+EQUIPMENT_TAG_PATTERN = re.compile(
+    r'\b((?:EQ|PUMP|COMP|HX|VAN|VAL|TNK|FIL|MTR)-[A-Z]?\d{2,4})\b',
+    re.IGNORECASE,
+)
+
+# Permit IDs: PRM-2026-5001
+PERMIT_ID_PATTERN = re.compile(
+    r'\b(PRM-\d{4}-\d{4})\b',
+    re.IGNORECASE,
+)
+
+# Work order IDs: WO-2026-1001
+WORK_ORDER_ID_PATTERN = re.compile(
+    r'\b(WO-\d{4}-\d{4})\b',
+    re.IGNORECASE,
+)
+
+# Incident IDs: INC-2026-9001
+INCIDENT_ID_PATTERN = re.compile(
+    r'\b(INC-\d{4}-\d{4})\b',
+    re.IGNORECASE,
+)
+
+# Inspection IDs: INS-2026-8001
+INSPECTION_ID_PATTERN = re.compile(
+    r'\b(INS-\d{4}-\d{4})\b',
+    re.IGNORECASE,
+)
+
+# Regulation references: OISD-116, DGMS Circular 2023-01, Factory Act Section 7A, Section 36
+REGULATION_PATTERNS = [
+    re.compile(r'\b(OISD-\d{2,3})\b', re.IGNORECASE),
+    re.compile(r'\b(DGMS(?:\s+(?:Circular|Technical\s+Circular))?\s+\d{4}-\d{2})\b', re.IGNORECASE),
+    re.compile(r'\b(DGMS\s+Technical\s+Circular\s+\d+)\b', re.IGNORECASE),
+    re.compile(r'\b(Factory\s+Act\s+Section\s+\d+[A-Z]?)\b', re.IGNORECASE),
+    re.compile(r'\b(Section\s+\d+[A-Z]?)\b', re.IGNORECASE),
+]
+
+# Plant names
+PLANT_PATTERNS = [
+    re.compile(r'\b(Refinery\s+Unit\s+[A-Z])\b', re.IGNORECASE),
+    re.compile(r'\b(Power\s+Plant\s+[A-Z])\b', re.IGNORECASE),
+    re.compile(r'\b(Chemical\s+Plant\s+[A-Z])\b', re.IGNORECASE),
+    re.compile(r'\b(Steel\s+Mill\s+[A-Z])\b', re.IGNORECASE),
+]
+
+# Hazard types
+HAZARD_PATTERNS = [
+    re.compile(r'\b(Fire\s+hazard)\b', re.IGNORECASE),
+    re.compile(r'\b(Confined\s+space)\b', re.IGNORECASE),
+    re.compile(r'\b(Working\s+at\s+height)\b', re.IGNORECASE),
+    re.compile(r'\b(Electrical)\b', re.IGNORECASE),
+    re.compile(r'\b(Chemical\s+exposure)\b', re.IGNORECASE),
+    re.compile(r'\b(Noise)\b', re.IGNORECASE),
+    re.compile(r'\b(Falling\s+objects)\b', re.IGNORECASE),
+]
+
+# Incident types
+INCIDENT_TYPE_PATTERNS = [
+    re.compile(r'\b(Near\s+Miss)\b', re.IGNORECASE),
+    re.compile(r'\b(First\s+Aid)\b', re.IGNORECASE),
+    re.compile(r'\b(Recordable)\b', re.IGNORECASE),
+    re.compile(r'\b(Lost\s+Time)\b', re.IGNORECASE),
+]
+
+# Permit types
+PERMIT_TYPE_PATTERNS = [
+    re.compile(r'\b(Hot\s+Work)\b', re.IGNORECASE),
+    re.compile(r'\b(Confined\s+Space\s+Entry)\b', re.IGNORECASE),
+    re.compile(r'\b(Work\s+at\s+Height)\b', re.IGNORECASE),
+    re.compile(r'\b(Electrical\s+Isolation)\b', re.IGNORECASE),
+    re.compile(r'\b(Line\s+Breaking)\b', re.IGNORECASE),
+    re.compile(r'\b(Excavation)\b', re.IGNORECASE),
+]
+
+
+class EntityExtractor:
+    """Extracts industrial entities from text using spaCy NER + regex patterns."""
+
+    def __init__(self):
+        self.nlp = nlp
+        self.spacy_available = SPACY_AVAILABLE
+
+    def extract_all(self, text: str, metadata: Optional[dict] = None) -> dict:
+        """Extract all entity types from text.
+
+        Args:
+            text: The text content to extract entities from.
+            metadata: Optional metadata dict (e.g., from CSV row) to supplement extraction.
+
+        Returns:
+            Dict with lists of entities grouped by type.
+        """
+        metadata = metadata or {}
+
+        entities = {
+            "equipment": sorted(set(self._extract_equipment(text, metadata))),
+            "permits": sorted(set(self._extract_permits(text, metadata))),
+            "work_orders": sorted(set(self._extract_work_orders(text, metadata))),
+            "incidents": sorted(set(self._extract_incidents(text, metadata))),
+            "inspections": sorted(set(self._extract_inspections(text, metadata))),
+            "regulations": sorted(set(self._extract_regulations(text, metadata))),
+            "plants": sorted(set(self._extract_plants(text, metadata))),
+            "hazards": sorted(set(self._extract_hazards(text, metadata))),
+            "incident_types": sorted(set(self._extract_incident_types(text, metadata))),
+            "permit_types": sorted(set(self._extract_permit_types(text, metadata))),
+            "personnel": sorted(set(self._extract_personnel(text))),
+        }
+
+        # Count total
+        total = sum(len(v) for v in entities.values())
+        logger.debug(f"Extracted {total} entities from text ({len(text)} chars)")
+        return entities
+
+    def _extract_equipment(self, text: str, metadata: dict) -> list[str]:
+        """Extract equipment tags from text and metadata."""
+        tags = set()
+        # From regex
+        for match in EQUIPMENT_TAG_PATTERN.finditer(text):
+            tags.add(match.group(1).upper())
+        # From metadata
+        eq = metadata.get("equipment_tag", "")
+        if eq:
+            tags.add(eq.upper())
+        return list(tags)
+
+    def _extract_permits(self, text: str, metadata: dict) -> list[str]:
+        """Extract permit IDs."""
+        ids = set()
+        for match in PERMIT_ID_PATTERN.finditer(text):
+            ids.add(match.group(1).upper())
+        pid = metadata.get("permit_id", "")
+        if pid:
+            ids.add(pid.upper())
+        return list(ids)
+
+    def _extract_work_orders(self, text: str, metadata: dict) -> list[str]:
+        """Extract work order IDs."""
+        ids = set()
+        for match in WORK_ORDER_ID_PATTERN.finditer(text):
+            ids.add(match.group(1).upper())
+        wid = metadata.get("work_order_id", "")
+        if wid:
+            ids.add(wid.upper())
+        return list(ids)
+
+    def _extract_incidents(self, text: str, metadata: dict) -> list[str]:
+        """Extract incident report IDs."""
+        ids = set()
+        for match in INCIDENT_ID_PATTERN.finditer(text):
+            ids.add(match.group(1).upper())
+        iid = metadata.get("incident_id", "")
+        if iid:
+            ids.add(iid.upper())
+        return list(ids)
+
+    def _extract_inspections(self, text: str, metadata: dict) -> list[str]:
+        """Extract inspection IDs."""
+        ids = set()
+        for match in INSPECTION_ID_PATTERN.finditer(text):
+            ids.add(match.group(1).upper())
+        iid = metadata.get("inspection_id", "")
+        if iid:
+            ids.add(iid.upper())
+        return list(ids)
+
+    def _extract_regulations(self, text: str, metadata: dict) -> list[str]:
+        """Extract regulation references."""
+        refs = set()
+        for pattern in REGULATION_PATTERNS:
+            for match in pattern.finditer(text):
+                refs.add(match.group(1))
+        ref = metadata.get("regulation_ref", "")
+        if ref:
+            refs.add(ref)
+        return list(refs)
+
+    def _extract_plants(self, text: str, metadata: dict) -> list[str]:
+        """Extract plant names."""
+        plants = set()
+        for pattern in PLANT_PATTERNS:
+            for match in pattern.finditer(text):
+                plants.add(match.group(1))
+        plant = metadata.get("plant", "")
+        if plant:
+            plants.add(plant)
+        return list(plants)
+
+    def _extract_hazards(self, text: str, metadata: dict) -> list[str]:
+        """Extract hazard types."""
+        hazards = set()
+        for pattern in HAZARD_PATTERNS:
+            for match in pattern.finditer(text):
+                hazards.add(match.group(1))
+        return list(hazards)
+
+    def _extract_incident_types(self, text: str, metadata: dict) -> list[str]:
+        """Extract incident types."""
+        types = set()
+        for pattern in INCIDENT_TYPE_PATTERNS:
+            for match in pattern.finditer(text):
+                types.add(match.group(1))
+        it = metadata.get("incident_type", "")
+        if it:
+            types.add(it)
+        return list(types)
+
+    def _extract_permit_types(self, text: str, metadata: dict) -> list[str]:
+        """Extract permit types."""
+        types = set()
+        for pattern in PERMIT_TYPE_PATTERNS:
+            for match in pattern.finditer(text):
+                types.add(match.group(1))
+        pt = metadata.get("permit_type", "")
+        if pt:
+            types.add(pt)
+        return list(types)
+
+    def _extract_personnel(self, text: str) -> list[str]:
+        """Extract person names using spaCy NER (if available)."""
+        if not self.spacy_available:
+            return []
+        doc = self.nlp(text[:100000])  # Limit to avoid memory issues
+        names = set()
+        for ent in doc.ents:
+            if ent.label_ == "PERSON":
+                names.add(ent.text.strip())
+        return list(names)
+
+
+# Module-level singleton
+_default_extractor = None
+
+
+def get_extractor() -> EntityExtractor:
+    """Get or create the singleton entity extractor."""
+    global _default_extractor
+    if _default_extractor is None:
+        _default_extractor = EntityExtractor()
+    return _default_extractor
+
+
+def extract_entities(text: str, metadata: Optional[dict] = None) -> dict:
+    """Convenience function to extract entities from text."""
+    return get_extractor().extract_all(text, metadata)
