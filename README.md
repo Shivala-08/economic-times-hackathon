@@ -45,7 +45,7 @@ A premium, production-ready RAG-powered system that ingests heterogeneous indust
            │
 ┌──────────▼──────────┐
 │    Streamlit UI     │  Interactive Chat + Citations + Badges
-│                     │  + Document Library + Upload Panel
+│                     │  + Document Library + Upload Panel + Graph View
 └─────────────────────┘
 ```
 
@@ -65,26 +65,31 @@ The project codebase is organized as follows:
 │   │   └── uploads/            # Persistent user-uploaded files
 │   ├── chroma_db/              # ChromaDB vector store files
 │   ├── documents.json          # Metadata registry tracking ingested documents
+│   ├── knowledge_graph.json    # Serialized NetworkX knowledge graph
 │   ├── regulatory_templates.py # Seed templates for circulars
-│   └── synthetic_data_generator.py # faker-based generator for CSV logs
+│   └── synthetic_data_generator.py # Faker-based generator for CSV logs
 │
 ├── src/                        # System source code
 │   ├── main.py                 # FastAPI application and endpoints
 │   ├── config.py               # Pydantic configuration & environment variables
-│   ├── app.py                  # Streamlit frontend application
+│   ├── app.py                  # Streamlit frontend application (agraph-visualized)
 │   ├── api/                    # API Route controllers
 │   ├── pipeline/               # Ingestion pipeline modules
 │   │   ├── parser.py           # TXT, PDF, DOCX, and CSV Row parsers
 │   │   ├── chunker.py          # Paragraph/Sentence boundary chunker
-│   │   ├── embedder.py         # local SentenceTransformer vector embedding
+│   │   ├── embedder.py         # Local SentenceTransformer vector embedding
+│   │   ├── extractor.py        # spaCy + Regex entity extraction
+│   │   ├── compliance.py       # Regulatory gap analysis
 │   │   └── ingest.py           # Ingestion pipeline coordinator
 │   ├── storage/                # Database wrappers
 │   │   └── chroma_store.py     # ChromaDB vector collection manager
-│   ├── graph/                  # Knowledge graph components (Upcoming)
+│   ├── graph/                  # Knowledge graph components
+│   │   └── knowledge_graph.py  # NetworkX knowledge graph constructor & query
 │   └── utils/                  # Shared helper scripts
 │
 ├── tests/                      # Verification suites
 │   ├── test_chromadb.py        # Core vector store integration test
+│   ├── test_knowledge_graph.py # Knowledge graph construction and traversal test
 │   └── verify_endpoints.py     # FastAPI backend end-to-end endpoint verification
 │
 ├── requirements.txt            # System dependencies
@@ -93,35 +98,34 @@ The project codebase is organized as follows:
 
 ---
 
-## 🛠️ Status & Progress
+## 🛠️ Key Components & Status
 
-### Day 1 — Foundations (Completed)
-- [x] Initialized project repository and Python virtual environment (`.venv`).
-- [x] Configured project settings using `pydantic-settings` loaded from `.env`.
-- [x] Generated seed templates for regulatory guidelines (OISD, DGMS Circulars, and Factory Act sections).
-- [x] Implemented Faker-based generator for synthetic plant data (work orders, work permits, inspection logs, and incident reports).
-- [x] Prepared ground-truth dataset comprising 18 complex Q&A pairs for system evaluation.
-- [x] Configured and verified local vector database connectivity (ChromaDB).
+### 1. Document Ingestion & Parsing
+- Parses PDF files page-by-page using `pdfplumber`.
+- Parses Microsoft Word files (.docx) using `python-docx`.
+- Parses plain text files (.txt) using standardized encoders.
+- Parses industrial logs (.csv) using `pandas` row-by-row. Each row (e.g. work orders, incident reports, permits) is transformed into a self-describing, search-friendly textual block and embedded individually.
 
-### Day 2 — Ingestion Pipeline & UI Skeleton (Completed)
-- [x] **Document Parsing Module (`parser.py`)**:
-  - Structured parsers for plain text, PDFs (`pdfplumber`), and Word files (`python-docx`).
-  - Implemented row-by-row parsing for CSVs where each row becomes a self-contained, fully-attributed text record.
-- [x] **Ingestion Pipeline Coordinator (`ingest.py`)**:
-  - Integrates the parsers, sentence boundary chunker (`chunker.py`), and SentenceTransformer models (`embedder.py`).
-  - Tracks document status, size, and indexing timestamps inside a metadata registry (`documents.json`).
-- [x] **FastAPI Ingestion & Search Server (`main.py`)**:
-  - `POST /ingest/initialize` to scan the corpus directories and populate the vector store.
-  - `POST /ingest/upload` to dynamically upload and register custom files.
-  - `GET /documents` and `GET /documents/{doc_id}` to retrieve document metadata and chunks.
-  - `POST /query` to execute semantic vector similarity searches against indexed documents.
-- [x] **Streamlit Web UI (`app.py`)**:
-  - A premium, responsive interface featuring dynamic navigation tabs.
-  - **Chat Q&A**: Handles queries, showing responses alongside interactive citation cards and distance scores.
-  - **Document Library**: Lists all indexed documents with active chunk expanders to inspect what the AI reads.
-  - **Control Center**: Triggers default indexing or uploads new manuals via drag-and-drop.
-- [x] **Verification Suites**:
-  - `tests/test_chromadb.py` and `tests/verify_endpoints.py` to confirm everything runs flawlessly.
+### 2. Entity Extraction & NLP
+- Integrated **spaCy** (`en_core_web_sm`) alongside pre-compiled domain-specific **Regex patterns**.
+- Automatically extracts:
+  - **Equipment tags** (e.g., `EQ-1001`, `PUMP-A01`, `TNK-T02`, `COMP-C01`)
+  - **Work permits** (e.g., `PRM-2026-5000`)
+  - **Work orders** (e.g., `WO-2026-1000`)
+  - **Inspection logs** (e.g., `INS-2026-8000`)
+  - **Incident reports** (e.g., `INC-2026-9000`)
+  - **Regulation references** (e.g., `OISD-116`, `DGMS Circular 2022-05`, `Factory Act Section 36`)
+  - **Plants & Locations** (e.g., `Refinery Unit A`, `Steel Mill D`)
+  - **Hazards & Injury Severities** (e.g., `Fire hazard`, `Lost Time`)
+  - **Personnel** (using spaCy NER `PERSON`)
+
+### 3. Knowledge Graph
+- Constructed using **NetworkX** to map relationships between files, equipment, regulations, hazards, and plants.
+- Establishes explicit links (e.g., `EQUIPMENT --[REGULATED_BY]--> REGULATION`, `WORK_ORDER --[PERFORMS_ON]--> EQUIPMENT`, `INCIDENT --[OCCURRED_AT]--> PLANT`).
+- Serialized to `data/knowledge_graph.json` and supports graph traversal queries for context expansion.
+
+### 4. Regulatory Compliance Checker
+- Automated compliance check module comparing regulatory requirements against ingested plant procedures to identify gaps, compliance status, and highlight supporting evidence.
 
 ---
 
@@ -142,8 +146,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Ingest the Data
-Populate the local vector database with the pre-bundled industrial documents and generated plant logs:
+### 2. Ingest the Data & Build the Graph
+Populate the vector database and construct the knowledge graph from the pre-bundled document corpus:
 ```bash
 PYTHONPATH=. python src/pipeline/ingest.py
 ```
@@ -160,3 +164,19 @@ In a separate terminal tab (with active virtual environment), run:
 streamlit run src/app.py --server.port 8501
 ```
 Open **`http://localhost:8501`** in your browser to interact with the application.
+
+---
+
+## 🧪 Running Verification Tests
+
+Run the following test commands to verify system health:
+```bash
+# Verify ChromaDB vector store
+PYTHONPATH=. python tests/test_chromadb.py
+
+# Verify Knowledge Graph construction and query traversal
+PYTHONPATH=. python tests/test_knowledge_graph.py
+
+# Verify FastAPI endpoint integrations
+PYTHONPATH=. python tests/verify_endpoints.py
+```
