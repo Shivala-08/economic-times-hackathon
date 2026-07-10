@@ -95,6 +95,51 @@ async def get_graph(max_nodes: int = Query(default=500, le=2000)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/graph/search")
+async def graph_search(
+    q: str = Query(..., description="Search term to match against node IDs"),
+    node_types: Optional[str] = Query(default=None, description="Comma-separated list of node types to filter by"),
+    limit: int = Query(default=50, le=200, description="Max results to return")
+):
+    """Search for graph nodes by name/label."""
+    try:
+        kg = get_knowledge_graph()
+        types_list = [t.strip() for t in node_types.split(",")] if node_types else None
+        matches = kg.search_nodes(q, node_types=types_list, limit=limit)
+        return {"query": q, "results": matches, "count": len(matches)}
+    except Exception as e:
+        logger.error(f"Error searching graph nodes: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/graph/node/{node_id}")
+async def get_graph_node(node_id: str):
+    """Get node metadata, immediate neighbors, and linked resource IDs."""
+    try:
+        kg = get_knowledge_graph()
+        return kg.get_node_metadata(node_id)
+    except Exception as e:
+        logger.error(f"Error fetching node metadata for {node_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/graph/top")
+async def get_graph_top(
+    n: int = Query(default=30, le=200, description="Number of top nodes to return"),
+    node_types: Optional[str] = Query(default=None, description="Comma-separated list of node types to filter by")
+):
+    """Get top N most-connected nodes for initial graph loading."""
+    try:
+        kg = get_knowledge_graph()
+        types_list = [t.strip() for t in node_types.split(",")] if node_types else None
+        top_ids = kg.get_top_nodes(n=n, node_types=types_list)
+        subgraph = kg.get_subgraph_for_nodes(top_ids)
+        return subgraph
+    except Exception as e:
+        logger.error(f"Error fetching top graph nodes: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/graph/entity/{entity_id}")
 async def get_entity_subgraph(entity_id: str, depth: int = Query(default=1, le=3)):
     """Get subgraph centered on one entity (e.g. one equipment tag)."""

@@ -31,10 +31,11 @@ NODE_COLORS = {
 class IndustrialKnowledgeGraph:
     """NetworkX-based knowledge graph for industrial entities."""
 
-    def __init__(self):
+    def __init__(self, load_from_disk: bool = True):
         self.graph = nx.Graph()
         self.graph_file = settings.data_dir / "knowledge_graph.json"
-        self._load()
+        if load_from_disk:
+            self._load()
 
     def _load(self):
         """Load graph from disk if it exists."""
@@ -287,6 +288,141 @@ class IndustrialKnowledgeGraph:
         for key in result:
             result[key].sort()
         return result
+
+    def search_nodes(self, query: str, node_types: Optional[list] = None, limit: int = 50) -> list:
+        """Search for nodes by name/label matching the query string.
+
+        Args:
+            query: Search term to match against node IDs.
+            node_types: Optional list of node types to filter by.
+            limit: Maximum number of results to return.
+
+        Returns:
+            List of matching node dicts with id, type, color, degree.
+        """
+        query_lower = query.lower()
+        matches = []
+
+        for node_id, attrs in self.graph.nodes(data=True):
+            etype = attrs.get("type", "unknown")
+
+            # Filter by type if specified
+            if node_types and etype not in node_types:
+                continue
+
+            # Match query against node ID (case-insensitive)
+            if query_lower in node_id.lower():
+                matches.append({
+                    "id": node_id,
+                    "type": etype,
+                    "color": attrs.get("color", "#6b7280"),
+                    "degree": self.graph.degree(node_id),
+                })
+
+        # Sort by degree (most connected first)
+        matches.sort(key=lambda x: x["degree"], reverse=True)
+        return matches[:limit]
+
+    def get_node_metadata(self, node_id: str) -> dict:
+        """Get full metadata for a node including neighbors and linked resources.
+
+        Returns:
+            Dict with node info, neighbors, doc_id, and chunk references.
+        """
+        if not self.graph.has_node(node_id):
+            return {"error": f"Node '{node_id}' not found"}
+
+        attrs = self.graph.nodes[node_id]
+
+        # Get immediate neighbors
+        neighbors = []
+        for neighbor in self.graph.neighbors(node_id):
+            edge_data = self.graph.edges[node_id, neighbor]
+            neighbors.append({
+                "id": neighbor,
+                "type": self.graph.nodes[neighbor].get("type", "unknown"),
+                "color": self.graph.nodes[neighbor].get("color", "#6b7280"),
+                "relation": edge_data.get("relation", "related_to"),
+            })
+
+        # Get connected entities by type
+        neighbor_types = {}
+        for n in neighbors:
+            ntype = n["type"]
+            if ntype not in neighbor_types:
+                neighbor_types[ntype] = []
+            neighbor_types[ntype].append(n["id"])
+
+        return {
+            "id": node_id,
+            "type": attrs.get("type", "unknown"),
+            "color": attrs.get("color", "#6b7280"),
+            "doc_id": attrs.get("doc_id", None),
+            "degree": self.graph.degree(node_id),
+            "neighbors": neighbors,
+            "neighbor_count": len(neighbors),
+            "neighbor_types": neighbor_types,
+        }
+
+    def get_top_nodes(self, n: int = 30, node_types: Optional[list] = None) -> list:
+        """Get top N most-connected nodes for initial graph loading.
+
+        Args:
+            n: Number of top nodes to return.
+            node_types: Optional filter by node types.
+
+        Returns:
+            List of top node IDs sorted by degree.
+        """
+        # Compute degrees once (O(V)) instead of per-node (O(V * degree))
+        all_degrees = dict(self.graph.degree())
+        
+        # Filter by type if specified
+        if node_types:
+            node_degrees = [
+                (node_id, all_degrees[node_id])
+                for node_id, attrs in self.graph.nodes(data=True)
+                if attrs.get("type", "unknown") in node_types
+            ]
+        else:
+            node_degrees = list(all_degrees.items())
+
+        node_degrees.sort(key=lambda x: x[1], reverse=True)
+        return [node_id for node_id, _ in node_degrees[:n]]
+
+    def get_subgraph_for_nodes(self, node_ids: list) -> dict:
+        """Get a subgraph containing only the specified nodes and their internal edges.
+
+        Args:
+            node_ids: List of node IDs to include.
+
+        Returns:
+            Dict with nodes and edges for visualization.
+        """
+        id_set = set(node_ids)
+
+        nodes = []
+        for node_id in node_ids:
+            if self.graph.has_node(node_id):
+                attrs = self.graph.nodes[node_id]
+                nodes.append({
+                    "id": node_id,
+                    "label": node_id,
+                    "type": attrs.get("type", "unknown"),
+                    "color": attrs.get("color", "#6b7280"),
+                    "size": self.graph.degree(node_id) + 5,
+                })
+
+        edges = []
+        for u, v, attrs in self.graph.edges(data=True):
+            if u in id_set and v in id_set:
+                edges.append({
+                    "from": u,
+                    "to": v,
+                    "relation": attrs.get("relation", "related_to"),
+                })
+
+        return {"nodes": nodes, "edges": edges}
 
     def get_stats(self) -> dict:
         """Get graph statistics."""
