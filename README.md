@@ -129,6 +129,31 @@ The project codebase is organized as follows:
 
 ---
 
+## 🛠️ Project Timeline & Status
+
+### Day 1 — Foundations (Completed)
+- [x] Initialized project repository and Python virtual environment (`.venv`).
+- [x] Configured project settings using `pydantic-settings` loaded from `.env`.
+- [x] Generated seed templates for regulatory guidelines (OISD, DGMS Circulars, and Factory Act sections).
+- [x] Implemented Faker-based generator for synthetic plant data (work orders, work permits, inspection logs, and incident reports).
+- [x] Prepared ground-truth dataset comprising 18 complex Q&A pairs for system evaluation.
+- [x] Configured and verified local vector database connectivity (ChromaDB).
+
+### Day 2 — Ingestion Pipeline & UI Skeleton (Completed)
+- [x] **Document Parsing Module (`parser.py`)**: Structured parsers for plain text, PDFs, Word, and CSV rows.
+- [x] **Ingestion Pipeline Coordinator (`ingest.py`)**: Coordinates parsing, chunking, embedding, and indexing status updates.
+- [x] **FastAPI Ingestion & Search Server (`main.py`)**: Created endpoints for initialize, upload, documents, and query.
+- [x] **Streamlit Web UI (`app.py`)**: Created interface with Chat Q&A, Document Library, and Control Center tabs.
+
+### Day 3 — Entities & Knowledge Graph (Completed)
+- [x] **spaCy + Regex Entity Extractor (`extractor.py`)**: Extracts equipment tags, regulations, permits, plant locations, and hazards.
+- [x] **NetworkX Knowledge Graph (`knowledge_graph.py`)**: Constructs and persists typed nodes and relationships row-by-row to prevent cross-contamination.
+- [x] **FastAPI Graph & Search Endpoints (`main.py`)**: Implemented `/graph`, `/graph/search`, `/graph/node/{node_id}`, and `/graph/top`.
+- [x] **Streamlit Graph Visualization (`app.py` & `pages/1_Knowledge_Explorer.py`)**: Integrated interactive visualizer utilizing stabilized Vis.js parameters and created a detailed Knowledge Explorer page.
+- [x] **Unit Testing (`tests/test_knowledge_graph.py`)**: Added test coverage validating graph queries, subgraphs, and stats.
+
+---
+
 ## 🚀 Quick Start
 
 ### 1. Set Up Environment
