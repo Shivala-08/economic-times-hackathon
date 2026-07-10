@@ -124,7 +124,7 @@ Debug-only, don't expose in the demo UI but useful while building:
 ---
 
 ## 4. Seven-Day Roadmap — Two-Person Split
-
+ 
 **Person A = coder** (backend, ML, pipeline, API)
 **Person B = friend** (data, frontend, docs, benchmarking)
 

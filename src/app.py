@@ -352,13 +352,32 @@ with tab_graph:
                             title=e.get("relation", ""),
                         ))
                     
+                    physics_config = {
+                        "enabled": True,
+                        "solver": "barnesHut",
+                        "barnesHut": {
+                            "gravitationalConstant": -3000,
+                            "centralGravity": 0.15,
+                            "springLength": 100,
+                            "springConstant": 0.05,
+                            "damping": 0.09,
+                            "avoidOverlap": 0.5
+                        },
+                        "stabilization": {
+                            "enabled": True,
+                            "iterations": 200,
+                            "fit": True
+                        },
+                        "minVelocity": 0.75
+                    }
+                    
                     config = Config(
                         width="100%",
                         height=600,
                         directed=False,
-                        physics=True,
                         hierarchical=False,
                         node={"font": {"size": 12}},
+                        physics=physics_config
                     )
                     
                     returned_value = agraph(nodes=agraph_nodes, edges=agraph_edges, config=config)

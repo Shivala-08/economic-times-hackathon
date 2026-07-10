@@ -13,6 +13,7 @@ from src.config import settings
 from src.pipeline.ingest import IngestionPipeline
 from src.pipeline.embedder import TextEmbedder
 from src.pipeline.extractor import extract_entities
+from src.pipeline.compliance import check_compliance
 from src.storage.chroma_store import VectorStore
 from src.graph.knowledge_graph import get_knowledge_graph
 
@@ -29,6 +30,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class ComplianceRequest(BaseModel):
+    """Schema for compliance check requests."""
+    requirement: str
+    top_k: Optional[int] = 10
 
 
 class QueryRequest(BaseModel):
@@ -59,6 +66,20 @@ async def root():
         "version": settings.app_version,
         "docs": "/docs",
     }
+
+
+# --- Compliance Check Endpoint ---
+
+@app.post("/compliance/check")
+async def compliance_check(request: ComplianceRequest):
+    """Check a regulatory requirement against ingested procedures for gaps."""
+    try:
+        logger.info(f"Compliance check request: {request.requirement[:100]}...")
+        result = check_compliance(request.requirement, top_k=request.top_k)
+        return result
+    except Exception as e:
+        logger.error(f"Error during compliance check: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # --- Knowledge Graph Endpoints ---

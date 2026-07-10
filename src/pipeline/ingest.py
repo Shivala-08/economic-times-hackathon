@@ -104,26 +104,33 @@ class IngestionPipeline:
 
         # 5. Entity extraction & knowledge graph construction
         try:
-            # Combine all chunk texts for entity extraction
-            all_text = "\n\n".join(c["text"] for c in chunks)
-            # Also include metadata from CSV rows
-            combined_metadata = {}
-            if suffix == ".csv" and chunks:
-                # Merge metadata from all CSV rows
+            if suffix == ".csv":
+                # For CSV, process each row (chunk) independently to avoid cross-connecting unrelated rows
+                entity_count = 0
                 for c in chunks:
-                    for k, v in c.get("metadata", {}).items():
-                        if v and k not in combined_metadata:
-                            combined_metadata[k] = v
+                    row_text = c["text"]
+                    row_metadata = c["metadata"]
+                    row_doc_id = c["id"]  # E.g. "work_orders_WO-2026-1001"
+                    
+                    row_entities = extract_entities(row_text, row_metadata)
+                    row_entity_count = sum(len(v) for v in row_entities.values())
+                    entity_count += row_entity_count
+                    
+                    # Add to knowledge graph using the specific row's ID/details
+                    self.kg.add_document_entities(row_doc_id, row_text, row_entities, row_metadata)
+                logger.info(f"Extracted and graph-linked {entity_count} entities from CSV {filename} row-by-row")
+            else:
+                # Combine all chunk texts for entity extraction
+                all_text = "\n\n".join(c["text"] for c in chunks)
+                combined_metadata = {}
+                entities = extract_entities(all_text, combined_metadata)
+                entity_count = sum(len(v) for v in entities.values())
+                logger.info(f"Extracted {entity_count} entities from {filename}")
 
-            entities = extract_entities(all_text, combined_metadata)
-            entity_count = sum(len(v) for v in entities.values())
-            logger.info(f"Extracted {entity_count} entities from {filename}")
-
-            # Add to knowledge graph
-            self.kg.add_document_entities(doc_id, all_text, entities, combined_metadata)
+                # Add to knowledge graph
+                self.kg.add_document_entities(doc_id, all_text, entities, combined_metadata)
         except Exception as e:
             logger.error(f"Entity extraction failed for {filename}: {e}")
-            entities = {}
             entity_count = 0
 
         # 6. Persist file copy in data/corpus/uploads if requested
