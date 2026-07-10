@@ -24,83 +24,148 @@ st.set_page_config(
 # API Endpoint Configuration
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
-# Custom CSS for Premium Design
+// Custom CSS for Premium Design
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Global Typography Override */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Outfit', 'Inter', sans-serif !important;
+    }
+
     /* Main Layout */
     .main .block-container {
-        padding-top: 2rem;
+        padding-top: 1.5rem;
         padding-bottom: 2rem;
     }
     
-    /* Title and Subtitle */
+    /* Sleek Application Title Banner */
     .title-container {
-        background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
-        padding: 2rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #120636 100%);
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
         color: white;
         margin-bottom: 2rem;
-        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
     }
     .title-container h1 {
         margin: 0;
         font-family: 'Outfit', 'Inter', sans-serif;
-        font-weight: 700;
-        font-size: 2.5rem;
+        font-weight: 800;
+        font-size: 2.3rem;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .title-container p {
         margin: 0.5rem 0 0 0;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+        color: #cbd5e1;
         opacity: 0.9;
     }
 
-    /* Cards */
+    /* Glassmorphic Document Cards */
     .doc-card {
-        background-color: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 1.25rem;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
         margin-bottom: 1rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        color: #f8fafc;
     }
     .doc-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        border-color: #6366f1;
+        transform: translateY(-3px);
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 12px 28px rgba(99, 102, 241, 0.25);
     }
     
-    /* Badges */
+    /* Premium Badges */
     .badge {
         display: inline-block;
-        padding: 0.25rem 0.6rem;
+        padding: 0.3rem 0.75rem;
         border-radius: 9999px;
         font-size: 0.75rem;
         font-weight: 600;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
+        margin-right: 0.4rem;
+        margin-bottom: 0.4rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.05);
     }
-    .badge-blue { background-color: #dbeafe; color: #1e40af; }
-    .badge-green { background-color: #dcfce7; color: #166534; }
-    .badge-purple { background-color: #f3e8ff; color: #6b21a8; }
-    .badge-yellow { background-color: #fef9c3; color: #854d0e; }
-    .badge-gray { background-color: #f3f4f6; color: #374151; }
+    .badge-blue { background-color: rgba(59, 130, 246, 0.2) !important; color: #93c5fd !important; border-color: rgba(59, 130, 246, 0.3) !important; }
+    .badge-green { background-color: rgba(16, 185, 129, 0.2) !important; color: #6ee7b7 !important; border-color: rgba(16, 185, 129, 0.3) !important; }
+    .badge-purple { background-color: rgba(139, 92, 246, 0.2) !important; color: #c4b5fd !important; border-color: rgba(139, 92, 246, 0.3) !important; }
+    .badge-yellow { background-color: rgba(245, 158, 11, 0.2) !important; color: #fde047 !important; border-color: rgba(245, 158, 11, 0.3) !important; }
+    .badge-gray { background-color: rgba(107, 114, 128, 0.2) !important; color: #d1d5db !important; border-color: rgba(107, 114, 128, 0.3) !important; }
     
-    /* Chat styling */
+    /* Immersive Chat Bubbles */
     .chat-bubble {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.25rem;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
     }
     .chat-user {
-        background-color: #f3f4f6;
-        border-left: 4px solid #9ca3af;
+        background-color: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 5px solid #94a3b8;
+        color: #f1f5f9;
     }
     .chat-assistant {
-        background-color: #e0e7ff;
-        border-left: 4px solid #4f46e5;
+        background-color: rgba(79, 70, 229, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-left: 5px solid #6366f1;
+        color: #f8fafc;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(156, 163, 175, 0.25);
+        border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(156, 163, 175, 0.45);
+    }
+
+    /* Immersive glowing buttons */
+    div.stButton > button {
+        background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+        padding: 0.55rem 1.4rem !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25) !important;
+    }
+    div.stButton > button:hover {
+        transform: scale(1.015) translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4) !important;
+        background: linear-gradient(90deg, #4f46e5 0%, #818cf8 100%) !important;
+    }
+    div.stButton > button:active {
+        transform: scale(0.98) !important;
     }
 </style>
 """, unsafe_allow_html=True)

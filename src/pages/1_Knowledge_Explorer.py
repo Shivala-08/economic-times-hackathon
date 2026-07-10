@@ -73,69 +73,164 @@ NODE_TYPE_COLORS = {
 st.markdown(
     """
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Global Typography Override */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Outfit', 'Inter', sans-serif !important;
+    }
+
+    /* Immersive Animated Gradient Header */
     .ke-header {
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #120636 100%);
+        padding: 1.75rem 2.25rem;
+        border-radius: 16px;
         color: white;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 4px 20px rgba(67, 56, 202, 0.25);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
     }
-    .ke-header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
-    .ke-header p { margin: 0.4rem 0 0 0; opacity: 0.85; font-size: 0.95rem; }
+    .ke-header h1 {
+        margin: 0;
+        font-size: 2.1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .ke-header p {
+        margin: 0.4rem 0 0 0;
+        opacity: 0.85;
+        font-size: 1rem;
+        color: #cbd5e1;
+    }
 
+    /* Glassmorphic Entity Detail Card */
     .entity-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-left: 4px solid #6366f1;
-        border-radius: 8px;
-        padding: 1rem 1.25rem;
-        margin-bottom: 0.75rem;
-        transition: border-color 0.2s;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-left: 5px solid #818cf8;
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        color: #f8fafc;
     }
-    .entity-card:hover { border-left-color: #4f46e5; }
+    .entity-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 12px 28px rgba(99, 102, 241, 0.25);
+        border-left-color: #6366f1;
+    }
 
+    /* Premium Stat Chips */
     .stat-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        background: #f3f4f6;
-        border: 1px solid #e5e7eb;
+        gap: 0.45rem;
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 9999px;
-        padding: 0.3rem 0.75rem;
-        font-size: 0.8rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-right: 0.4rem;
+        margin-bottom: 0.4rem;
+        transition: all 0.2s ease;
+    }
+    .stat-chip:hover {
+        background: rgba(30, 41, 59, 0.95);
+        border-color: rgba(255, 255, 255, 0.15);
     }
     .stat-chip .dot {
-        width: 8px;
-        height: 8px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
         display: inline-block;
+        box-shadow: 0 0 6px currentColor;
     }
 
+    /* Sleek Neighbor Relation Rows */
     .neighbor-row {
-        padding: 0.6rem 0.75rem;
-        border-radius: 6px;
-        margin-bottom: 0.4rem;
-        font-size: 0.85rem;
+        padding: 0.7rem 0.9rem;
+        border-radius: 10px;
+        margin-bottom: 0.45rem;
+        font-size: 0.88rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        background: #f9fafb;
-        border: 1px solid #f3f4f6;
+        gap: 0.6rem;
+        background: rgba(30, 41, 59, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        color: #e2e8f0;
     }
-    .neighbor-row:hover { background: #f3f4f6; }
+    .neighbor-row:hover {
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.3);
+        transform: translateX(5px);
+    }
     .neighbor-row .n-dot {
         width: 10px;
         height: 10px;
         border-radius: 50%;
         flex-shrink: 0;
+        box-shadow: 0 0 6px currentColor;
     }
     .neighbor-row .n-relation {
-        color: #6b7280;
-        font-size: 0.78rem;
+        color: #cbd5e1;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
         margin-left: auto;
+        background: rgba(30, 41, 59, 0.85);
+        padding: 0.15rem 0.45rem;
+        border-radius: 5px;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Custom Webkit Scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(156, 163, 175, 0.25);
+        border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(156, 163, 175, 0.45);
+    }
+
+    /* Immersive glowing buttons */
+    div.stButton > button {
+        background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+        padding: 0.55rem 1.4rem !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25) !important;
+    }
+    div.stButton > button:hover {
+        transform: scale(1.015) translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4) !important;
+        background: linear-gradient(90deg, #4f46e5 0%, #818cf8 100%) !important;
+    }
+    div.stButton > button:active {
+        transform: scale(0.98) !important;
     }
 </style>
 """,
