@@ -232,7 +232,7 @@ def show_entity_graph(entity_id: str):
             )
             
             if AGRAPH_AVAILABLE:
-                agraph(nodes=ag_nodes, edges=ag_edges, config=config, key=f"graph_{entity_id}")
+                agraph(nodes=ag_nodes, edges=ag_edges, config=config)
             else:
                 st.warning("streamlit-agraph not installed")
         else:
@@ -641,7 +641,7 @@ with tab_graph:
                             "minVelocity": 0.75,
                         },
                     )
-                    agraph(nodes=ag_nodes, edges=ag_edges, config=config, key=f"full_graph_view_{len(nodes)}")
+                    agraph(nodes=ag_nodes, edges=ag_edges, config=config)
                 else:
                     st.warning("streamlit-agraph not installed. Showing table view.")
                     ca, cb = st.columns(2)
