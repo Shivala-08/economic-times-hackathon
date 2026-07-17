@@ -276,8 +276,9 @@ with st.sidebar:
             nvidia_on = ls.get("nvidia_available", False)
             ollama_on = ls.get("ollama_available", False)
             if nvidia_on:
+                model_name = ls.get("model", "nemotron").replace("nvidia/", "").replace("meta/", "")
                 st.markdown(
-                    f'<div class="llm-pill-on">🟢 NVIDIA NIM &nbsp;|&nbsp; <b>{ls.get("model", "nemotron")}</b></div>',
+                    f'<div class="llm-pill-on">🟢 NVIDIA API &nbsp;|&nbsp; <b>{model_name}</b></div>',
                     unsafe_allow_html=True,
                 )
             elif ollama_on:
