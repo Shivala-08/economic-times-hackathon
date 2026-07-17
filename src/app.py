@@ -180,7 +180,7 @@ def post_feedback(question: str, answer: str, rating: int):
 def show_entity_graph(entity_id: str):
     st.markdown(f"### Subgraph for **{entity_id}**")
     try:
-        r = requests.get(f"{API_URL}/graph/entity/{entity_id}?depth=1", timeout=5)
+        r = requests.get(f"{API_URL}/graph/entity/{entity_id}?depth=1", timeout=15)
         if r.status_code == 200:
             data = r.json()
             center = data.get("center", {})
@@ -297,7 +297,7 @@ with st.sidebar:
     # Graph stats
     st.markdown("---")
     try:
-        gr = requests.get(f"{API_URL}/entities", timeout=5)
+        gr = requests.get(f"{API_URL}/entities", timeout=15)
         if gr.status_code == 200:
             gd = gr.json()
             stats = gd.get("stats", {})
