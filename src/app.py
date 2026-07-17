@@ -258,22 +258,29 @@ with st.sidebar:
 
     # FastAPI health
     try:
-        h = requests.get(f"{API_URL}/health", timeout=3)
+        h = requests.get(f"{API_URL}/health", timeout=15)
         if h.status_code == 200:
             st.success("⚡ FastAPI: Connected")
         else:
             st.warning("⚠️ FastAPI: Unhealthy")
-    except requests.exceptions.ConnectionError:
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
         st.error("❌ FastAPI: Offline")
 
     # LLM / Ollama status
     st.markdown("---")
     st.markdown("### **LLM Engine**")
     try:
-        llm_resp = requests.get(f"{API_URL}/llm/status", timeout=4)
+        llm_resp = requests.get(f"{API_URL}/llm/status", timeout=10)
         if llm_resp.status_code == 200:
             ls = llm_resp.json()
-            if ls.get("ollama_available"):
+            nvidia_on = ls.get("nvidia_available", False)
+            ollama_on = ls.get("ollama_available", False)
+            if nvidia_on:
+                st.markdown(
+                    f'<div class="llm-pill-on">🟢 NVIDIA NIM &nbsp;|&nbsp; <b>{ls.get("model", "nemotron")}</b></div>',
+                    unsafe_allow_html=True,
+                )
+            elif ollama_on:
                 st.markdown(
                     f'<div class="llm-pill-on">🟢 Ollama &nbsp;|&nbsp; <b>{ls["model"]}</b></div>',
                     unsafe_allow_html=True,
@@ -281,11 +288,9 @@ with st.sidebar:
             else:
                 st.markdown(
                     '<div class="llm-pill-off">🟡 Smart-Context fallback<br>'
-                    '<small>Start Ollama for LLM answers</small></div>',
+                    '<small>Set NVIDIA_API_KEY or start Ollama</small></div>',
                     unsafe_allow_html=True,
                 )
-                with st.expander("How to start Ollama"):
-                    st.code("brew install ollama\nollama pull llama3.2\nollama serve", language="bash")
     except Exception:
         st.caption("LLM status unavailable")
 

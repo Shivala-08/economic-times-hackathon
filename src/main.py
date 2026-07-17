@@ -590,11 +590,15 @@ async def debug_search(
 
 @app.get("/llm/status")
 async def llm_status():
-    """Check whether Ollama is running and which model is selected."""
+    """Check whether NVIDIA NIM or Ollama is running and which model is selected."""
+    from src.pipeline.llm import get_llm, NvidiaLLM, OllamaLLM
     llm = get_llm()
+    is_nvidia = isinstance(llm, NvidiaLLM)
+    is_ollama = isinstance(llm, OllamaLLM)
     return {
-        "ollama_available": llm.available,
+        "nvidia_available": is_nvidia and llm.available,
+        "ollama_available": is_ollama and llm.available,
         "model":            llm.model or "none",
         "base_url":         llm.base_url,
-        "mode":             "ollama" if llm.available else "smart-context-fallback",
+        "mode":             "nvidia" if is_nvidia else ("ollama" if is_ollama else "smart-context-fallback"),
     }
