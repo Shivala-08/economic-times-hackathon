@@ -1,12 +1,19 @@
-"""Industrial Knowledge Intelligence — Main API Application."""
+"""Industrial Knowledge Intelligence — Main API Application.
 
+Day 4: Real LLM integration (Ollama, no API key), /benchmark/run, /feedback,
+        /debug/search added.
+"""
+
+import json
 import os
 import shutil
+import time
+from functools import lru_cache
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from loguru import logger
 
 from src.config import settings
@@ -14,8 +21,13 @@ from src.pipeline.ingest import IngestionPipeline
 from src.pipeline.embedder import TextEmbedder
 from src.pipeline.extractor import extract_entities
 from src.pipeline.compliance import check_compliance
+from src.pipeline.llm import generate_rag_answer, get_llm
+from src.pipeline.query_engine import retrieve_context, generate_answer
 from src.storage.chroma_store import VectorStore
 from src.graph.knowledge_graph import get_knowledge_graph
+
+# In-memory feedback store (persisted to disk on each write)
+_FEEDBACK_FILE = settings.data_dir / "feedback.jsonl"
 
 app = FastAPI(
     title=settings.app_name,
@@ -40,16 +52,27 @@ class ComplianceRequest(BaseModel):
 
 class QueryRequest(BaseModel):
     """Schema for incoming RAG queries."""
-    question: str
-    top_k: Optional[int] = settings.top_k
+    question: str = Field(..., min_length=1, max_length=1000, description="The query string")
+    top_k: Optional[int] = Field(settings.top_k, ge=1, le=20)
 
 
 class QueryResponse(BaseModel):
-    """Schema for RAG query response."""
+    """Schema for RAG query response (Day 4: includes LLM fields)."""
     answer: str
     sources: List[dict]
-    confidence: str
+    confidence: Union[str, float]   # float 0.0-1.0 from query_engine, or 'High'/'Medium'/'Low'
     entities_used: List[str] = []
+    key_points: List[str] = []
+    model_used: str = "unknown"
+    latency_ms: int = 0
+
+
+class FeedbackRequest(BaseModel):
+    """Thumbs-up / thumbs-down on an answer."""
+    question: str
+    answer: str
+    rating: int          # +1 = positive, -1 = negative
+    comment: Optional[str] = None
 
 
 @app.get("/health")
@@ -140,12 +163,57 @@ async def get_graph_top(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@lru_cache(maxsize=128)
+def _fetch_subgraph_cached(entity_id: str, depth: int) -> Optional[dict]:
+    """Helper to fetch and format the subgraph, cached in-memory."""
+    kg = get_knowledge_graph()
+    raw = kg.get_entity_neighbors(entity_id, depth=depth)
+    
+    if "error" in raw:
+        return None
+        
+    center_data = raw.get("center", {})
+    center = {
+        "id": center_data.get("id", entity_id),
+        "label": center_data.get("id", entity_id),
+        "type": center_data.get("type", "unknown")
+    }
+    
+    neighbors = []
+    edges = []
+    
+    for n in raw.get("neighbors", []):
+        neighbors.append({
+            "id": n.get("id"),
+            "label": n.get("id"),
+            "type": n.get("type", "unknown"),
+            "relation": n.get("relation", "related_to")
+        })
+        edges.append({
+            "source": n.get("source"),
+            "target": n.get("id"),
+            "relation_type": n.get("relation", "related_to")
+        })
+        
+    return {
+        "center": center,
+        "neighbors": neighbors,
+        "edges": edges
+    }
+
 @app.get("/graph/entity/{entity_id}")
-async def get_entity_subgraph(entity_id: str, depth: int = Query(default=1, le=3)):
-    """Get subgraph centered on one entity (e.g. one equipment tag)."""
+async def get_entity_subgraph(entity_id: str, depth: int = Query(default=1, le=2)):
+    """Get subgraph centered on one entity for frontend visualization."""
     try:
-        kg = get_knowledge_graph()
-        return kg.get_entity_neighbors(entity_id, depth=depth)
+        subgraph = _fetch_subgraph_cached(entity_id, depth)
+        if not subgraph:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Entity '{entity_id}' not found in the knowledge graph. Check the ID."
+            )
+        return subgraph
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching entity subgraph for {entity_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -169,6 +237,8 @@ async def get_entities():
 
 # --- Ingestion Endpoints ---
 
+SUPPORTED_EXTENSIONS = {".txt", ".csv", ".pdf", ".docx"}
+
 @app.post("/ingest/upload")
 async def upload_documents(files: List[UploadFile] = File(...)):
     """Upload and ingest one or more documents (PDF, DOCX, CSV, TXT)."""
@@ -176,14 +246,47 @@ async def upload_documents(files: List[UploadFile] = File(...)):
     temp_dir = settings.data_dir / "temp_uploads"
     temp_dir.mkdir(parents=True, exist_ok=True)
     
+    try:
+        store = VectorStore()
+        existing_docs = store.collection.get(include=["metadatas"])
+        existing_filenames = set()
+        if existing_docs and existing_docs.get("metadatas"):
+            for meta in existing_docs["metadatas"]:
+                if meta and "doc_id" in meta:
+                    existing_filenames.add(meta["doc_id"])
+    except Exception as e:
+        logger.warning(f"Failed to fetch existing documents for duplicate check: {e}")
+        existing_filenames = set()
+    
     results = []
     for file in files:
         safe_filename = Path(file.filename).name
+        ext = Path(safe_filename).suffix.lower()
+        
+        if ext not in SUPPORTED_EXTENSIONS:
+            results.append({
+                "doc_id": safe_filename, 
+                "status": "error", 
+                "error": f"Unsupported file type: '{ext}'. Allowed: {', '.join(SUPPORTED_EXTENSIONS)}"
+            })
+            continue
+            
+        if safe_filename in existing_filenames:
+            results.append({
+                "doc_id": safe_filename, 
+                "status": "error", 
+                "error": "Duplicate upload. A document with this filename is already indexed."
+            })
+            continue
+
         temp_file_path = temp_dir / safe_filename
         try:
             # Save file temporarily to disk
             with open(temp_file_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
+                
+            if temp_file_path.stat().st_size == 0:
+                raise ValueError("File is empty or corrupted.")
             
             # Ingest file (it will copy to uploads persistently)
             logger.info(f"Uploading and ingesting: {safe_filename}")
@@ -191,7 +294,7 @@ async def upload_documents(files: List[UploadFile] = File(...)):
             results.append(res)
         except Exception as e:
             logger.error(f"Failed to ingest uploaded file {safe_filename}: {e}")
-            results.append({"doc_id": safe_filename, "status": "error", "error": str(e)})
+            results.append({"doc_id": safe_filename, "status": "error", "error": f"File parsing failed: {str(e)}"})
         finally:
             # Clean up temporary file
             if temp_file_path.exists():
@@ -258,104 +361,240 @@ async def get_document(doc_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- Query Endpoint (Mock LLM / Vector-Search-Only for Day 2) ---
+# ── Query Endpoint ───────────────────────────────────────────────────────────
 
 @app.post("/query", response_model=QueryResponse)
 async def query_rag(request: QueryRequest):
-    """Main RAG query endpoint. Performs similarity search + graph traversal."""
+    """POST /query — retrieve context then generate a structured answer.
+
+    Uses query_engine.retrieve_context() (vector + graph) then
+    query_engine.generate_answer() (Ollama LLM or smart fallback).
+    Returns {answer, sources, confidence, entities_used, key_points, model_used}.
+    """
+    t_start = time.time()
+
+    # ── Guard: empty question ───────────────────────────────────────────────
+    if not request.question or not request.question.strip():
+        raise HTTPException(status_code=422, detail="question must not be empty")
+
     try:
-        logger.info(f"Received query: '{request.question}'")
-        embedder = TextEmbedder()
+        logger.info(f"POST /query: '{request.question}'")
+
+        # ── Guard: empty database ────────────────────────────────────────────
         store = VectorStore()
-        kg = get_knowledge_graph()
-        
-        # Check if vector store has any documents
         if store.count() == 0:
             return QueryResponse(
-                answer="No documents found in the database. Please ingest some documents first via the UI or /ingest/initialize endpoint.",
+                answer=(
+                    "No documents indexed yet. "
+                    "Please open the **Control & Setup Panel** tab and click "
+                    "**Scan & Index Default Corpus** to initialise the system."
+                ),
                 sources=[],
-                confidence="Low",
-                entities_used=[]
+                confidence=0.0,
+                entities_used=[],
+                key_points=[],
+                model_used="N/A",
+                latency_ms=0,
             )
-            
-        # 1. Embed query
-        query_embedding = embedder.embed_query(request.question)
-        
-        # 2. Search ChromaDB (vector path)
-        top_k = request.top_k or settings.top_k
-        results = store.query(query_embedding, n_results=top_k)
-        
-        # 3. Extract entities from query for graph traversal
-        query_entities = extract_entities(request.question)
-        graph_context = []
-        entities_used = []
-        
-        # Traverse graph for each found entity
-        for eq in query_entities.get("equipment", []):
-            neighbors = kg.get_entity_neighbors(eq, depth=1)
-            if neighbors.get("neighbors"):
-                entities_used.append(eq)
-                for n in neighbors["neighbors"]:
-                    graph_context.append(f"{eq} --[{n['relation']}]--> {n['id']} ({n['type']})")
 
-        for reg in query_entities.get("regulations", []):
-            neighbors = kg.get_entity_neighbors(reg, depth=1)
-            if neighbors.get("neighbors"):
-                entities_used.append(reg)
-                for n in neighbors["neighbors"]:
-                    graph_context.append(f"{reg} --[{n['relation']}]--> {n['id']} ({n['type']})")
+        # ── Step 1: Retrieve merged context (vector + graph) ────────────────────
+        top_k   = request.top_k or settings.top_k
+        context = retrieve_context(request.question, top_k=top_k)
 
-        # 4. Process vector search results
-        sources = []
-        best_chunks = []
-        
-        if results and results["documents"] and len(results["documents"][0]) > 0:
-            for i in range(len(results["documents"][0])):
-                doc_text = results["documents"][0][i]
-                metadata = results["metadatas"][0][i]
-                dist = results["distances"][0][i]
-                
-                src_doc = metadata.get("doc_id", "unknown")
-                rec_id = metadata.get("record_id", "")
-                
-                citation = src_doc
-                if rec_id:
-                    citation = f"{src_doc} ({rec_id})"
-                    
-                sources.append({
-                    "doc_id": src_doc,
-                    "record_id": rec_id,
-                    "excerpt": doc_text,
-                    "distance": dist,
-                    "citation": citation
-                })
-                
-                if i < 2:
-                    best_chunks.append(f"- From {citation}:\n  \"{doc_text[:300]}...\"")
-                    
-        # 5. Generate answer
-        if best_chunks:
-            answer_snippets = "\n\n".join(best_chunks)
-            graph_info = ""
-            if graph_context:
-                graph_info = f"\n\n**Graph relationships found:**\n" + "\n".join(f"• {ctx}" for ctx in graph_context[:10])
-            
-            answer = (
-                f"**[RAG Engine — Vector Search + Knowledge Graph]**\n\n"
-                f"{answer_snippets}{graph_info}\n\n"
-                f"*Note: Full LLM generation scheduled for Day 4. Currently showing vector search results with graph augmentation.*"
+        # ── Guard: no results found ────────────────────────────────────────────
+        if not context["vector_chunks"] and not context["graph_entities"]:
+            return QueryResponse(
+                answer=(
+                    "No matching documents or entities were found for your query. "
+                    "Try rephrasing, or check that the corpus has been indexed."
+                ),
+                sources=[],
+                confidence=0.0,
+                entities_used=[],
+                key_points=[],
+                model_used="N/A",
+                latency_ms=int((time.time() - t_start) * 1000),
             )
-            confidence = "High" if entities_used else "Medium"
-        else:
-            answer = "No matches found in the vector database for your query."
-            confidence = "Low"
-            
-        return QueryResponse(
-            answer=answer,
-            sources=sources,
-            confidence=confidence,
-            entities_used=entities_used
+
+        # ── Step 2: Generate answer (LLM / smart fallback) ─────────────────────
+        ans = generate_answer(request.question, context)
+
+        latency_ms = int((time.time() - t_start) * 1000)
+        logger.info(
+            f"/query answered in {latency_ms} ms | "
+            f"confidence={ans.get('confidence')} | model={ans.get('model_used')}"
         )
+
+        return QueryResponse(
+            answer       = ans.get("answer", ""),
+            sources      = ans.get("sources", []),
+            confidence   = ans.get("confidence", 0.0),
+            entities_used= ans.get("entities_used", []),
+            key_points   = ans.get("key_points", []),
+            model_used   = ans.get("model_used", "unknown"),
+            latency_ms   = latency_ms,
+        )
+
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Error querying RAG engine: {e}")
+        logger.error(f"Error in POST /query: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+# ── Benchmark Endpoint ────────────────────────────────────────────────────────
+
+@app.get("/benchmark/run")
+async def run_benchmark(max_questions: int = Query(default=18, le=50)):
+    """Run the ground-truth Q&A benchmark and return accuracy metrics."""
+    qa_file = settings.benchmarks_dir / "qa_pairs.json"
+    if not qa_file.exists():
+        raise HTTPException(status_code=404, detail="No benchmark file found at data/benchmarks/qa_pairs.json")
+
+    try:
+        qa_pairs = json.loads(qa_file.read_text(encoding="utf-8"))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load benchmark file: {e}")
+
+    store    = VectorStore()
+
+    if store.count() == 0:
+        raise HTTPException(status_code=400, detail="Vector store is empty. Run /ingest/initialize first.")
+
+    results   = []
+    total     = min(len(qa_pairs), max_questions)
+    correct   = 0
+    total_ms  = 0
+
+    for qa in qa_pairs[:total]:
+        t0 = time.time()
+        question = qa["question"]
+        expected = qa["answer"].lower()
+
+        context = retrieve_context(question, top_k=3)
+        llm_result = generate_answer(question, context)
+        
+        answer_text = llm_result.get("answer", "")
+        sources_list = llm_result.get("sources", [])
+        retrieved_source_docs = {s.get("citation", s.get("doc_id", "")) for s in sources_list}
+        
+        elapsed_ms = int((time.time() - t0) * 1000)
+        total_ms += elapsed_ms
+
+        expected_source_docs = set(qa.get("source_docs", []))
+
+        # Simple keyword-overlap scoring
+        expected_keywords = set(expected.split())
+        answer_lower      = answer_text.lower()
+        matches = sum(1 for kw in expected_keywords if len(kw) > 4 and kw in answer_lower)
+        hit_text = matches >= max(1, len(expected_keywords) // 4)
+        
+        hit_source = True
+        if expected_source_docs:
+            hit_source = any(
+                any(es.lower() in rs.lower() for rs in retrieved_source_docs)
+                for es in expected_source_docs
+            )
+            
+        hit = hit_text and hit_source
+        if hit:
+            correct += 1
+            
+        reason = []
+        if not hit_text: reason.append("wrong answer text")
+        if expected_source_docs and not hit_source: reason.append("wrong source retrieved")
+        if llm_result.get("confidence") == "Low": reason.append("low confidence")
+        reason_str = ", ".join(reason) if not hit else ""
+
+        results.append({
+            "id":           qa.get("id", ""),
+            "question":     question,
+            "expected":     qa["answer"],
+            "got":          answer_text[:300],
+            "confidence":   llm_result.get("confidence", "Low"),
+            "passed":       hit,
+            "reason":       reason_str,
+            "latency_ms":   elapsed_ms,
+            "category":     qa.get("category", ""),
+        })
+        logger.info(f"Benchmark {qa.get('id')}: {'PASS' if hit else 'FAIL'} ({elapsed_ms} ms) - {reason_str}")
+
+    accuracy = round(correct / total * 100, 1) if total > 0 else 0.0
+    avg_ms   = round(total_ms / total) if total > 0 else 0
+
+    return {
+        "total":           total,
+        "correct":         correct,
+        "accuracy_pct":    accuracy,
+        "avg_latency_ms":  avg_ms,
+        "model_used":      get_llm().model or "smart-fallback",
+        "results":         results,
+    }
+
+
+# ── Feedback Endpoint ─────────────────────────────────────────────────────────
+
+@app.post("/feedback")
+async def log_feedback(request: FeedbackRequest):
+    """Log thumbs-up (+1) or thumbs-down (-1) feedback on an answer."""
+    entry = {
+        "ts":       time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "question": request.question,
+        "answer":   request.answer[:300],
+        "rating":   request.rating,
+        "comment":  request.comment or "",
+    }
+    try:
+        _FEEDBACK_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(_FEEDBACK_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        logger.info(f"Feedback logged: rating={request.rating}")
+    except Exception as e:
+        logger.error(f"Failed to write feedback: {e}")
+    return {"status": "logged"}
+
+
+# ── Debug: raw vector search (no LLM) ────────────────────────────────────────
+
+@app.get("/debug/search")
+async def debug_search(
+    q: str = Query(..., description="Raw search query — no LLM, pure vector similarity"),
+    n: int = Query(default=5, le=20),
+):
+    """Raw vector similarity search without LLM — useful for tuning chunk size / top-k."""
+    try:
+        embedder = TextEmbedder()
+        store    = VectorStore()
+        emb      = embedder.embed_query(q)
+        results  = store.query(emb, n_results=n)
+
+        hits = []
+        if results and results["documents"] and results["documents"][0]:
+            for i in range(len(results["documents"][0])):
+                hits.append({
+                    "rank":     i + 1,
+                    "doc_id":   results["metadatas"][0][i].get("doc_id", "?"),
+                    "distance": round(results["distances"][0][i], 4),
+                    "score":    round(1 - results["distances"][0][i], 4),
+                    "excerpt":  results["documents"][0][i][:300],
+                    "metadata": results["metadatas"][0][i],
+                })
+        return {"query": q, "hits": hits, "total_in_db": store.count()}
+    except Exception as e:
+        logger.error(f"Debug search error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── LLM status endpoint ───────────────────────────────────────────────────────
+
+@app.get("/llm/status")
+async def llm_status():
+    """Check whether Ollama is running and which model is selected."""
+    llm = get_llm()
+    return {
+        "ollama_available": llm.available,
+        "model":            llm.model or "none",
+        "base_url":         llm.base_url,
+        "mode":             "ollama" if llm.available else "smart-context-fallback",
+    }

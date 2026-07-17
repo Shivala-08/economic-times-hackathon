@@ -6,6 +6,8 @@ from loguru import logger
 from src.config import settings
 
 
+from functools import lru_cache
+
 class TextEmbedder:
     """Generates embeddings for text chunks using sentence-transformers."""
 
@@ -21,7 +23,11 @@ class TextEmbedder:
         embeddings = self.model.encode(texts, show_progress_bar=False)
         return embeddings.tolist()
 
-    def embed_query(self, query: str) -> list[float]:
-        """Generate embedding for a single query."""
+    @lru_cache(maxsize=128)
+    def _cached_embed_query(self, query: str) -> list[float]:
         embedding = self.model.encode([query])
         return embedding[0].tolist()
+
+    def embed_query(self, query: str) -> list[float]:
+        """Generate embedding for a single query."""
+        return self._cached_embed_query(query)
