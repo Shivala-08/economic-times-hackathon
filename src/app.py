@@ -273,6 +273,7 @@ with st.sidebar:
         llm_resp = requests.get(f"{API_URL}/llm/status", timeout=10)
         if llm_resp.status_code == 200:
             ls = llm_resp.json()
+            st.session_state["llm_status"] = ls
             nvidia_on = ls.get("nvidia_available", False)
             ollama_on = ls.get("ollama_available", False)
             if nvidia_on:
@@ -336,10 +337,14 @@ tab_chat, tab_docs, tab_graph, tab_entities, tab_bench, tab_setup = st.tabs([
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.subheader("🤖 Ask the Industrial Knowledge System")
-    st.caption(
-        "Powered by **Vector Search + Knowledge Graph + Local LLM (Ollama)** — "
-        "no API key required."
-    )
+    llm_status = st.session_state.get("llm_status", {})
+    if llm_status.get("nvidia_available"):
+        caption_text = "Powered by **Vector Search + Knowledge Graph + NVIDIA LLM API**."
+    elif llm_status.get("ollama_available"):
+        caption_text = "Powered by **Vector Search + Knowledge Graph + Local LLM (Ollama)** — no API key required."
+    else:
+        caption_text = "Powered by **Vector Search + Knowledge Graph + Smart Context Fallback**."
+    st.caption(caption_text)
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
