@@ -294,15 +294,18 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
         confidence_guide=conf_guide,
     )
 
-    # ── Call LLM (Ollama) or fall back to smart context formatter ─────────────
+    # ── Call LLM or fall back to smart context formatter ─────────────
     llm = get_llm()
+    is_nvidia = "NvidiaLLM" in type(llm).__name__
+    llm_label = "NVIDIA API" if is_nvidia else "Ollama"
+
     if llm.available:
-        logger.info(f"generate_answer: calling Ollama [{llm.model}]")
+        logger.info(f"generate_answer: calling {llm_label} [{llm.model}]")
         try:
             raw    = llm.generate(prompt, max_tokens=1200)
             result = _extract_json(raw)
         except Exception as e:
-            logger.error(f"Ollama call failed: {e}. Using smart fallback.")
+            logger.error(f"{llm_label} call failed: {e}. Using smart fallback.")
             result = None
     else:
         result = None
@@ -320,7 +323,7 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
         result = fb
         result["confidence"] = 0.5 if chunks else 0.2
         result["sources"] = source_list
-        result["model_used"] = "Smart Context (start Ollama for LLM answers)"
+        result["model_used"] = "Smart Context"
         result["entities_used"] = entity_ids
         return result
 
@@ -344,7 +347,7 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
 
     result.setdefault("key_points", [])
     result["model_used"] = (
-        f"Ollama / {llm.model}" if llm.available else "Smart Context"
+        f"{llm_label} / {llm.model}" if llm.available else "Smart Context"
     )
 
     logger.info(
