@@ -641,7 +641,7 @@ with tab_graph:
                             "minVelocity": 0.75,
                         },
                     )
-                    agraph(nodes=ag_nodes, edges=ag_edges, config=config, key=f"graph_explorer_{search_term}")
+                    agraph(nodes=ag_nodes, edges=ag_edges, config=config, key=f"full_graph_view_{len(nodes)}")
                 else:
                     st.warning("streamlit-agraph not installed. Showing table view.")
                     ca, cb = st.columns(2)
