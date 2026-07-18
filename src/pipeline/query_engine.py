@@ -24,6 +24,7 @@ import json
 from typing import Dict, Any, List, Optional
 from loguru import logger
 
+from src.config import settings
 from src.pipeline.embedder import TextEmbedder
 from src.storage.chroma_store import VectorStore
 from src.pipeline.extractor import extract_entities
@@ -43,15 +44,16 @@ def get_embedder() -> TextEmbedder:
     return _embedder
 
 
-def get_vector_store(collection_name: str = "docs") -> VectorStore:
+def get_vector_store(collection_name: str = None) -> VectorStore:
     """Get or create the vector store instance for the specified collection."""
     global _vector_store
-    if _vector_store is None or _vector_store.collection_name != collection_name:
-        _vector_store = VectorStore(collection_name=collection_name)
+    name = collection_name or settings.chroma_collection
+    if _vector_store is None or _vector_store.collection_name != name:
+        _vector_store = VectorStore(collection_name=name)
     return _vector_store
 
 
-def retrieve_context(query: str, top_k: int = 5, collection_name: str = "docs") -> Dict[str, Any]:
+def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) -> Dict[str, Any]:
     """Retrieve and merge context from ChromaDB (vector) and NetworkX (graph).
 
     Args:
@@ -110,7 +112,7 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = "docs") 
                 "metadata": metadata,
                 "distance": distance
             })
-    logger.debug(f"Retrieved {len(vector_chunks)} vector chunks from ChromaDB collection '{collection_name}'")
+    logger.debug(f"Retrieved {len(vector_chunks)} vector chunks from collection '{store.collection_name}'")
 
     # 2. Extract entities from the query using the existing extractor
     extracted_entities = extract_entities(query)

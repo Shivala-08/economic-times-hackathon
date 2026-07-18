@@ -42,7 +42,7 @@ class IndustrialKnowledgeGraph:
         if self.graph_file.exists():
             try:
                 data = json.loads(self.graph_file.read_text(encoding="utf-8"))
-                self.graph = nx.node_link_graph(data)
+                self.graph = nx.node_link_graph(data, edges="edges")
                 logger.info(f"Loaded knowledge graph: {self.graph.number_of_nodes()} nodes, {self.graph.number_of_edges()} edges")
             except Exception as e:
                 logger.warning(f"Could not load graph, starting fresh: {e}")
@@ -54,7 +54,7 @@ class IndustrialKnowledgeGraph:
         """Persist graph to disk."""
         try:
             self.graph_file.parent.mkdir(parents=True, exist_ok=True)
-            data = nx.node_link_data(self.graph)
+            data = nx.node_link_data(self.graph, edges="edges")
             self.graph_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             logger.info(f"Saved knowledge graph: {self.graph.number_of_nodes()} nodes, {self.graph.number_of_edges()} edges")
         except Exception as e:
@@ -423,6 +423,51 @@ class IndustrialKnowledgeGraph:
                 })
 
         return {"nodes": nodes, "edges": edges}
+
+    def find_path(self, source: str, target: str) -> dict:
+        """Find shortest path between two entities.
+
+        Returns:
+            Dict with path (list of node IDs), edges (with relations), and metadata.
+        """
+        if not self.graph.has_node(source):
+            return {"error": f"Source entity '{source}' not found", "path": [], "edges": []}
+        if not self.graph.has_node(target):
+            return {"error": f"Target entity '{target}' not found", "path": [], "edges": []}
+
+        try:
+            path = nx.shortest_path(self.graph, source=source, target=target)
+        except nx.NetworkXNoPath:
+            return {"error": f"No path found between '{source}' and '{target}'", "path": [], "edges": []}
+        except Exception as e:
+            return {"error": str(e), "path": [], "edges": []}
+
+        # Build path nodes and edges with metadata
+        path_nodes = []
+        for node_id in path:
+            attrs = self.graph.nodes[node_id]
+            path_nodes.append({
+                "id": node_id,
+                "type": attrs.get("type", "unknown"),
+                "color": attrs.get("color", "#6b7280"),
+            })
+
+        path_edges = []
+        for i in range(len(path) - 1):
+            u, v = path[i], path[i + 1]
+            edge_data = self.graph.edges[u, v]
+            path_edges.append({
+                "from": u,
+                "to": v,
+                "relation": edge_data.get("relation", "related_to"),
+            })
+
+        return {
+            "path": path,
+            "path_nodes": path_nodes,
+            "path_edges": path_edges,
+            "length": len(path) - 1,
+        }
 
     def get_stats(self) -> dict:
         """Get graph statistics."""

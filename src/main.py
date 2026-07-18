@@ -15,6 +15,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from loguru import logger
+import networkx as nx
 
 from src.config import settings
 from src.pipeline.ingest import IngestionPipeline
@@ -160,6 +161,50 @@ async def get_graph_top(
         return subgraph
     except Exception as e:
         logger.error(f"Error fetching top graph nodes: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/graph/path")
+async def graph_find_path(
+    source: str = Query(..., description="Source entity ID"),
+    target: str = Query(..., description="Target entity ID"),
+):
+    """Find shortest path between two entities in the knowledge graph."""
+    try:
+        kg = get_knowledge_graph()
+        result = kg.find_path(source, target)
+        if "error" in result and not result.get("path"):
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error finding path from {source} to {target}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/graph/stats")
+async def graph_stats():
+    """Get detailed graph statistics for the dashboard."""
+    try:
+        kg = get_knowledge_graph()
+        stats = kg.get_stats()
+        # Add additional metrics
+        stats["connected_components"] = (
+            nx.number_connected_components(kg.graph)
+            if kg.graph.number_of_nodes() > 0 else 0
+        )
+        # Average degree
+        if kg.graph.number_of_nodes() > 0:
+            degrees = [d for _, d in kg.graph.degree()]
+            stats["avg_degree"] = round(sum(degrees) / len(degrees), 2)
+            stats["max_degree"] = max(degrees)
+        else:
+            stats["avg_degree"] = 0
+            stats["max_degree"] = 0
+        return stats
+    except Exception as e:
+        logger.error(f"Error fetching graph stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

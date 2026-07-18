@@ -58,7 +58,9 @@ If context is empty or irrelevant say so clearly in the answer field.
 class NvidiaLLM:
     """NVIDIA NIM LLM with automatic key rotation.
 
-    Tries up to 5 API keys in order (NVIDIA_API_KEY_1 … NVIDIA_API_KEY_5).
+    Tries up to 10 API keys in order. Supports two .env formats:
+      1. Individual: NVIDIA_API_KEY_1=nvapi-xxx, NVIDIA_API_KEY_2=nvapi-yyy, ...
+      2. Comma-separated: NVIDIA_NIM_API_KEYS=nvapi-xxx,nvapi-yyy,...
     If a key fails (rate-limit, quota, auth error) it immediately tries the
     next one. Falls through to Ollama / smart-fallback if all keys fail.
     """
@@ -67,7 +69,7 @@ class NvidiaLLM:
         self.model = settings.nvidia_model
         self.base_url = settings.nvidia_base_url
 
-        # Collect all non-empty keys in order
+        # Collect keys from individual config fields
         raw_keys = [
             settings.nvidia_api_key_1,
             settings.nvidia_api_key_2,
@@ -81,6 +83,16 @@ class NvidiaLLM:
             settings.nvidia_api_key_10,
         ]
         self._keys = [k.strip() for k in raw_keys if k and k.strip()]
+
+        # Fallback: parse comma-separated NVIDIA_NIM_API_KEYS from env
+        if not self._keys:
+            env_keys = os.getenv("NVIDIA_NIM_API_KEYS", "")
+            if env_keys:
+                self._keys = [k.strip() for k in env_keys.split(",") if k.strip()]
+                logger.info(
+                    f"NVIDIA NIM — parsed {len(self._keys)} key(s) from "
+                    f"NVIDIA_NIM_API_KEYS env var"
+                )
 
         if self._keys:
             logger.info(
@@ -230,7 +242,7 @@ class OllamaLLM:
         resp = _requests.post(
             f"{self.base_url}/api/generate",
             json=payload,
-            timeout=3,   # fast fail — falls through to smart fallback
+            timeout=120,  # generous timeout for local LLM inference
         )
         resp.raise_for_status()
         return resp.json().get("response", "")
