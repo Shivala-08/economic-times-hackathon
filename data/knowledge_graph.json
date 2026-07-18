@@ -2702,9 +2702,69 @@
       "color": "#f97316",
       "doc_id": "inspection_logs_INS-2026-8039",
       "id": "Penny Lewis"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Banks"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Chicken Curry"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "GSTIN"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "IRCTC Convenience Fee"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Kannada"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Nauroji Nagar"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Panchayat Administrations"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "Rail Madad"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "https://equery.irctc.co.in"
+    },
+    {
+      "type": "person",
+      "color": "#f97316",
+      "doc_id": "6105026253.pdf",
+      "id": "https://menurates.irctc.co.in"
     }
   ],
-  "links": [
+  "edges": [
     {
       "relation": "subject_to",
       "source": "EQ-1001",
