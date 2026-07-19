@@ -121,7 +121,7 @@ class NvidiaLLM:
     def _find_working_client(self, target_model: str, prompt: str,
                              max_tokens: int, enable_thinking: bool,
                              reasoning_budget: int, timeout: float = 15.0):
-        """Try each API key until one succeeds; yield (idx, client, completion).
+        """Try each API key until one succeeds; yield (idx, completion).
 
         Yields a single tuple on the first successful API call, then returns.
         Raises RuntimeError if all keys are exhausted.
@@ -153,7 +153,7 @@ class NvidiaLLM:
                     stream=True,
                     timeout=timeout,
                 )
-                yield idx, client, completion
+                yield idx, completion
                 return
 
             except AuthenticationError as e:
@@ -177,7 +177,7 @@ class NvidiaLLM:
     def generate(self, prompt: str, max_tokens: int = 640, enable_thinking: bool = True, reasoning_budget: int = 1024, model: Optional[str] = None) -> str:
         """Try each API key in order, accumulate tokens, return full answer."""
         target_model = model or self.model
-        for idx, _client, completion in self._find_working_client(
+        for idx, completion in self._find_working_client(
             target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
             timeout=15.0,
         ):
@@ -192,15 +192,13 @@ class NvidiaLLM:
                 if delta.content:
                     answer_parts.append(delta.content)
             return "".join(answer_parts)
-        # Should never reach here, but satisfy type checker
-        raise RuntimeError("No keys attempted")
 
     def stream_generate(self, prompt: str, max_tokens: int = 640,
                         enable_thinking: bool = True, reasoning_budget: int = 1024,
                         model: Optional[str] = None) -> Generator[str, None, None]:
         """Yield answer tokens one-by-one as they arrive from NVIDIA NIM."""
         target_model = model or self.model
-        for idx, _client, completion in self._find_working_client(
+        for idx, completion in self._find_working_client(
             target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
             timeout=30.0,
         ):
@@ -214,8 +212,6 @@ class NvidiaLLM:
                 if delta.content:
                     yield delta.content
             return
-        # Should never reach here, but satisfy type checker
-        raise RuntimeError("No keys attempted")
 
 
 
