@@ -11,6 +11,7 @@ Day 4 upgrades:
 
 import streamlit as st
 import requests
+import json
 import os
 from datetime import datetime
 
@@ -440,91 +441,149 @@ with tab_chat:
         )
         st.session_state.messages.append({"role": "user", "content": user_query})
 
-        with st.spinner("🧠 Retrieving context + generating answer via local LLM…"):
-            try:
-                resp = requests.post(
-                    f"{API_URL}/query",
+        # ── Tier 3.1: Streaming answer via SSE ─────────────────────────────
+        answer      = ""
+        sources     = []
+        confidence  = "Medium"
+        key_points  = []
+        entities    = []
+        model_used  = "unknown"
+        latency_ms  = 0
+
+        # Create placeholder for streaming content
+        stream_placeholder = st.empty()
+        streaming_text = ""
+
+        try:
+            import httpx
+            with httpx.Client(timeout=120) as client:
+                with client.stream(
+                    "POST",
+                    f"{API_URL}/query/stream",
                     json={"question": user_query, "top_k": 5},
-                    timeout=120,   # Ollama can take up to 2 min on first call
-                )
-                if resp.status_code == 200:
-                    data = resp.json()
-                    answer      = data.get("answer", "")
-                    sources     = data.get("sources", [])
-                    confidence  = data.get("confidence", "Medium")
-                    key_points  = data.get("key_points", [])
-                    entities    = data.get("entities_used", [])
-                    model_used  = data.get("model_used", "unknown")
-                    latency_ms  = data.get("latency_ms", 0)
+                    headers={"Accept": "text/event-stream"},
+                ) as resp:
+                    if resp.status_code != 200:
+                        st.error(f"API error {resp.status_code}")
+                    else:
+                        for line in resp.iter_lines():
+                            line = line.strip()
+                            if not line or not line.startswith("data:"):
+                                continue
+                            payload_str = line[5:].strip()
+                            if not payload_str:
+                                continue
+                            try:
+                                event = json.loads(payload_str)
+                            except json.JSONDecodeError:
+                                continue
 
-                    # Render answer
-                    conf_badge   = confidence_badge(confidence)
-                    model_badge  = f'<span class="badge badge-teal">🤖 {model_used}</span>'
-                    latency_badge = f'<span class="badge badge-gray">⏱ {latency_ms} ms</span>'
-                    st.markdown(
-                        f'<div class="chat-bubble chat-assistant">'
-                        f'<b>System:</b><br>{conf_badge} {model_badge} {latency_badge}'
-                        f'</div>',
-                        unsafe_allow_html=True,
+                            etype = event.get("type")
+                            content = event.get("content", "")
+
+                            if etype == "token":
+                                streaming_text += content
+                                stream_placeholder.markdown(streaming_text)
+                            elif etype == "metadata":
+                                answer      = content.get("answer", streaming_text)
+                                sources     = content.get("sources", [])
+                                confidence  = content.get("confidence", "Medium")
+                                key_points  = content.get("key_points", [])
+                                entities    = content.get("entities_used", [])
+                                model_used  = content.get("model_used", "unknown")
+                                latency_ms  = content.get("latency_ms", 0)
+                            elif etype == "error":
+                                st.error(f"LLM error: {content}")
+
+        except ImportError:
+            # Fallback to non-streaming if httpx not installed
+            with st.spinner("🧠 Generating answer…"):
+                try:
+                    resp = requests.post(
+                        f"{API_URL}/query",
+                        json={"question": user_query, "top_k": 5},
+                        timeout=120,
                     )
-                    st.markdown(answer)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        answer      = data.get("answer", "")
+                        sources     = data.get("sources", [])
+                        confidence  = data.get("confidence", "Medium")
+                        key_points  = data.get("key_points", [])
+                        entities    = data.get("entities_used", [])
+                        model_used  = data.get("model_used", "unknown")
+                        latency_ms  = data.get("latency_ms", 0)
+                        stream_placeholder.markdown(answer)
+                    else:
+                        st.error(f"API error {resp.status_code}: {resp.text[:200]}")
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
-                    if key_points:
-                        bullets = "".join(f"<li>{p}</li>" for p in key_points)
+        except requests.exceptions.Timeout:
+            st.error(
+                "⏳ Request timed out (>120 s). If using Ollama for the first time, "
+                "it may be loading the model — please try again in a moment."
+            )
+        except requests.exceptions.ConnectionError:
+            st.error("❌ Cannot reach the FastAPI server at `localhost:8000`. "
+                     "Start it with: `PYTHONPATH=. uvicorn src.main:app --reload`")
+        except Exception as e:
+            st.error(f"Unexpected error: {e}")
+
+        # ── Render metadata after streaming is complete ─────────────────────
+        if answer:
+            conf_badge   = confidence_badge(confidence)
+            model_badge  = f'<span class="badge badge-teal">🤖 {model_used}</span>'
+            latency_badge = f'<span class="badge badge-gray">⏱ {latency_ms} ms</span>'
+            st.markdown(
+                f'<div class="chat-bubble chat-assistant">'
+                f'<b>System:</b><br>{conf_badge} {model_badge} {latency_badge}'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+            if key_points:
+                bullets = "".join(f"<li>{p}</li>" for p in key_points)
+                st.markdown(
+                    f'<div class="keypoints-box"><b style="color:#a7f3d0">📌 Key Points</b>'
+                    f'<ul>{bullets}</ul></div>',
+                    unsafe_allow_html=True,
+                )
+
+            if entities:
+                st.markdown("<small><b>Entities mentioned (click to view graph):</b></small>", unsafe_allow_html=True)
+                cols = st.columns(len(entities[:6]))
+                for i, e in enumerate(entities[:6]):
+                    with cols[i]:
+                        if st.button(f"⚙ {e}", key=f"ent_btn_live_{i}", use_container_width=True):
+                            show_entity_graph(e)
+
+            if sources:
+                with st.expander(f"📎 {len(sources)} Source(s) cited", expanded=True):
+                    for si, src in enumerate(sources, 1):
+                        score = round(1 - src.get("distance", 0), 3)
                         st.markdown(
-                            f'<div class="keypoints-box"><b style="color:#a7f3d0">📌 Key Points</b>'
-                            f'<ul>{bullets}</ul></div>',
+                            f'<div class="citation-card">'
+                            f'<div class="cite-header">'
+                            f'[{si}] <b>{src["citation"]}</b> &nbsp;|&nbsp; relevance: {score}</div>'
+                            f'<div class="cite-text">{src["excerpt"][:350]}…</div>'
+                            f'</div>',
                             unsafe_allow_html=True,
                         )
 
-                    if entities:
-                        st.markdown("<small><b>Entities mentioned (click to view graph):</b></small>", unsafe_allow_html=True)
-                        cols = st.columns(len(entities[:6]))
-                        for i, e in enumerate(entities[:6]):
-                            with cols[i]:
-                                if st.button(f"⚙ {e}", key=f"ent_btn_live_{i}", use_container_width=True):
-                                    show_entity_graph(e)
-
-                    if sources:
-                        with st.expander(f"📎 {len(sources)} Source(s) cited", expanded=True):
-                            for si, src in enumerate(sources, 1):
-                                score = round(1 - src.get("distance", 0), 3)
-                                st.markdown(
-                                    f'<div class="citation-card">'
-                                    f'<div class="cite-header">'
-                                    f'[{si}] <b>{src["citation"]}</b> &nbsp;|&nbsp; relevance: {score}</div>'
-                                    f'<div class="cite-text">{src["excerpt"][:350]}…</div>'
-                                    f'</div>',
-                                    unsafe_allow_html=True,
-                                )
-
-                    # Save to session
-                    st.session_state.messages.append({
-                        "role":        "assistant",
-                        "content":     answer,
-                        "confidence":  confidence,
-                        "key_points":  key_points,
-                        "entities_used": entities,
-                        "model_used":  model_used,
-                        "latency_ms":  latency_ms,
-                        "sources":     sources,
-                        "question":    user_query,
-                    })
-                    st.session_state.last_answer = answer
-
-                else:
-                    st.error(f"API error {resp.status_code}: {resp.text[:200]}")
-
-            except requests.exceptions.Timeout:
-                st.error(
-                    "⏳ Request timed out (>120 s). If using Ollama for the first time, "
-                    "it may be loading the model — please try again in a moment."
-                )
-            except requests.exceptions.ConnectionError:
-                st.error("❌ Cannot reach the FastAPI server at `localhost:8000`. "
-                         "Start it with: `PYTHONPATH=. uvicorn src.main:app --reload`")
-            except Exception as e:
-                st.error(f"Unexpected error: {e}")
+            # Save to session
+            st.session_state.messages.append({
+                "role":        "assistant",
+                "content":     answer,
+                "confidence":  confidence,
+                "key_points":  key_points,
+                "entities_used": entities,
+                "model_used":  model_used,
+                "latency_ms":  latency_ms,
+                "sources":     sources,
+                "question":    user_query,
+            })
+            st.session_state.last_answer = answer
 
     if st.session_state.messages:
         if st.button("🗑️ Clear Chat", use_container_width=False):
@@ -785,14 +844,26 @@ with tab_bench:
                     st.markdown("### Detailed Results")
                     for r in results:
                         icon = "✅" if r["passed"] else "❌"
+                        sim_info = f" · Sim: {r['similarity']:.2f}" if "similarity" in r else ""
                         with st.expander(
-                            f"{icon} [{r['id']}] {r['question']} · {r['latency_ms']} ms",
+                            f"{icon} [{r['id']}] {r['question']}{sim_info} · {r['latency_ms']} ms",
                             expanded=False,
                         ):
                             st.markdown(f"**Category:** `{r.get('category','')}`")
                             st.markdown(f"**Expected:** {r['expected']}")
                             st.markdown(f"**Got:** {r['got']}")
-                            conf_col = "green" if r["confidence"] == "High" else "blue"
+                            
+                            # Semantic info and Keyword overlap info
+                            cols = st.columns(2)
+                            with cols[0]:
+                                if "similarity" in r:
+                                    st.markdown(f"**Embedding Similarity:** `{r['similarity']:.3f}`")
+                            with cols[1]:
+                                if "passed_keyword" in r:
+                                    kw_pass = "✅ Pass" if r["passed_keyword"] else "❌ Fail"
+                                    st.markdown(f"**Keyword Overlap:** {kw_pass}")
+
+                            conf_col = "green" if r["confidence"] in ["High", 0.85] else "blue"
                             st.markdown(
                                 f'<span class="badge badge-{conf_col}">Confidence: {r["confidence"]}</span>',
                                 unsafe_allow_html=True,
@@ -829,8 +900,9 @@ with tab_bench:
     # Static info
     st.markdown("---")
     st.info(
-        "**Scoring method:** keyword-overlap between expected answer and LLM output. "
-        "A question passes if ≥25 % of expected keywords with length >4 chars appear in the answer."
+        "**Scoring method:** Embedding similarity (semantic match) via `all-MiniLM-L6-v2`. "
+        "A question passes if the cosine similarity is ≥ 0.70 and the expected source documents are retrieved. "
+        "Keyword-overlap stats are also tracked for comparison."
     )
 
 

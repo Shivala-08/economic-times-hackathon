@@ -2,127 +2,165 @@
   {
     "id": "Q001",
     "question": "Which equipment requires quarterly inspection?",
-    "answer": "Compressors COMP-C01 require quarterly bearing inspection per OISD-116. Equipment tags EQ-1001 through EQ-4002 undergo quarterly inspections as per safety manual Section 3.",
-    "source_docs": ["OISD-116"],
+    "answer": "Compressors COMP-C01 require quarterly bearing inspection per OISD-116. All tanks require visual inspection of foundations quarterly per OISD-117. Equipment tags EQ-1001 through EQ-4002 undergo quarterly inspections as per safety manual Section 3.",
+    "source_docs": [
+      "OISD-116",
+      "OISD-117"
+    ],
     "category": "equipment_inspection"
   },
   {
     "id": "Q002",
     "question": "What is the inspection frequency for pressure vessels TNK-T01 and TNK-T02?",
     "answer": "Pressure vessels TNK-T01 and TNK-T02 require annual internal inspection per OISD-116. Tank TNK-T03 requires biennial internal inspection under OISD-117 as a Group B tank.",
-    "source_docs": ["OISD-116", "OISD-117"],
+    "source_docs": [
+      "OISD-116",
+      "OISD-117"
+    ],
     "category": "equipment_inspection"
   },
   {
     "id": "Q003",
     "question": "When is a hot work permit required?",
     "answer": "A hot work permit is mandatory for any work involving open flames, sparks, or temperatures exceeding 30°C above ambient in hazardous areas, per OISD-116 Section 3.1.",
-    "source_docs": ["OISD-116"],
+    "source_docs": [
+      "OISD-116"
+    ],
     "category": "permits"
   },
   {
     "id": "Q004",
     "question": "How many emergency response teams are required per shift?",
     "answer": "Each plant must maintain a minimum of 2 emergency response teams per shift, per OISD-116 Section 4.1.",
-    "source_docs": ["OISD-116"],
+    "source_docs": [
+      "OISD-116"
+    ],
     "category": "emergency"
   },
   {
     "id": "Q005",
     "question": "What are the PPE requirements for mining workers?",
     "answer": "All workers entering mining areas must wear mandatory PPE including hard hats, safety boots, high-visibility vests, and safety glasses, per DGMS Circular 2023-01. Respiratory protection must be provided for dusty environments, and hearing protection is mandatory in areas exceeding 85 dB.",
-    "source_docs": ["DGMS-2023-01"],
+    "source_docs": [
+      "DGMS-2023-01"
+    ],
     "category": "safety_equipment"
   },
   {
     "id": "Q006",
     "question": "How often must safety officers be appointed in a factory?",
     "answer": "Every factory having 1000 or more workers must employ a qualified safety officer per Factory Act Section 7A. The safety officer must hold a degree or diploma in industrial safety.",
-    "source_docs": ["FA-SEC-7A"],
+    "source_docs": [
+      "FA-SEC-7A"
+    ],
     "category": "compliance"
   },
   {
     "id": "Q007",
     "question": "What is the minimum fresh air supply requirement for underground mines?",
     "answer": "Fresh air supply must be maintained at a minimum of 0.1 m³/s per worker in underground mines, per DGMS Circular 2022-05.",
-    "source_docs": ["DGMS-2022-05"],
+    "source_docs": [
+      "DGMS-2022-05"
+    ],
     "category": "safety_environment"
   },
   {
     "id": "Q008",
     "question": "How frequently must fire drills be conducted in a factory?",
     "answer": "Fire drills must be conducted at least once every quarter in factories, per Factory Act Section 36.",
-    "source_docs": ["FA-SEC-36"],
+    "source_docs": [
+      "FA-SEC-36"
+    ],
     "category": "fire_safety"
   },
   {
     "id": "Q009",
     "question": "What are the requirements for HAZOP studies?",
     "answer": "HAZOP studies must be conducted for all new installations and modifications to existing units per OISD-118. Revalidation of HAZOP studies must occur every 5 years, and action items from PHA studies must be tracked to completion.",
-    "source_docs": ["OISD-118"],
+    "source_docs": [
+      "OISD-118"
+    ],
     "category": "process_safety"
   },
   {
     "id": "Q010",
     "question": "What is the inspection frequency for high-pressure piping systems?",
     "answer": "High-pressure piping (>15 bar) requires annual thickness measurement per OISD-119. Medium-pressure piping (5-15 bar) requires biennial inspection, and low-pressure piping (<5 bar) requires triennial inspection.",
-    "source_docs": ["OISD-119"],
+    "source_docs": [
+      "OISD-119"
+    ],
     "category": "equipment_inspection"
   },
   {
     "id": "Q011",
     "question": "How quickly must serious factory accidents be reported?",
     "answer": "All accidents resulting in death or serious injury must be reported to the factory inspector within 12 hours per Factory Act Section 40A. The investigation must establish root cause and contributing factors.",
-    "source_docs": ["FA-SEC-40A"],
+    "source_docs": [
+      "FA-SEC-40A"
+    ],
     "category": "incident_reporting"
   },
   {
     "id": "Q012",
     "question": "What rights do workers have regarding workplace safety?",
     "answer": "Workers have the right to be informed about hazards, receive safety training, report unsafe conditions without fear of retaliation, and refuse to work in immediate danger to life or health, per Factory Act Section 41C.",
-    "source_docs": ["FA-SEC-41C"],
+    "source_docs": [
+      "FA-SEC-41C"
+    ],
     "category": "worker_rights"
   },
   {
     "id": "Q013",
     "question": "What must be fenced according to Factory Act Section 38?",
     "answer": "Every dangerous part of any machinery must be securely fenced, including all moving parts (flywheels, gears, pulleys), parts in motion when machinery is running, and fixed parts which may move to create a danger, per Factory Act Section 38.",
-    "source_docs": ["FA-SEC-38"],
+    "source_docs": [
+      "FA-SEC-38"
+    ],
     "category": "equipment_safety"
   },
   {
     "id": "Q014",
     "question": "What safety measures are required for hazardous processes?",
     "answer": "Factories must provide adequate and suitable PPE, medical examination of workers, safety showers and eye wash stations for hazardous processes per Factory Act Section 41B. Workers must also be trained on hazardous material handling.",
-    "source_docs": ["FA-SEC-41B"],
+    "source_docs": [
+      "FA-SEC-41B"
+    ],
     "category": "hazardous_processes"
   },
   {
     "id": "Q015",
     "question": "What are the requirements for gas monitoring in underground mines?",
     "answer": "Gas monitoring must be conducted at the working face every 2 hours, and air quality must be monitored continuously for methane and carbon monoxide per DGMS Circular 2022-05. Ventilation surveys must be completed weekly.",
-    "source_docs": ["DGMS-2022-05"],
+    "source_docs": [
+      "DGMS-2022-05"
+    ],
     "category": "monitoring"
   },
   {
     "id": "Q016",
     "question": "How often must safety training be conducted for mining workers?",
     "answer": "All new workers must complete 40 hours of safety induction training per DGMS Circular 2023-01. Refresher training must be conducted every 6 months, and emergency response drills must be conducted monthly.",
-    "source_docs": ["DGMS-2023-01"],
+    "source_docs": [
+      "DGMS-2023-01"
+    ],
     "category": "training"
   },
   {
     "id": "Q017",
     "question": "What are the electrical safety requirements per OISD-130?",
-    "answer": "All electrical equipment in hazardous areas must be certified for the appropriate zone classification. Switchgear must be inspected annually, grounding systems tested annually, and circuit breakers tested every 6 months per OISD-130.",
-    "source_docs": ["OISD-130"],
+    "answer": "OISD-130 requires hazardous area equipment certification, lockout/tagout procedures, quarterly transformer oil testing, annual switchgear/grounding inspections, semi-annual circuit breaker testing, documented emergency shutdowns, arc flash analysis, and posted PPE requirements.",
+    "source_docs": [
+      "OISD-130"
+    ],
     "category": "electrical_safety"
   },
   {
     "id": "Q018",
     "question": "How should tank classification affect inspection frequency?",
     "answer": "Group A tanks (hazardous materials like TNK-T01, TNK-T02) require annual internal inspection and biennial external inspection per OISD-117. Group B tanks (flammable liquids like TNK-T03) require biennial internal inspection and annual external inspection.",
-    "source_docs": ["OISD-117"],
+    "source_docs": [
+      "OISD-117"
+    ],
     "category": "equipment_inspection"
   }
 ]

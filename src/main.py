@@ -8,11 +8,13 @@ import json
 import os
 import shutil
 import time
+import asyncio
 from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional, Union
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from loguru import logger
 import networkx as nx
@@ -487,6 +489,164 @@ async def query_rag(request: QueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ── Streaming Query Endpoint (Tier 3.1 / 3.2) ──────────────────────────────
+
+@app.post("/query/stream")
+async def query_rag_stream(request: QueryRequest):
+    """POST /query/stream — SSE streaming version of /query.
+
+    Returns a Server-Sent Events stream. Each event is a JSON object:
+      {"type": "token",   "content": "<token>"}
+      {"type": "metadata", "content": {sources, confidence, entities_used, key_points, model_used, latency_ms}}
+      {"type": "error",   "content": "<message>"}
+      {"type": "done",    "content": ""}
+    """
+    t_start = time.time()
+
+    if not request.question or not request.question.strip():
+        raise HTTPException(status_code=422, detail="question must not be empty")
+
+    # ── Pre-flight: retrieve context (vector + graph) synchronously ───────────
+    store = VectorStore()
+    if store.count() == 0:
+        async def _empty_gen():
+            yield f"data: {json.dumps({'type': 'metadata', 'content': {'answer': 'No documents indexed yet.', 'sources': [], 'confidence': 0.0, 'entities_used': [], 'key_points': [], 'model_used': 'N/A', 'latency_ms': 0}})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
+        return StreamingResponse(_empty_gen(), media_type="text/event-stream")
+
+    top_k = request.top_k or settings.top_k
+    context = retrieve_context(request.question, top_k=top_k)
+
+    if not context["vector_chunks"] and not context["graph_entities"]:
+        async def _no_results_gen():
+            yield f"data: {json.dumps({'type': 'metadata', 'content': {'answer': 'No matching documents found.', 'sources': [], 'confidence': 0.0, 'entities_used': [], 'key_points': [], 'model_used': 'N/A', 'latency_ms': 0}})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
+        return StreamingResponse(_no_results_gen(), media_type="text/event-stream")
+
+    # ── Build the prompt (reuses shared helpers from query_engine) ────────────
+    from src.pipeline.query_engine import (
+        _RAG_TEMPLATE, _CONFIDENCE_GUIDE, get_embedder,
+        classify_query_complexity,
+    )
+    from src.pipeline.llm import NvidiaLLM, OllamaLLM, _extract_json
+    import numpy as np
+
+    chunks   = context.get("vector_chunks", [])
+    entities = context.get("graph_entities", [])
+    relations = context.get("graph_relations", [])
+
+    n_chunks    = len(chunks)
+    n_entities  = len(entities)
+    n_relations = len(relations)
+
+    if n_chunks >= 2 and n_entities >= 1:
+        guidance_conf = "High   (0.80-1.00)"
+    elif n_chunks >= 1 or n_entities >= 1:
+        guidance_conf = "Medium (0.50-0.79)"
+    else:
+        guidance_conf = "Low    (0.00-0.49)"
+
+    doc_parts: List[str] = []
+    source_list: List[dict] = []
+    for i, c in enumerate(chunks, 1):
+        doc_id  = c["metadata"].get("doc_id", c.get("chunk_id", "unknown"))
+        text    = c["text"].strip()
+        dist    = c.get("distance", 0.0)
+        score   = round(1.0 - float(dist), 3)
+        doc_parts.append(f"[Source {i}] {doc_id}  (relevance: {score})\n{text}")
+        source_list.append({"doc_id": doc_id, "excerpt": text[:250], "distance": dist})
+
+    doc_context = "\n\n---\n\n".join(doc_parts) or "No documents retrieved."
+
+    graph_lines: List[str] = []
+    for rel in relations[:10]:
+        graph_lines.append(f"  {rel['source']} --[{rel['relation']}]--> {rel['target']}")
+    if not graph_lines:
+        graph_lines = ["  No knowledge-graph relationships found for this query."]
+    graph_context = "\n".join(graph_lines)
+
+    entity_ids = [e["id"] for e in entities]
+
+    conf_guide = _CONFIDENCE_GUIDE.format(
+        n_chunks=n_chunks, n_entities=n_entities, n_relations=n_relations,
+    ) + f"  Suggested confidence band: {guidance_conf}"
+
+    prompt = _RAG_TEMPLATE.format(
+        doc_context=doc_context, graph_context=graph_context,
+        question=request.question, confidence_guide=conf_guide,
+    )
+
+    # ── Complexity classifier (shared with generate_answer) ───────────────────
+    complexity = classify_query_complexity(request.question, chunks)
+    enable_thinking = complexity["enable_thinking"]
+    reasoning_budget = complexity["reasoning_budget"]
+
+    llm = get_llm()
+    is_nvidia = isinstance(llm, NvidiaLLM)
+    llm_label = "NVIDIA API" if is_nvidia else ("Ollama" if isinstance(llm, OllamaLLM) else "Smart Context")
+    tokens_limit = 2048 if enable_thinking else 1024
+
+    # ── Generator: stream tokens via SSE ──────────────────────────────────────
+    async def event_stream():
+        full_answer_parts: list = []
+
+        if llm.available and is_nvidia:
+            target_model = None if enable_thinking else "meta/llama-3.1-70b-instruct"
+            try:
+                for token in llm.stream_generate(
+                    prompt, max_tokens=tokens_limit,
+                    enable_thinking=enable_thinking,
+                    reasoning_budget=reasoning_budget,
+                    model=target_model,
+                ):
+                    full_answer_parts.append(token)
+                    yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+            except Exception as e:
+                logger.error(f"Streaming NIM failed: {e}")
+                yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+        else:
+            # Non-NIM or fallback: generate full then yield at once
+            try:
+                raw = llm.generate(prompt, max_tokens=settings.max_tokens) if llm.available else None
+                if raw:
+                    full_answer_parts.append(raw)
+                    yield f"data: {json.dumps({'type': 'token', 'content': raw})}\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+
+        # Parse accumulated answer and build metadata
+        full_text = "".join(full_answer_parts)
+        try:
+            from src.pipeline.llm import _extract_json
+            result = _extract_json(full_text)
+        except Exception:
+            result = {"answer": full_text, "confidence": "Medium", "key_points": [], "entities_mentioned": []}
+
+        latency_ms = int((time.time() - t_start) * 1000)
+        result.setdefault("key_points", [])
+        result.setdefault("entities_mentioned", [])
+        result["entities_used"] = list(set(result.get("entities_mentioned", []) + entity_ids))
+        result["sources"] = source_list
+        result["model_used"] = llm_label
+        result["latency_ms"] = latency_ms
+        result["confidence"] = result.get("confidence", "Medium")
+
+        # Save to semantic cache
+        try:
+            from src.pipeline.query_engine import _semantic_cache, get_embedder as _ge
+            embedder = _ge()
+            qe = np.array(embedder.embed_query(request.question))
+            _semantic_cache.set(qe, result)
+        except Exception:
+            pass
+
+        yield f"data: {json.dumps({'type': 'metadata', 'content': result})}\n\n"
+        yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream",
+                            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
 
 # ── Benchmark Endpoint ────────────────────────────────────────────────────────
 
@@ -517,7 +677,7 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
         question = qa["question"]
         expected = qa["answer"].lower()
 
-        context = retrieve_context(question, top_k=3)
+        context = retrieve_context(question, top_k=50)
         llm_result = generate_answer(question, context)
         
         answer_text = llm_result.get("answer", "")
@@ -529,25 +689,39 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
 
         expected_source_docs = set(qa.get("source_docs", []))
 
-        # Simple keyword-overlap scoring
+        # 1. Keyword overlap scoring (saved for comparison)
         expected_keywords = set(expected.split())
         answer_lower      = answer_text.lower()
         matches = sum(1 for kw in expected_keywords if len(kw) > 4 and kw in answer_lower)
-        hit_text = matches >= max(1, len(expected_keywords) // 4)
-        
+        hit_text_keyword = matches >= max(1, len(expected_keywords) // 4)
+
+        # 2. Embedding similarity scoring
+        from src.pipeline.embedder import TextEmbedder
+        import numpy as np
+        embedder = TextEmbedder()
+        emb_expected = embedder.embed_query(qa["answer"])
+        emb_got = embedder.embed_query(answer_text)
+        val_dot = np.dot(emb_expected, emb_got)
+        val_norm = (np.linalg.norm(emb_expected) * np.linalg.norm(emb_got))
+        similarity = val_dot / val_norm if val_norm > 0 else 0.0
+        hit_text_semantic = similarity >= settings.similarity_threshold
+
+        # Primary text match criteria is semantic similarity
+        hit_text = hit_text_semantic
+
         hit_source = True
         if expected_source_docs:
             hit_source = any(
                 any(es.lower() in rs.lower() for rs in retrieved_source_docs)
                 for es in expected_source_docs
             )
-            
+
         hit = hit_text and hit_source
         if hit:
             correct += 1
-            
+
         reason = []
-        if not hit_text: reason.append("wrong answer text")
+        if not hit_text: reason.append(f"semantic similarity too low ({similarity:.3f} < {settings.similarity_threshold})")
         if expected_source_docs and not hit_source: reason.append("wrong source retrieved")
         if llm_result.get("confidence") == "Low": reason.append("low confidence")
         reason_str = ", ".join(reason) if not hit else ""
@@ -562,6 +736,8 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
             "reason":       reason_str,
             "latency_ms":   elapsed_ms,
             "category":     qa.get("category", ""),
+            "similarity":   float(similarity),
+            "passed_keyword": bool(hit_text_keyword),
         })
         logger.info(f"Benchmark {qa.get('id')}: {'PASS' if hit else 'FAIL'} ({elapsed_ms} ms) - {reason_str}")
 

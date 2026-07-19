@@ -79,10 +79,10 @@ class IngestionPipeline:
             # For CSV, each row returned from parse_file is already a chunk
             chunks = parsed_records
         else:
-            # For PDF, DOCX, TXT, chunk the full text content
             full_text = parsed_records[0]["text"]
             raw_chunks = chunk_text(full_text, doc_id=doc_id)
             for rc in raw_chunks:
+                rc["metadata"]["record_type"] = suffix.lstrip(".")
                 chunks.append({
                     "id": rc["id"],
                     "text": rc["text"],
@@ -97,41 +97,57 @@ class IngestionPipeline:
         texts_to_embed = [c["text"] for c in chunks]
         embeddings = self.embedder.embed_texts(texts_to_embed)
 
-        # 4. Save to ChromaDB
-        ids = [c["id"] for c in chunks]
-        metadatas = [c["metadata"] for c in chunks]
-        self.store.add_documents(ids, embeddings, texts_to_embed, metadatas)
-
-        # 5. Entity extraction & knowledge graph construction
+        # 4. Entity extraction per-chunk & knowledge graph construction
         try:
             if suffix == ".csv":
-                # For CSV, process each row (chunk) independently to avoid cross-connecting unrelated rows
+                # For CSV, process each row (chunk) independently
                 entity_count = 0
                 for c in chunks:
                     row_text = c["text"]
                     row_metadata = c["metadata"]
-                    row_doc_id = c["id"]  # E.g. "work_orders_WO-2026-1001"
+                    row_doc_id = c["id"]
                     
                     row_entities = extract_entities(row_text, row_metadata)
                     row_entity_count = sum(len(v) for v in row_entities.values())
                     entity_count += row_entity_count
                     
-                    # Add to knowledge graph using the specific row's ID/details
+                    # Store entity IDs in chunk metadata for graph retrieval
+                    all_entity_ids = []
+                    for category, ents in row_entities.items():
+                        all_entity_ids.extend(ents)
+                    c["metadata"]["entity_ids"] = json.dumps(all_entity_ids)
+                    
                     self.kg.add_document_entities(row_doc_id, row_text, row_entities, row_metadata)
                 logger.info(f"Extracted and graph-linked {entity_count} entities from CSV {filename} row-by-row")
             else:
-                # Combine all chunk texts for entity extraction
-                all_text = "\n\n".join(c["text"] for c in chunks)
-                combined_metadata = {}
-                entities = extract_entities(all_text, combined_metadata)
-                entity_count = sum(len(v) for v in entities.values())
-                logger.info(f"Extracted {entity_count} entities from {filename}")
-
-                # Add to knowledge graph
-                self.kg.add_document_entities(doc_id, all_text, entities, combined_metadata)
+                # For text files, extract entities per-chunk and store in metadata
+                entity_count = 0
+                all_entities = {"equipment": [], "regulations": [], "plants": [], "permits": [],
+                               "work_orders": [], "incidents": [], "inspections": [], "personnel": [],
+                               "hazards": [], "incident_types": [], "permit_types": []}
+                for c in chunks:
+                    chunk_entities = extract_entities(c["text"])
+                    chunk_entity_count = sum(len(v) for v in chunk_entities.values())
+                    entity_count += chunk_entity_count
+                    
+                    # Store entity IDs in chunk metadata
+                    all_entity_ids = []
+                    for category, ents in chunk_entities.items():
+                        all_entity_ids.extend(ents)
+                        all_entities[category].extend(ents)
+                    c["metadata"]["entity_ids"] = json.dumps(all_entity_ids)
+                
+                logger.info(f"Extracted {entity_count} entities from {filename} ({len(chunks)} chunks)")
+                # Add to knowledge graph using combined entities
+                self.kg.add_document_entities(doc_id, "\n".join(texts_to_embed), all_entities, {})
         except Exception as e:
             logger.error(f"Entity extraction failed for {filename}: {e}")
             entity_count = 0
+
+        # 5. Save to ChromaDB (after metadata updated with entity_ids)
+        ids = [c["id"] for c in chunks]
+        metadatas = [c["metadata"] for c in chunks]
+        self.store.add_documents(ids, embeddings, texts_to_embed, metadatas)
 
         # 6. Persist file copy in data/corpus/uploads if requested
         dest_path = file_path

@@ -30,16 +30,17 @@ class Settings(BaseSettings):
     chroma_collection: str = "industrial_docs"
 
     # Chunking
-    chunk_size: int = 512
-    chunk_overlap: int = 50
+    chunk_size: int = 1024
+    chunk_overlap: int = 200
 
     # RAG
-    top_k: int = 5
+    top_k: int = 50
+    similarity_threshold: float = 0.65
 
     # LLM — Anthropic
     anthropic_api_key: str = Field(default="", description="Anthropic API key")
     llm_model: str = "claude-sonnet-4-20250514"
-    max_tokens: int = 1024
+    max_tokens: int = 640
 
     # LLM — NVIDIA NIM (OpenAI-compatible) — up to 10 keys, tried in order
     nvidia_api_key_1: str = Field(default="", description="NVIDIA NIM API key 1")

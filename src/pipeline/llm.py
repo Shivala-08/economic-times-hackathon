@@ -10,7 +10,7 @@ is required (already common in RAG stacks).
 import json
 import re
 import os
-from typing import Optional
+from typing import Optional, Generator
 from loguru import logger
 
 from src.config import settings
@@ -22,6 +22,8 @@ SYSTEM_PROMPT = (
     "You are an Industrial Knowledge Intelligence AI for an oil & gas / manufacturing plant. "
     "You answer safety and compliance questions using ONLY retrieved document context. "
     "Never fabricate facts. Always cite sources using [Source N] labels. "
+    "Keep your answer concise and direct (strictly 1-3 sentences). "
+    "Answer ONLY what is asked; do not list unrelated details or auxiliary facts from the document. "
     "Be precise, professional, and safety-conscious. "
     "Respond ONLY with valid JSON — no markdown fences, no extra text."
 )
@@ -39,7 +41,7 @@ RAG_PROMPT = """Retrieved context from industrial safety documents:
 
 Answer using ONLY the context above. Return ONLY this JSON object (pure JSON, no fences):
 {{
-  "answer": "<detailed answer citing [Source N] labels>",
+  "answer": "<concise, direct 1-3 sentence answer citing [Source N] labels>",
   "confidence": "<High|Medium|Low>",
   "key_points": ["<key point 1>", "<key point 2>", "<key point 3>"],
   "entities_mentioned": ["<entity IDs or regulation refs found in context>"]
@@ -106,27 +108,33 @@ class NvidiaLLM:
     def available(self) -> bool:
         return len(self._keys) > 0
 
-    def generate(self, prompt: str, max_tokens: int = 1024) -> str:
-        """Try each API key in order using streaming + thinking mode.
-
-        Nemotron-ultra is a reasoning model — it streams two kinds of tokens:
-          • reasoning_content  → internal chain-of-thought (logged, not returned)
-          • content            → the final answer (collected and returned)
+    def generate(self, prompt: str, max_tokens: int = 640, enable_thinking: bool = True, reasoning_budget: int = 1024, model: Optional[str] = None) -> str:
+        """Try each API key in order using streaming.
+        
+        If model is a Nemotron model, enables thinking mode parameters in extra_body.
         """
         from openai import OpenAI, AuthenticationError, RateLimitError, APIError
 
         last_error: Optional[Exception] = None
+        target_model = model or self.model
+        is_nemotron = "nemotron" in target_model.lower()
 
         for idx, api_key in enumerate(self._keys, start=1):
             try:
                 logger.info(
                     f"NVIDIA NIM — trying key {idx}/{len(self._keys)} "
-                    f"(model: {self.model}, streaming+thinking)"
+                    f"(model: {target_model}, streaming, is_nemotron={is_nemotron}, enable_thinking={enable_thinking})"
                 )
                 client = OpenAI(base_url=self.base_url, api_key=api_key)
 
+                extra_body = {}
+                if is_nemotron:
+                    extra_body["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
+                    if enable_thinking:
+                        extra_body["reasoning_budget"] = reasoning_budget
+
                 completion = client.chat.completions.create(
-                    model=self.model,
+                    model=target_model,
                     messages=[
                         {"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user",   "content": prompt},
@@ -134,11 +142,9 @@ class NvidiaLLM:
                     temperature=1,
                     top_p=0.95,
                     max_tokens=max_tokens,
-                    extra_body={
-                        "chat_template_kwargs": {"enable_thinking": True},
-                        "reasoning_budget": max_tokens,
-                    },
+                    extra_body=extra_body if extra_body else None,
                     stream=True,
+                    timeout=15.0,
                 )
 
                 answer_parts = []
@@ -173,6 +179,80 @@ class NvidiaLLM:
         # All keys exhausted
         raise RuntimeError(
             f"All {len(self._keys)} NVIDIA API key(s) failed. "
+            f"Last error: {last_error}"
+        )
+
+    def stream_generate(self, prompt: str, max_tokens: int = 640,
+                        enable_thinking: bool = True, reasoning_budget: int = 1024,
+                        model: Optional[str] = None) -> Generator[str, None, None]:
+        """Yield answer tokens one-by-one as they arrive from NVIDIA NIM.
+
+        Same key-rotation logic as generate(), but yields each token instead of
+        accumulating and returning the full string.  The caller can pipe these
+        directly to an SSE endpoint or a Streamlit st.write_stream.
+        """
+        from openai import OpenAI, AuthenticationError, RateLimitError, APIError
+
+        last_error: Optional[Exception] = None
+        target_model = model or self.model
+        is_nemotron = "nemotron" in target_model.lower()
+
+        for idx, api_key in enumerate(self._keys, start=1):
+            try:
+                logger.info(
+                    f"NVIDIA NIM stream — key {idx}/{len(self._keys)} "
+                    f"(model: {target_model}, is_nemotron={is_nemotron})"
+                )
+                client = OpenAI(base_url=self.base_url, api_key=api_key)
+
+                extra_body = {}
+                if is_nemotron:
+                    extra_body["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
+                    if enable_thinking:
+                        extra_body["reasoning_budget"] = reasoning_budget
+
+                completion = client.chat.completions.create(
+                    model=target_model,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user",   "content": prompt},
+                    ],
+                    temperature=1,
+                    top_p=0.95,
+                    max_tokens=max_tokens,
+                    extra_body=extra_body if extra_body else None,
+                    stream=True,
+                    timeout=30.0,
+                )
+
+                for chunk in completion:
+                    if not chunk.choices:
+                        continue
+                    delta = chunk.choices[0].delta
+                    reasoning = getattr(delta, "reasoning_content", None)
+                    if reasoning:
+                        logger.debug(f"[thinking] {reasoning}")
+                    if delta.content:
+                        yield delta.content
+
+                logger.info(f"NVIDIA NIM stream — key {idx} succeeded.")
+                return
+
+            except AuthenticationError as e:
+                logger.warning(f"NVIDIA key {idx} — AuthenticationError: {e}. Trying next key.")
+                last_error = e
+            except RateLimitError as e:
+                logger.warning(f"NVIDIA key {idx} — RateLimitError: {e}. Trying next key.")
+                last_error = e
+            except APIError as e:
+                logger.warning(f"NVIDIA key {idx} — APIError: {e}. Trying next key.")
+                last_error = e
+            except Exception as e:
+                logger.warning(f"NVIDIA key {idx} — Unexpected error: {e}. Trying next key.")
+                last_error = e
+
+        raise RuntimeError(
+            f"All {len(self._keys)} NVIDIA API key(s) failed (stream). "
             f"Last error: {last_error}"
         )
 
@@ -224,7 +304,7 @@ class OllamaLLM:
     def available(self) -> bool:
         return self.model is not None
 
-    def generate(self, prompt: str, max_tokens: int = 1024) -> str:
+    def generate(self, prompt: str, max_tokens: int = 640) -> str:
         """Call Ollama generate and return raw response string."""
         import requests as _requests
         payload = {

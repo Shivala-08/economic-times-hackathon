@@ -192,3 +192,44 @@ Debug-only, don't expose in the demo UI but useful while building:
 - Lead with the fragmentation stat from the problem context (7–12 disconnected systems per plant) — it's already handed to you.
 - Show one question that pulls from two different document types in a single cited answer — this is the moment that differentiates you from a plain PDF chatbot.
 - Close on your actual benchmark numbers (accuracy %, time-to-answer vs. manual search), not adjectives.
+
+---
+
+## 6. Production Scaling Strategy (The 5 Pillars)
+
+To transition this high-performance prototype into a production-grade, enterprise RAG system processing millions of documents, the architecture must scale across five critical dimensions:
+
+### 1️⃣ Asynchronous Offline Ingestion Pipeline
+In production, document ingestion is entirely decoupled from the query/request path to ensure sub-second response times:
+*   **Storage Streaming**: Ingest pipelines monitor object storage buckets (Amazon S3 / Google Cloud Storage) using event notifications (e.g., SQS/PubSub) to stream new files.
+*   **On-Demand OCR**: Optical Character Recognition (OCR) is applied selectively (via Tesseract/EasyOCR) only for scanned image PDFs or diagrams, passing standard PDFs/DOCX directly to lightweight text extractors to minimize compute.
+*   **Text Cleaning & Normalization**: Standardizes character sets, strips formatting noise, and cleans up document headers/footers.
+*   **Intelligent Semantic Chunking**: Replaces fixed-token boundaries with layout-aware chunking (detecting section headers, tables, and lists) to keep semantically related rules intact.
+*   **Rich Metadata Schema**: Every chunk is indexed with metadata tags including `doc_id`, `page_number`, `section_header`, `author`, `last_modified`, and extracted `equipment_tags`.
+
+### 2️⃣ Enterprise-Scale Embedding & Indexing
+Embeddings are computed offline in batch jobs using queue-based workers (with GPU acceleration):
+*   **Batch Queuing**: New chunks are queued in Redis/RabbitMQ and processed in batches by dedicated workers to maximize GPU utilization.
+*   **Distributed ANN Indexes**: The local ChromaDB store scales up to a distributed vector database (Milvus, Qdrant, Vespa, or Elasticsearch).
+*   **Index Tuning**: Vectors are sharded and indexed using high-performance algorithms such as **HNSW** (Hierarchical Navigable Small World) for search speed, combined with **IVF-PQ** (Inverted File Product Quantization) to compress vector memory footprints at scale.
+*   **Metadata Filtering**: Crucially, **metadata filtering serves as the first gate** (filtering on equipment types, plant locations, or document types). Vector search is only utilized as a fallback for semantic matches.
+
+### 3️⃣ Minimalist Request Path
+The user query pathway is kept highly optimized and tight:
+$$\text{Query} \rightarrow \text{Metadata Filter} \rightarrow \text{Cache Lookup} \rightarrow \text{ANN Vector Search} \rightarrow \text{Reranking} \rightarrow \text{LLM Generation}$$
+*   **Bypassing Vector Search**: Queries with exact metadata filters (e.g., specific work orders or permit IDs) bypass vector search entirely.
+*   **Context Volume Control**: Rather than dumping dozens of matches, the system retrieves a slightly larger candidate set (8-10 chunks), re-ranks them locally, and sends a **maximum of 5–10 chunks** to the LLM. Keeping the context window compact reduces LLM processing costs and prevents model confusion.
+
+### 4️⃣ Multi-Tier Caching Architecture
+Caching is deployed at multiple layers to drive down latency and API costs:
+*   **Query-to-Answer Cache**: An in-memory rolling semantic cache (like our current implementation using cosine similarity $\ge 0.95$) checks queries before any database calls.
+*   **Query-to-Retrieval Cache**: Caches the top retrieved chunks for popular queries/topics so that recurring topics bypass vector index lookups.
+*   **Data/Index Cache**: Caches parsed document sections and hot vector indexes in fast Redis memory for rapid traversal.
+
+### 5️⃣ Observability & Continuous Monitoring
+To prevent silent degradation as data and model versions evolve:
+*   **Retrieval Monitoring**: Measures $Recall@k$ and Mean Reciprocal Rank (MRR) using synthetic benchmark checks.
+*   **Answer Quality**: Tracks user thumbs up/down feedback and logs low-confidence LLM outputs for manual inspection.
+*   **Performance Metrics**: Monitors cache hit rates, P95 latency, and GPU/API rate limit usage.
+*   **Re-indexing Cycles**: Periodically re-shards indexes and re-embeds the corpus when major model upgrades occur.
+

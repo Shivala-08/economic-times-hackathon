@@ -4,46 +4,22 @@
   "graph": {},
   "nodes": [
     {
-      "type": "equipment",
-      "color": "#3b82f6",
+      "type": "regulation",
+      "color": "#ef4444",
       "doc_id": "OISD-118.txt",
-      "id": "EQ-1001"
-    },
-    {
-      "id": "OISD-118"
-    },
-    {
-      "id": "Section 1"
-    },
-    {
-      "id": "Section 2"
-    },
-    {
-      "id": "Section 3"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-118.txt",
-      "id": "EQ-4002"
+      "id": "section 1"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
-      "doc_id": "OISD-130.txt",
-      "id": "OISD-130"
+      "doc_id": "OISD-118.txt",
+      "id": "section 2"
     },
     {
-      "type": "hazard",
-      "color": "#dc2626",
-      "doc_id": "OISD-130.txt",
-      "id": "ELECTRICAL"
-    },
-    {
-      "type": "hazard",
-      "color": "#dc2626",
-      "doc_id": "OISD-130.txt",
-      "id": "Electrical"
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "OISD-118.txt",
+      "id": "section 3"
     },
     {
       "type": "hazard",
@@ -54,248 +30,101 @@
     {
       "type": "regulation",
       "color": "#ef4444",
-      "doc_id": "DGMS-2023-01.txt",
-      "id": "DGMS CIRCULAR 2023-01"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "DGMS-2023-01.txt",
-      "id": "DGMS Circular 2023-01"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "DGMS-2023-01.txt",
-      "id": "Refresher"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "OISD-119.txt",
-      "id": "OISD-119"
+      "doc_id": "FA-SEC-36.txt",
+      "id": "factory act section 36"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-36.txt",
-      "id": "Factory Act Section 36"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-36.txt",
-      "id": "SECTION 36"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-36.txt",
-      "id": "Section 36"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "DGMS-2022-05.txt",
-      "id": "DGMS CIRCULAR 2022-05"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "DGMS-2022-05.txt",
-      "id": "DGMS Circular 2022-05"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "DGMS-2022-05.txt",
-      "id": "Requirements 1.1 Fresh"
+      "id": "section 36"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-38.txt",
-      "id": "Factory Act Section 38"
+      "id": "factory act section 38"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-38.txt",
-      "id": "SECTION 38"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-38.txt",
-      "id": "Section 38"
+      "id": "section 38"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-41B.txt",
-      "id": "Factory Act Section 41B"
+      "id": "factory act section 41b"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-41B.txt",
-      "id": "SECTION 41B"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-41B.txt",
-      "id": "Section 41B"
+      "id": "section 41b"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-41C.txt",
-      "id": "Factory Act Section 41C"
+      "id": "factory act section 41c"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
       "doc_id": "FA-SEC-41C.txt",
-      "id": "SECTION 41C"
+      "id": "section 41c"
     },
     {
       "type": "regulation",
       "color": "#ef4444",
-      "doc_id": "FA-SEC-41C.txt",
-      "id": "Section 41C"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-117.txt",
-      "id": "TNK-T01"
-    },
-    {
-      "id": "OISD-117"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-117.txt",
-      "id": "TNK-T02"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-117.txt",
-      "id": "TNK-T03"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
       "doc_id": "OISD-116.txt",
-      "id": "COMP-C01"
+      "id": "section 4"
     },
     {
-      "id": "OISD-116"
+      "type": "hazard",
+      "color": "#dc2626",
+      "doc_id": "OISD-116.txt",
+      "id": "confined space"
     },
     {
-      "id": "Section 4"
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "FA-SEC-7A.txt",
+      "id": "factory act section 7a"
     },
     {
-      "id": "Confined space"
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "FA-SEC-7A.txt",
+      "id": "section 7a"
+    },
+    {
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "FA-SEC-40A.txt",
+      "id": "factory act section 40a"
+    },
+    {
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "FA-SEC-40A.txt",
+      "id": "section 40a"
+    },
+    {
+      "type": "regulation",
+      "color": "#ef4444",
+      "doc_id": "DGMS-TC-15.txt",
+      "id": "dgms technical circular 15"
     },
     {
       "type": "equipment",
       "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
-      "id": "COMP-C02"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
-      "id": "HX-D01"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
-      "id": "HX-D02"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
-      "id": "PUMP-A01"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
-      "id": "PUMP-A02"
-    },
-    {
-      "type": "equipment",
-      "color": "#3b82f6",
-      "doc_id": "OISD-116.txt",
+      "doc_id": "permits_PRM-2026-5000",
       "id": "PUMP-B01"
     },
     {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "OISD-116.txt",
-      "id": "Line"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-7A.txt",
-      "id": "Factory Act Section 7A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-7A.txt",
-      "id": "SECTION 7A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-7A.txt",
-      "id": "Section 7A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-40A.txt",
-      "id": "Factory Act Section 40A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-40A.txt",
-      "id": "SECTION 40A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "FA-SEC-40A.txt",
-      "id": "Section 40A"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "DGMS-TC-15.txt",
-      "id": "DGMS TECHNICAL CIRCULAR 15"
-    },
-    {
-      "type": "regulation",
-      "color": "#ef4444",
-      "doc_id": "DGMS-TC-15.txt",
-      "id": "DGMS Technical Circular 15"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "DGMS-TC-15.txt",
-      "id": "Roof Support"
+      "id": "OISD-119"
     },
     {
       "id": "Refinery Unit A"
@@ -336,6 +165,15 @@
       "color": "#f97316",
       "doc_id": "permits_PRM-2026-5000",
       "id": "Victoria Contreras\nIssued"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5001",
+      "id": "PUMP-A02"
+    },
+    {
+      "id": "OISD-118"
     },
     {
       "id": "Power Plant B"
@@ -406,6 +244,12 @@
       "id": "Chemical Plant C"
     },
     {
+      "id": "Confined space"
+    },
+    {
+      "id": "Electrical"
+    },
+    {
       "type": "permit",
       "color": "#f59e0b",
       "doc_id": "permits_PRM-2026-5003",
@@ -443,6 +287,9 @@
       "id": "VAL-V03"
     },
     {
+      "id": "OISD-116"
+    },
+    {
       "type": "permit",
       "color": "#f59e0b",
       "doc_id": "permits_PRM-2026-5004",
@@ -466,6 +313,12 @@
       "color": "#f97316",
       "doc_id": "permits_PRM-2026-5004",
       "id": "Taylor Griffith"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5005",
+      "id": "COMP-C01"
     },
     {
       "id": "Falling objects"
@@ -533,6 +386,9 @@
       "id": "EQ-2001"
     },
     {
+      "id": "OISD-117"
+    },
+    {
       "type": "permit",
       "color": "#f59e0b",
       "doc_id": "permits_PRM-2026-5007",
@@ -550,6 +406,15 @@
       "color": "#f97316",
       "doc_id": "permits_PRM-2026-5007",
       "id": "Christian Vaughn\nIssue"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5008",
+      "id": "EQ-1001"
+    },
+    {
+      "id": "OISD-130"
     },
     {
       "type": "permit",
@@ -789,6 +654,12 @@
       "id": "Patty Taylor"
     },
     {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5017",
+      "id": "PUMP-A01"
+    },
+    {
       "type": "permit",
       "color": "#f59e0b",
       "doc_id": "permits_PRM-2026-5017",
@@ -827,6 +698,12 @@
       "id": "Sandra Vista\nChristopherborough"
     },
     {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5019",
+      "id": "EQ-4002"
+    },
+    {
       "type": "permit",
       "color": "#f59e0b",
       "doc_id": "permits_PRM-2026-5019",
@@ -844,6 +721,12 @@
       "color": "#f97316",
       "doc_id": "permits_PRM-2026-5019",
       "id": "Michele Sanders"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5020",
+      "id": "HX-D01"
     },
     {
       "type": "permit",
@@ -869,6 +752,12 @@
       "color": "#f97316",
       "doc_id": "permits_PRM-2026-5020",
       "id": "Michael Scott PhD"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "permits_PRM-2026-5021",
+      "id": "TNK-T02"
     },
     {
       "type": "permit",
@@ -1342,6 +1231,12 @@
       "id": "Scott Cole"
     },
     {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "work_orders_WO-2026-1016",
+      "id": "COMP-C02"
+    },
+    {
       "type": "work_order",
       "color": "#8b5cf6",
       "doc_id": "work_orders_WO-2026-1016",
@@ -1600,6 +1495,12 @@
       "id": "Joseph Knight"
     },
     {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "work_orders_WO-2026-1030",
+      "id": "TNK-T03"
+    },
+    {
       "type": "work_order",
       "color": "#8b5cf6",
       "doc_id": "work_orders_WO-2026-1030",
@@ -1700,6 +1601,12 @@
       "color": "#f97316",
       "doc_id": "work_orders_WO-2026-1035",
       "id": "Kelly Ellis"
+    },
+    {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "work_orders_WO-2026-1036",
+      "id": "HX-D02"
     },
     {
       "type": "work_order",
@@ -1936,6 +1843,9 @@
       "id": "Lisa Shelton"
     },
     {
+      "id": "Section 7A"
+    },
+    {
       "type": "incident",
       "color": "#ec4899",
       "doc_id": "incident_reports_INC-2026-9000",
@@ -1946,6 +1856,9 @@
       "color": "#db2777",
       "doc_id": "incident_reports_INC-2026-9000",
       "id": "Lost Time"
+    },
+    {
+      "id": "Section 40A"
     },
     {
       "type": "incident",
@@ -1972,6 +1885,9 @@
       "id": "Phillip Burns"
     },
     {
+      "id": "Section 36"
+    },
+    {
       "type": "incident",
       "color": "#ec4899",
       "doc_id": "incident_reports_INC-2026-9002",
@@ -1982,6 +1898,9 @@
       "color": "#f97316",
       "doc_id": "incident_reports_INC-2026-9002",
       "id": "Lisa Wheeler\nDepartment"
+    },
+    {
+      "id": "Section 38"
     },
     {
       "type": "incident",
@@ -2062,6 +1981,9 @@
       "id": "Thomas Skyway Apt"
     },
     {
+      "id": "DGMS Technical Circular 15"
+    },
+    {
       "type": "incident",
       "color": "#ec4899",
       "doc_id": "incident_reports_INC-2026-9008",
@@ -2092,6 +2014,9 @@
       "id": "Elizabeth Goodman"
     },
     {
+      "id": "DGMS Circular 2022-05"
+    },
+    {
       "type": "incident",
       "color": "#ec4899",
       "doc_id": "incident_reports_INC-2026-9010",
@@ -2114,6 +2039,9 @@
       "color": "#ec4899",
       "doc_id": "incident_reports_INC-2026-9011",
       "id": "INC-2026-9011"
+    },
+    {
+      "id": "Section 41B"
     },
     {
       "type": "incident",
@@ -2162,6 +2090,9 @@
       "color": "#f97316",
       "doc_id": "incident_reports_INC-2026-9014",
       "id": "Jenniferton"
+    },
+    {
+      "id": "DGMS Circular 2023-01"
     },
     {
       "type": "incident",
@@ -2464,6 +2395,12 @@
       "id": "David Moon"
     },
     {
+      "type": "equipment",
+      "color": "#3b82f6",
+      "doc_id": "inspection_logs_INS-2026-8019",
+      "id": "TNK-T01"
+    },
+    {
       "type": "inspection",
       "color": "#06b6d4",
       "doc_id": "inspection_logs_INS-2026-8019",
@@ -2707,1048 +2644,219 @@
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "Banks"
+      "id": "gstin"
     },
     {
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "Chicken Curry"
+      "id": "hajipur jn"
     },
     {
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "GSTIN"
+      "id": "hajipur jn ( hjp"
     },
     {
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "IRCTC Convenience Fee"
+      "id": "i. e."
     },
     {
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "Kannada"
+      "id": "kannada"
     },
     {
       "type": "person",
       "color": "#f97316",
       "doc_id": "6105026253.pdf",
-      "id": "Nauroji Nagar"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "6105026253.pdf",
-      "id": "Panchayat Administrations"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "6105026253.pdf",
-      "id": "Rail Madad"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "6105026253.pdf",
-      "id": "https://equery.irctc.co.in"
-    },
-    {
-      "type": "person",
-      "color": "#f97316",
-      "doc_id": "6105026253.pdf",
-      "id": "https://menurates.irctc.co.in"
+      "id": "nauroji nagar"
     }
   ],
   "edges": [
     {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "OISD-118"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "Section 1"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "Section 2"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "Section 3"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "OISD-130"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-1001",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Confined Space"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Confined space"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Electrical"
-    },
-    {
-      "relation": "issued_for",
-      "source": "EQ-1001",
-      "target": "PRM-2026-5008"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Michele Vaughn\nIssue"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Todd Hendrix"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-1001",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Working at height"
-    },
-    {
-      "relation": "issued_for",
-      "source": "EQ-1001",
-      "target": "PRM-2026-5025"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Anthony Knoll Apt"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Joseph Jennings"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Kristin Haney"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-1001",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Noise"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "EQ-1001",
-      "target": "WO-2026-1000"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Daniel Gallagher"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "James Howard"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-1001",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-1001",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "EQ-1001",
-      "target": "WO-2026-1022"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Glen Sheppard"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Scott Wilson"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-1001",
-      "target": "DGMS Circular 2022-05"
-    },
-    {
-      "relation": "inspected",
-      "source": "EQ-1001",
-      "target": "INS-2026-8002"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-1001",
-      "target": "Brian Wiggins"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-4002"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-118",
-      "target": "Power Plant B"
-    },
-    {
       "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Noise"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-118",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Confined Space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-118",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Confined space"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Electrical"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Working at height"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-118",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1004"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Chemical exposure"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1007"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1010"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1015"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1016"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1019"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1022"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1025"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-4001"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1034"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1036"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1044"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-118",
-      "target": "WO-2026-1049"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-118",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "TNK-T01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-118",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "EQ-4002"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 1",
-      "target": "ELECTRICAL"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 1",
-      "target": "Electrical"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 1",
+      "source": "section 1",
       "target": "electrical"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "TNK-T01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "TNK-T03"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "COMP-C01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 1",
-      "target": "PUMP-B01"
+      "relation": "regulated_by",
+      "source": "section 1",
+      "target": "confined space"
     },
     {
       "relation": "regulated_by",
-      "source": "Section 1",
-      "target": "Confined space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "EQ-4002"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 2",
-      "target": "ELECTRICAL"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 2",
-      "target": "Electrical"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 2",
+      "source": "section 2",
       "target": "electrical"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "TNK-T01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "TNK-T03"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "COMP-C01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 2",
-      "target": "PUMP-B01"
+      "relation": "regulated_by",
+      "source": "section 2",
+      "target": "confined space"
     },
     {
       "relation": "regulated_by",
-      "source": "Section 2",
-      "target": "Confined space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "EQ-4002"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 3",
-      "target": "ELECTRICAL"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 3",
-      "target": "Electrical"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Section 3",
+      "source": "section 3",
       "target": "electrical"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "TNK-T01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "TNK-T03"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "COMP-C01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 3",
-      "target": "PUMP-B01"
+      "relation": "regulated_by",
+      "source": "section 3",
+      "target": "confined space"
     },
     {
       "relation": "regulated_by",
-      "source": "Section 3",
-      "target": "Confined space"
+      "source": "section 4",
+      "target": "confined space"
     },
     {
       "relation": "subject_to",
-      "source": "EQ-4002",
-      "target": "OISD-130"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-4002",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-4002",
-      "target": "Electrical"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "EQ-4002",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "issued_for",
-      "source": "EQ-4002",
-      "target": "PRM-2026-5019"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Frank Campbell"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Michele Sanders"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-4002",
-      "target": "DGMS Technical Circular 15"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-4002",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "EQ-4002",
-      "target": "INC-2026-9016"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Justin Frederick\nDepartment"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-4002",
-      "target": "OISD-117"
-    },
-    {
-      "relation": "located_at",
-      "source": "EQ-4002",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "inspected",
-      "source": "EQ-4002",
-      "target": "INS-2026-8021"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Robert Haynes"
-    },
-    {
-      "relation": "subject_to",
-      "source": "EQ-4002",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "inspected",
-      "source": "EQ-4002",
-      "target": "INS-2026-8032"
-    },
-    {
-      "relation": "works_with",
-      "source": "EQ-4002",
-      "target": "Julian Frost"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "ELECTRICAL"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Electrical"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "electrical"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-130",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Confined Space"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Confined space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-130",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Chemical exposure"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Noise"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Working at height"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "EQ-2003"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-130",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-130",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1002"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-130",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1005"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "PUMP-B01"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1011"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1012"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1014"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "EQ-3002"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1020"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1021"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1027"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-130",
-      "target": "WO-2026-1031"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-130",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Electrical",
+      "source": "PUMP-B01",
       "target": "OISD-119"
     },
     {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "VAL-V03"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Electrical",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "COMP-C01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-2003"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "Electrical",
-      "target": "OISD-117"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-3002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Electrical",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "EQ-3002"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2023-01",
+      "relation": "located_at",
+      "source": "PUMP-B01",
       "target": "Refinery Unit A"
     },
     {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "TNK-T02"
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Fire hazard"
     },
     {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2023-01",
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Working at height"
+    },
+    {
+      "relation": "issued_for",
+      "source": "PUMP-B01",
+      "target": "PRM-2026-5000"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Expiry Date"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Krista Roberts"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Victoria Contreras\nIssued"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Confined Space"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Noise"
+    },
+    {
+      "relation": "issued_for",
+      "source": "PUMP-B01",
+      "target": "PRM-2026-5022"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Maria Rivera"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Michele Miller"
+    },
+    {
+      "relation": "subject_to",
+      "source": "PUMP-B01",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "located_at",
+      "source": "PUMP-B01",
       "target": "Chemical Plant C"
     },
     {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "COMP-C02"
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Falling objects"
     },
     {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2023-01",
+      "relation": "assigned_to",
+      "source": "PUMP-B01",
+      "target": "WO-2026-1009"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Christina Walters"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "John Whitehead"
+    },
+    {
+      "relation": "subject_to",
+      "source": "PUMP-B01",
+      "target": "OISD-130"
+    },
+    {
+      "relation": "located_at",
+      "source": "PUMP-B01",
       "target": "Steel Mill D"
     },
     {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2023-01",
-      "target": "PUMP-A01"
+      "relation": "has_hazard",
+      "source": "PUMP-B01",
+      "target": "Confined space"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-119",
-      "target": "PUMP-B01"
+      "relation": "assigned_to",
+      "source": "PUMP-B01",
+      "target": "WO-2026-1011"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Janet Williams"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "PUMP-B01",
+      "target": "WO-2026-1014"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Jason Soto"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Michael Snyder"
+    },
+    {
+      "relation": "inspected",
+      "source": "PUMP-B01",
+      "target": "INS-2026-8000"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-B01",
+      "target": "Carrie Moore"
     },
     {
       "relation": "applies_to",
@@ -3789,6 +2897,11 @@
       "relation": "regulated_by",
       "source": "OISD-119",
       "target": "Confined space"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "OISD-119",
+      "target": "Electrical"
     },
     {
       "relation": "subject_to",
@@ -3931,1304 +3044,384 @@
       "target": "VAL-V03"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 36",
-      "target": "HX-D01"
+      "relation": "located_at",
+      "source": "Refinery Unit A",
+      "target": "FIL-F01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Refinery Unit A",
+      "target": "MTR-M01"
     },
     {
       "relation": "applies_to",
-      "source": "Section 36",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 36",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 36",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 36",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2022-05",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2022-05",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2022-05",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Circular 2022-05",
-      "target": "TNK-T03"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Circular 2022-05",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 38",
-      "target": "TNK-T02"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 38",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 38",
-      "target": "VAL-V03"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 38",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 41B",
-      "target": "VAL-V03"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 41B",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 41B",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 41B",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T01",
-      "target": "OISD-117"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T01",
+      "source": "Refinery Unit A",
       "target": "OISD-116"
     },
     {
-      "relation": "subject_to",
-      "source": "TNK-T01",
-      "target": "Section 4"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T01",
-      "target": "Confined space"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T01",
-      "target": "Line"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "OISD-130"
     },
     {
       "relation": "located_at",
-      "source": "TNK-T01",
-      "target": "Power Plant B"
+      "source": "Refinery Unit A",
+      "target": "EQ-2002"
     },
     {
-      "relation": "inspected",
-      "source": "TNK-T01",
-      "target": "INS-2026-8019"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "OISD-118"
     },
     {
       "relation": "located_at",
-      "source": "TNK-T01",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "inspected",
-      "source": "TNK-T01",
-      "target": "INS-2026-8022"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T01",
-      "target": "Lindsey Lewis"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
+      "source": "Refinery Unit A",
       "target": "TNK-T02"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "TNK-T03"
+      "relation": "located_at",
+      "source": "Refinery Unit A",
+      "target": "COMP-C02"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "EQ-2001"
+      "relation": "located_at",
+      "source": "Refinery Unit A",
+      "target": "EQ-1001"
     },
     {
-      "relation": "applies_to",
-      "source": "OISD-117",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Noise"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Working at height"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-117",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
+      "relation": "located_at",
+      "source": "Refinery Unit A",
       "target": "EQ-3003"
     },
     {
-      "relation": "applies_to",
-      "source": "OISD-117",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Confined Space"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Confined space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
+      "relation": "located_at",
+      "source": "Refinery Unit A",
       "target": "EQ-1002"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1001"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1003"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1008"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1026"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1028"
-    },
-    {
       "relation": "applies_to",
-      "source": "OISD-117",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1032"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1038"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Chemical exposure"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1046"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-117",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-117",
-      "target": "WO-2026-1048"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-117",
-      "target": "EQ-4001"
+      "source": "Refinery Unit A",
+      "target": "OISD-117"
     },
     {
       "relation": "located_at",
-      "source": "TNK-T02",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T02",
-      "target": "Confined space"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T02",
-      "target": "Noise"
-    },
-    {
-      "relation": "issued_for",
-      "source": "TNK-T02",
-      "target": "PRM-2026-5021"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Joseph Jenkins"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Nathan Nichols"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T02",
-      "target": "WO-2026-1008"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Angel Lewis MD"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Jimmy Murillo"
+      "source": "Refinery Unit A",
+      "target": "VAN-V01"
     },
     {
       "relation": "located_at",
-      "source": "TNK-T02",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T02",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T02",
-      "target": "WO-2026-1015"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Sara Ramirez"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Scott Cole"
-    },
-    {
-      "relation": "located_at",
-      "source": "TNK-T02",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T02",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T02",
-      "target": "WO-2026-1043"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Jason Rhodes"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Rhonda Martin"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T02",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T02",
-      "target": "WO-2026-1045"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Bobby Scott"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Michael West"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T02",
-      "target": "WO-2026-1047"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Jacob Preston"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Stephanie Hughes"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "TNK-T02",
-      "target": "INC-2026-9003"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Alexandra Taylor\nDepartment"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T02",
-      "target": "DGMS Technical Circular 15"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "TNK-T02",
-      "target": "INC-2026-9009"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Elizabeth Goodman"
-    },
-    {
-      "relation": "inspected",
-      "source": "TNK-T02",
-      "target": "INS-2026-8009"
-    },
-    {
-      "relation": "inspected",
-      "source": "TNK-T02",
-      "target": "INS-2026-8029"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T02",
-      "target": "Latoya White"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T03",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "subject_to",
-      "source": "TNK-T03",
-      "target": "Section 4"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "TNK-T03",
-      "target": "Confined space"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T03",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "TNK-T03",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "TNK-T03",
-      "target": "WO-2026-1030"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T03",
-      "target": "Keith Jennings"
-    },
-    {
-      "relation": "located_at",
-      "source": "TNK-T03",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "inspected",
-      "source": "TNK-T03",
-      "target": "INS-2026-8014"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T03",
-      "target": "Alice Jones"
-    },
-    {
-      "relation": "located_at",
-      "source": "TNK-T03",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "inspected",
-      "source": "TNK-T03",
-      "target": "INS-2026-8033"
-    },
-    {
-      "relation": "works_with",
-      "source": "TNK-T03",
-      "target": "Richard Ruiz"
-    },
-    {
-      "relation": "subject_to",
-      "source": "COMP-C01",
-      "target": "OISD-116"
-    },
-    {
-      "relation": "subject_to",
-      "source": "COMP-C01",
-      "target": "Section 4"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "COMP-C01",
-      "target": "Confined space"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "COMP-C01",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "COMP-C01",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "issued_for",
-      "source": "COMP-C01",
-      "target": "PRM-2026-5005"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Angel Gordon"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Diana Hays\nIssue"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Nicole Stream"
-    },
-    {
-      "relation": "located_at",
-      "source": "COMP-C01",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "COMP-C01",
-      "target": "Noise"
-    },
-    {
-      "relation": "issued_for",
-      "source": "COMP-C01",
-      "target": "PRM-2026-5009"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Cindy Clayton"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Thomas Douglas"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "COMP-C01",
-      "target": "Working at height"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "COMP-C01",
-      "target": "WO-2026-1024"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Eric Powell"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Tammy Gonzales\nRequested"
-    },
-    {
-      "relation": "subject_to",
-      "source": "COMP-C01",
-      "target": "DGMS Technical Circular 15"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C01",
-      "target": "INS-2026-8003"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C01",
-      "target": "Laurie Bailey"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
+      "source": "Refinery Unit A",
       "target": "HX-D01"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "HX-D02"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "Section 36"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "PUMP-A01"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "Section 40A"
     },
     {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "PUMP-B01"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Confined space"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
+      "relation": "located_at",
+      "source": "Refinery Unit A",
       "target": "VAL-V03"
     },
     {
       "relation": "applies_to",
-      "source": "OISD-116",
-      "target": "Power Plant B"
+      "source": "Refinery Unit A",
+      "target": "Section 41B"
     },
     {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Chemical exposure"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-116",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Working at height"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-116",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Falling objects"
-    },
-    {
-      "relation": "applies_to",
-      "source": "OISD-116",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1000"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Noise"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
+      "relation": "located_at",
+      "source": "Refinery Unit A",
       "target": "VAN-V02"
     },
     {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1006"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "DGMS Circular 2023-01"
     },
     {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1009"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1018"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1030"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1035"
-    },
-    {
-      "relation": "regulated_by",
-      "source": "OISD-116",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1037"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1041"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1042"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1045"
-    },
-    {
-      "relation": "references",
-      "source": "OISD-116",
-      "target": "WO-2026-1047"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
-      "target": "EQ-4001"
-    },
-    {
-      "relation": "subject_to",
-      "source": "OISD-116",
+      "relation": "located_at",
+      "source": "Refinery Unit A",
       "target": "EQ-2001"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 4",
-      "target": "COMP-C02"
+      "relation": "located_at",
+      "source": "Refinery Unit A",
+      "target": "EQ-3001"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 4",
-      "target": "HX-D01"
+      "relation": "applies_to",
+      "source": "Refinery Unit A",
+      "target": "DGMS Technical Circular 15"
     },
     {
-      "relation": "subject_to",
-      "source": "Section 4",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 4",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 4",
+      "relation": "has_hazard",
+      "source": "Fire hazard",
       "target": "PUMP-A02"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 4",
-      "target": "PUMP-B01"
     },
     {
       "relation": "regulated_by",
-      "source": "Section 4",
-      "target": "Confined space"
+      "source": "Fire hazard",
+      "target": "OISD-118"
     },
     {
       "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "COMP-C02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "HX-D01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "HX-D02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "PUMP-A01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "PUMP-A02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "PUMP-B01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Confined space",
+      "source": "Fire hazard",
       "target": "FIL-F01"
     },
     {
       "relation": "has_hazard",
-      "source": "Confined space",
+      "source": "Fire hazard",
+      "target": "EQ-2003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Fire hazard",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Fire hazard",
+      "target": "OISD-130"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "VAN-V02"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Fire hazard",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Fire hazard",
+      "target": "EQ-3002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "FIL-F01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
       "target": "EQ-2001"
     },
     {
-      "relation": "has_hazard",
-      "source": "Confined space",
-      "target": "EQ-4001"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "COMP-C02",
-      "target": "Refinery Unit A"
+      "relation": "regulated_by",
+      "source": "Working at height",
+      "target": "OISD-117"
     },
     {
       "relation": "has_hazard",
-      "source": "COMP-C02",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "COMP-C02",
-      "target": "WO-2026-1016"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Alicia Gilmore"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Karen Bender"
-    },
-    {
-      "relation": "located_at",
-      "source": "COMP-C02",
-      "target": "Chemical Plant C"
+      "source": "Working at height",
+      "target": "EQ-3001"
     },
     {
       "relation": "has_hazard",
-      "source": "COMP-C02",
-      "target": "Working at height"
+      "source": "Working at height",
+      "target": "EQ-3003"
     },
     {
-      "relation": "assigned_to",
-      "source": "COMP-C02",
-      "target": "WO-2026-1037"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Matthew Walker"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Ryan Richardson"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "COMP-C02",
-      "target": "INC-2026-9005"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Bryan Phelps\nDepartment"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "COMP-C02",
-      "target": "INC-2026-9010"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Lauren Hammond\nDepartment"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Necessary"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "COMP-C02",
-      "target": "INC-2026-9018"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Dustin Nichols"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Joan Mills"
-    },
-    {
-      "relation": "located_at",
-      "source": "COMP-C02",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C02",
-      "target": "INS-2026-8008"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Mark Beard"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C02",
-      "target": "INS-2026-8018"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "David Moon"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C02",
-      "target": "INS-2026-8024"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Karen Miller"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C02",
-      "target": "INS-2026-8025"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Hunter Silva"
-    },
-    {
-      "relation": "inspected",
-      "source": "COMP-C02",
-      "target": "INS-2026-8034"
-    },
-    {
-      "relation": "works_with",
-      "source": "COMP-C02",
-      "target": "Vickie Hernandez"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "HX-D01",
-      "target": "Power Plant B"
+      "relation": "regulated_by",
+      "source": "Working at height",
+      "target": "OISD-130"
     },
     {
       "relation": "has_hazard",
-      "source": "HX-D01",
-      "target": "Working at height"
+      "source": "Working at height",
+      "target": "HX-D01"
     },
     {
-      "relation": "issued_for",
-      "source": "HX-D01",
-      "target": "PRM-2026-5020"
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Working at height",
+      "target": "OISD-118"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Working at height",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "VAN-V02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "EQ-2003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "COMP-C01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Working at height",
+      "target": "PUMP-A02"
+    },
+    {
+      "relation": "is_type",
+      "source": "PRM-2026-5000",
+      "target": "Line Breaking"
+    },
+    {
+      "relation": "is_type",
+      "source": "Line Breaking",
+      "target": "PRM-2026-5001"
+    },
+    {
+      "relation": "is_type",
+      "source": "Line Breaking",
+      "target": "PRM-2026-5013"
     },
     {
       "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Expiry Date"
+      "source": "Expiry Date",
+      "target": "PUMP-A02"
     },
     {
       "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Jose Prairie Suite"
+      "source": "Expiry Date",
+      "target": "FIL-F01"
     },
     {
       "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Maria Henry\nIssue"
+      "source": "Expiry Date",
+      "target": "VAN-V01"
     },
     {
       "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Michael Scott PhD"
+      "source": "Expiry Date",
+      "target": "VAL-V03"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "COMP-C01"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-2001"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-2003"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-3001"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "HX-D01"
+    },
+    {
+      "relation": "works_with",
+      "source": "Expiry Date",
+      "target": "TNK-T02"
     },
     {
       "relation": "subject_to",
-      "source": "HX-D01",
-      "target": "Section 7A"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "HX-D01",
-      "target": "INC-2026-9000"
-    },
-    {
-      "relation": "located_at",
-      "source": "HX-D01",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "HX-D01",
-      "target": "INC-2026-9002"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Lisa Wheeler\nDepartment"
-    },
-    {
-      "relation": "involved_equipment",
-      "source": "HX-D01",
-      "target": "INC-2026-9019"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Amy Rowe\nDepartment"
-    },
-    {
-      "relation": "located_at",
-      "source": "HX-D01",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "inspected",
-      "source": "HX-D01",
-      "target": "INS-2026-8015"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Michael Miller"
-    },
-    {
-      "relation": "inspected",
-      "source": "HX-D01",
-      "target": "INS-2026-8035"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D01",
-      "target": "Michael Harris"
-    },
-    {
-      "relation": "works_with",
-      "source": "HX-D02",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "HX-D02",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "HX-D02",
-      "target": "WO-2026-1036"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Line"
-    },
-    {
-      "relation": "located_at",
-      "source": "PUMP-A01",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-A01",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "issued_for",
-      "source": "PUMP-A01",
-      "target": "PRM-2026-5017"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Joseph Horton"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-A01",
-      "target": "Chemical exposure"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "PUMP-A01",
-      "target": "WO-2026-1010"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Eric Nolan"
-    },
-    {
-      "relation": "subject_to",
-      "source": "PUMP-A01",
-      "target": "DGMS Technical Circular 15"
-    },
-    {
-      "relation": "located_at",
-      "source": "PUMP-A01",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "inspected",
-      "source": "PUMP-A01",
-      "target": "INS-2026-8004"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Carrie Jackson"
-    },
-    {
-      "relation": "inspected",
-      "source": "PUMP-A01",
-      "target": "INS-2026-8005"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Dorothy Hill"
-    },
-    {
-      "relation": "inspected",
-      "source": "PUMP-A01",
-      "target": "INS-2026-8028"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Brian Turner"
-    },
-    {
-      "relation": "inspected",
-      "source": "PUMP-A01",
-      "target": "INS-2026-8038"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A01",
-      "target": "Sherry Johnson"
-    },
-    {
-      "relation": "works_with",
       "source": "PUMP-A02",
-      "target": "Line"
+      "target": "OISD-118"
     },
     {
       "relation": "located_at",
       "source": "PUMP-A02",
       "target": "Power Plant B"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-A02",
-      "target": "Fire hazard"
     },
     {
       "relation": "has_hazard",
@@ -5243,17 +3436,17 @@
     {
       "relation": "works_with",
       "source": "PUMP-A02",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-A02",
       "target": "Jason Andrews"
     },
     {
       "relation": "works_with",
       "source": "PUMP-A02",
       "target": "Mitchell Mendoza"
+    },
+    {
+      "relation": "subject_to",
+      "source": "PUMP-A02",
+      "target": "OISD-116"
     },
     {
       "relation": "located_at",
@@ -5281,14 +3474,14 @@
       "target": "Lisa Allen"
     },
     {
+      "relation": "subject_to",
+      "source": "PUMP-A02",
+      "target": "OISD-117"
+    },
+    {
       "relation": "located_at",
       "source": "PUMP-A02",
       "target": "Steel Mill D"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-A02",
-      "target": "Working at height"
     },
     {
       "relation": "assigned_to",
@@ -5306,6 +3499,11 @@
       "target": "INC-2026-9006"
     },
     {
+      "relation": "subject_to",
+      "source": "PUMP-A02",
+      "target": "OISD-130"
+    },
+    {
       "relation": "inspected",
       "source": "PUMP-A02",
       "target": "INS-2026-8010"
@@ -5316,379 +3514,204 @@
       "target": "Eric Lyons\nInspection"
     },
     {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Line"
+      "relation": "applies_to",
+      "source": "OISD-118",
+      "target": "Power Plant B"
     },
     {
-      "relation": "located_at",
-      "source": "PUMP-B01",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-B01",
-      "target": "Fire hazard"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-B01",
-      "target": "Working at height"
-    },
-    {
-      "relation": "issued_for",
-      "source": "PUMP-B01",
-      "target": "PRM-2026-5000"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Expiry Date"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Krista Roberts"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Victoria Contreras\nIssued"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-B01",
-      "target": "Confined Space"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "PUMP-B01",
+      "relation": "regulated_by",
+      "source": "OISD-118",
       "target": "Noise"
     },
     {
-      "relation": "issued_for",
-      "source": "PUMP-B01",
-      "target": "PRM-2026-5022"
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "FIL-F01"
     },
     {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Maria Rivera"
+      "relation": "applies_to",
+      "source": "OISD-118",
+      "target": "Steel Mill D"
     },
     {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Michele Miller"
+      "relation": "regulated_by",
+      "source": "OISD-118",
+      "target": "Confined Space"
     },
     {
-      "relation": "located_at",
-      "source": "PUMP-B01",
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "applies_to",
+      "source": "OISD-118",
       "target": "Chemical Plant C"
     },
     {
-      "relation": "has_hazard",
-      "source": "PUMP-B01",
+      "relation": "regulated_by",
+      "source": "OISD-118",
+      "target": "Confined space"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "OISD-118",
+      "target": "Electrical"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-2002"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1004"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "OISD-118",
+      "target": "Chemical exposure"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1007"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1010"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1015"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1016"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-2001"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1019"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1022"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1025"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-4001"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1034"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "HX-D02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1036"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1044"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-118",
+      "target": "WO-2026-1049"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "OISD-118",
       "target": "Falling objects"
     },
     {
-      "relation": "assigned_to",
-      "source": "PUMP-B01",
-      "target": "WO-2026-1009"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Christina Walters"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "John Whitehead"
-    },
-    {
-      "relation": "located_at",
-      "source": "PUMP-B01",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "PUMP-B01",
-      "target": "WO-2026-1011"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Janet Williams"
-    },
-    {
-      "relation": "assigned_to",
-      "source": "PUMP-B01",
-      "target": "WO-2026-1014"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Jason Soto"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Michael Snyder"
-    },
-    {
-      "relation": "inspected",
-      "source": "PUMP-B01",
-      "target": "INS-2026-8000"
-    },
-    {
-      "relation": "works_with",
-      "source": "PUMP-B01",
-      "target": "Carrie Moore"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 7A",
-      "target": "Power Plant B"
+      "relation": "subject_to",
+      "source": "OISD-118",
+      "target": "TNK-T01"
     },
     {
       "relation": "subject_to",
-      "source": "Section 40A",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 40A",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "subject_to",
-      "source": "Section 40A",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "applies_to",
-      "source": "Section 40A",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "Power Plant B"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "Chemical Plant C"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "Steel Mill D"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "applies_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "Refinery Unit A"
-    },
-    {
-      "relation": "subject_to",
-      "source": "DGMS Technical Circular 15",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "EQ-2002"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "VAL-V03"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "located_at",
-      "source": "Refinery Unit A",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "EQ-2003"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Fire hazard",
-      "target": "EQ-3002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "EQ-3003"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "VAN-V02"
-    },
-    {
-      "relation": "has_hazard",
-      "source": "Working at height",
-      "target": "EQ-2003"
-    },
-    {
-      "relation": "is_type",
-      "source": "PRM-2026-5000",
-      "target": "Line Breaking"
-    },
-    {
-      "relation": "is_type",
-      "source": "Line Breaking",
-      "target": "PRM-2026-5001"
-    },
-    {
-      "relation": "is_type",
-      "source": "Line Breaking",
-      "target": "PRM-2026-5013"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "FIL-F01"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "VAN-V01"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "VAL-V03"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "EQ-2001"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "EQ-2003"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "EQ-1002"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "MTR-M01"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "EQ-3001"
-    },
-    {
-      "relation": "works_with",
-      "source": "Expiry Date",
-      "target": "EQ-3003"
+      "source": "OISD-118",
+      "target": "HX-D01"
     },
     {
       "relation": "located_at",
       "source": "Power Plant B",
       "target": "VAL-V03"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "COMP-C01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "OISD-130"
     },
     {
       "relation": "located_at",
@@ -5699,6 +3722,16 @@
       "relation": "located_at",
       "source": "Power Plant B",
       "target": "EQ-3003"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "HX-D01"
     },
     {
       "relation": "located_at",
@@ -5738,7 +3771,57 @@
     {
       "relation": "located_at",
       "source": "Power Plant B",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "Section 7A"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
       "target": "EQ-3001"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "Section 36"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "Section 38"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "TNK-T01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "located_at",
+      "source": "Power Plant B",
+      "target": "TNK-T03"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Power Plant B",
+      "target": "DGMS Circular 2022-05"
     },
     {
       "relation": "has_hazard",
@@ -5751,9 +3834,24 @@
       "target": "EQ-2001"
     },
     {
+      "relation": "regulated_by",
+      "source": "Noise",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Noise",
+      "target": "COMP-C01"
+    },
+    {
       "relation": "has_hazard",
       "source": "Noise",
       "target": "MTR-M01"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Noise",
+      "target": "OISD-130"
     },
     {
       "relation": "has_hazard",
@@ -5763,7 +3861,22 @@
     {
       "relation": "has_hazard",
       "source": "Noise",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Noise",
       "target": "EQ-2003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Noise",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Noise",
+      "target": "OISD-116"
     },
     {
       "relation": "has_hazard",
@@ -5816,6 +3929,11 @@
       "target": "Luis Kirby"
     },
     {
+      "relation": "subject_to",
+      "source": "FIL-F01",
+      "target": "OISD-130"
+    },
+    {
       "relation": "assigned_to",
       "source": "FIL-F01",
       "target": "WO-2026-1005"
@@ -5829,6 +3947,11 @@
       "relation": "works_with",
       "source": "FIL-F01",
       "target": "John Daniel"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "FIL-F01",
+      "target": "Confined space"
     },
     {
       "relation": "assigned_to",
@@ -5866,6 +3989,11 @@
       "target": "Chemical Plant C"
     },
     {
+      "relation": "has_hazard",
+      "source": "FIL-F01",
+      "target": "Electrical"
+    },
+    {
       "relation": "assigned_to",
       "source": "FIL-F01",
       "target": "WO-2026-1031"
@@ -5896,14 +4024,29 @@
       "target": "VAL-V03"
     },
     {
+      "relation": "regulated_by",
+      "source": "Chemical exposure",
+      "target": "OISD-116"
+    },
+    {
       "relation": "has_hazard",
       "source": "Chemical exposure",
       "target": "MTR-M01"
     },
     {
+      "relation": "regulated_by",
+      "source": "Chemical exposure",
+      "target": "OISD-130"
+    },
+    {
       "relation": "has_hazard",
       "source": "Chemical exposure",
       "target": "EQ-2002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Chemical exposure",
+      "target": "PUMP-A01"
     },
     {
       "relation": "has_hazard",
@@ -5914,6 +4057,11 @@
       "relation": "has_hazard",
       "source": "Chemical exposure",
       "target": "EQ-4001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Chemical exposure",
+      "target": "OISD-117"
     },
     {
       "relation": "has_hazard",
@@ -5941,6 +4089,16 @@
       "target": "Chemical Plant C"
     },
     {
+      "relation": "has_hazard",
+      "source": "VAN-V01",
+      "target": "Confined space"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "VAN-V01",
+      "target": "Electrical"
+    },
+    {
       "relation": "issued_for",
       "source": "VAN-V01",
       "target": "PRM-2026-5003"
@@ -5961,6 +4119,11 @@
       "target": "Montgomery Burgs\nSmallside"
     },
     {
+      "relation": "subject_to",
+      "source": "VAN-V01",
+      "target": "OISD-130"
+    },
+    {
       "relation": "assigned_to",
       "source": "VAN-V01",
       "target": "WO-2026-1002"
@@ -5976,6 +4139,11 @@
       "target": "Zachary Taylor"
     },
     {
+      "relation": "subject_to",
+      "source": "VAN-V01",
+      "target": "OISD-116"
+    },
+    {
       "relation": "assigned_to",
       "source": "VAN-V01",
       "target": "WO-2026-1041"
@@ -5989,6 +4157,11 @@
       "relation": "works_with",
       "source": "VAN-V01",
       "target": "Julian Conner"
+    },
+    {
+      "relation": "subject_to",
+      "source": "VAN-V01",
+      "target": "Section 41B"
     },
     {
       "relation": "located_at",
@@ -6016,9 +4189,19 @@
       "target": "EQ-2001"
     },
     {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "OISD-117"
+    },
+    {
       "relation": "located_at",
       "source": "Chemical Plant C",
       "target": "MTR-M01"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "OISD-130"
     },
     {
       "relation": "located_at",
@@ -6028,12 +4211,57 @@
     {
       "relation": "located_at",
       "source": "Chemical Plant C",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
       "target": "EQ-2003"
     },
     {
       "relation": "located_at",
       "source": "Chemical Plant C",
+      "target": "HX-D02"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
       "target": "EQ-3002"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "Section 38"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "DGMS Circular 2022-05"
     },
     {
       "relation": "located_at",
@@ -6043,12 +4271,32 @@
     {
       "relation": "located_at",
       "source": "Chemical Plant C",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
       "target": "EQ-4001"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Chemical Plant C",
+      "target": "DGMS Circular 2023-01"
     },
     {
       "relation": "located_at",
       "source": "Chemical Plant C",
       "target": "EQ-3001"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
+      "target": "TNK-T03"
+    },
+    {
+      "relation": "located_at",
+      "source": "Chemical Plant C",
+      "target": "TNK-T01"
     },
     {
       "relation": "located_at",
@@ -6059,6 +4307,156 @@
       "relation": "located_at",
       "source": "Chemical Plant C",
       "target": "VAL-V03"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Confined space",
+      "target": "OISD-130"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Confined space",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Confined space",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "VAN-V02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "EQ-2002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "EQ-2001"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "TNK-T03"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "EQ-4001"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined space",
+      "target": "HX-D02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "VAL-V03"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Electrical",
+      "target": "OISD-116"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "COMP-C01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Electrical",
+      "target": "OISD-130"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-2003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-3001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Electrical",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "HX-D01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-3002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Electrical",
+      "target": "EQ-2001"
     },
     {
       "relation": "is_type",
@@ -6101,6 +4499,11 @@
       "target": "PRM-2026-5028"
     },
     {
+      "relation": "subject_to",
+      "source": "VAL-V03",
+      "target": "OISD-116"
+    },
+    {
       "relation": "issued_for",
       "source": "VAL-V03",
       "target": "PRM-2026-5004"
@@ -6116,6 +4519,11 @@
       "target": "Taylor Griffith"
     },
     {
+      "relation": "subject_to",
+      "source": "VAL-V03",
+      "target": "Section 41B"
+    },
+    {
       "relation": "involved_equipment",
       "source": "VAL-V03",
       "target": "INC-2026-9012"
@@ -6129,6 +4537,11 @@
       "relation": "works_with",
       "source": "VAL-V03",
       "target": "Jesse Garza"
+    },
+    {
+      "relation": "subject_to",
+      "source": "VAL-V03",
+      "target": "Section 38"
     },
     {
       "relation": "involved_equipment",
@@ -6154,6 +4567,121 @@
       "relation": "works_with",
       "source": "VAL-V03",
       "target": "Anna Wheeler"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "applies_to",
+      "source": "OISD-116",
+      "target": "Steel Mill D"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "OISD-116",
+      "target": "Falling objects"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1000"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "VAN-V02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1006"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1009"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1018"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "TNK-T03"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1030"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1035"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1037"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1041"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1042"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1045"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-116",
+      "target": "WO-2026-1047"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "EQ-4001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "HX-D01"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "EQ-2001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-116",
+      "target": "EQ-4002"
     },
     {
       "relation": "is_type",
@@ -6187,6 +4715,81 @@
     },
     {
       "relation": "has_hazard",
+      "source": "COMP-C01",
+      "target": "Falling objects"
+    },
+    {
+      "relation": "issued_for",
+      "source": "COMP-C01",
+      "target": "PRM-2026-5005"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Angel Gordon"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Diana Hays\nIssue"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Nicole Stream"
+    },
+    {
+      "relation": "located_at",
+      "source": "COMP-C01",
+      "target": "Steel Mill D"
+    },
+    {
+      "relation": "issued_for",
+      "source": "COMP-C01",
+      "target": "PRM-2026-5009"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Cindy Clayton"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Thomas Douglas"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "COMP-C01",
+      "target": "WO-2026-1024"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Eric Powell"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Tammy Gonzales\nRequested"
+    },
+    {
+      "relation": "subject_to",
+      "source": "COMP-C01",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C01",
+      "target": "INS-2026-8003"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C01",
+      "target": "Laurie Bailey"
+    },
+    {
+      "relation": "has_hazard",
       "source": "Falling objects",
       "target": "EQ-2003"
     },
@@ -6201,9 +4804,29 @@
       "target": "EQ-3003"
     },
     {
+      "relation": "regulated_by",
+      "source": "Falling objects",
+      "target": "OISD-130"
+    },
+    {
       "relation": "has_hazard",
       "source": "Falling objects",
       "target": "MTR-M01"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Falling objects",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Falling objects",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Falling objects",
+      "target": "OISD-117"
     },
     {
       "relation": "located_at",
@@ -6216,6 +4839,16 @@
       "target": "EQ-3001"
     },
     {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "OISD-117"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
+      "target": "PUMP-A01"
+    },
+    {
       "relation": "located_at",
       "source": "Steel Mill D",
       "target": "MTR-M01"
@@ -6223,7 +4856,17 @@
     {
       "relation": "located_at",
       "source": "Steel Mill D",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
       "target": "VAN-V02"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "OISD-130"
     },
     {
       "relation": "located_at",
@@ -6238,7 +4881,57 @@
     {
       "relation": "located_at",
       "source": "Steel Mill D",
+      "target": "TNK-T03"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "Section 40A"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "Section 41B"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
+      "target": "COMP-C02"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
+      "target": "HX-D01"
+    },
+    {
+      "relation": "applies_to",
+      "source": "Steel Mill D",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
+      "relation": "located_at",
+      "source": "Steel Mill D",
       "target": "EQ-3003"
+    },
+    {
+      "relation": "has_hazard",
+      "source": "Confined Space",
+      "target": "EQ-1001"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Confined Space",
+      "target": "OISD-130"
     },
     {
       "relation": "has_hazard",
@@ -6249,6 +4942,11 @@
       "relation": "has_hazard",
       "source": "Confined Space",
       "target": "EQ-3003"
+    },
+    {
+      "relation": "regulated_by",
+      "source": "Confined Space",
+      "target": "OISD-117"
     },
     {
       "relation": "has_hazard",
@@ -6284,6 +4982,11 @@
       "relation": "is_type",
       "source": "Confined Space Entry",
       "target": "PRM-2026-5027"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-2001",
+      "target": "OISD-117"
     },
     {
       "relation": "issued_for",
@@ -6361,6 +5064,11 @@
       "target": "Wendy Thompson"
     },
     {
+      "relation": "subject_to",
+      "source": "EQ-2001",
+      "target": "OISD-130"
+    },
+    {
       "relation": "inspected",
       "source": "EQ-2001",
       "target": "INS-2026-8036"
@@ -6369,6 +5077,271 @@
       "relation": "works_with",
       "source": "EQ-2001",
       "target": "Tammie Prince"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-3001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "PUMP-A01"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-1002"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "VAN-V02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1003"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "TNK-T02"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1008"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1026"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1028"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1032"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-2002"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1038"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1046"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-117",
+      "target": "WO-2026-1048"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "TNK-T01"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-117",
+      "target": "EQ-4001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-1001",
+      "target": "OISD-130"
+    },
+    {
+      "relation": "issued_for",
+      "source": "EQ-1001",
+      "target": "PRM-2026-5008"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Michele Vaughn\nIssue"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Todd Hendrix"
+    },
+    {
+      "relation": "issued_for",
+      "source": "EQ-1001",
+      "target": "PRM-2026-5025"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Anthony Knoll Apt"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Joseph Jennings"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Kristin Haney"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "EQ-1001",
+      "target": "WO-2026-1000"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Daniel Gallagher"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "James Howard"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "EQ-1001",
+      "target": "WO-2026-1022"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Glen Sheppard"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Scott Wilson"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-1001",
+      "target": "DGMS Circular 2022-05"
+    },
+    {
+      "relation": "inspected",
+      "source": "EQ-1001",
+      "target": "INS-2026-8002"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-1001",
+      "target": "Brian Wiggins"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "MTR-M01"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "EQ-3003"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "EQ-4002"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "EQ-2003"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1002"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1005"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1011"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1012"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1014"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "EQ-3002"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1020"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1021"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1027"
+    },
+    {
+      "relation": "references",
+      "source": "OISD-130",
+      "target": "WO-2026-1031"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "EQ-3001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "OISD-130",
+      "target": "COMP-C02"
     },
     {
       "relation": "is_type",
@@ -6736,6 +5709,11 @@
       "target": "Kaitlin Medina"
     },
     {
+      "relation": "subject_to",
+      "source": "EQ-3001",
+      "target": "Section 36"
+    },
+    {
       "relation": "involved_equipment",
       "source": "EQ-3001",
       "target": "INC-2026-9007"
@@ -6764,6 +5742,11 @@
       "relation": "works_with",
       "source": "EQ-3001",
       "target": "Matthew Bowers"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-3001",
+      "target": "DGMS Technical Circular 15"
     },
     {
       "relation": "inspected",
@@ -6886,6 +5869,11 @@
       "target": "Patricia Moss"
     },
     {
+      "relation": "subject_to",
+      "source": "EQ-3003",
+      "target": "Section 40A"
+    },
+    {
       "relation": "involved_equipment",
       "source": "EQ-3003",
       "target": "INC-2026-9004"
@@ -6899,6 +5887,11 @@
       "relation": "works_with",
       "source": "EQ-3003",
       "target": "Jamie Montoya\nDepartment"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-3003",
+      "target": "DGMS Technical Circular 15"
     },
     {
       "relation": "involved_equipment",
@@ -6929,6 +5922,341 @@
       "relation": "works_with",
       "source": "EQ-3003",
       "target": "Penny Lewis"
+    },
+    {
+      "relation": "issued_for",
+      "source": "PUMP-A01",
+      "target": "PRM-2026-5017"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Joseph Horton"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "PUMP-A01",
+      "target": "WO-2026-1010"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Eric Nolan"
+    },
+    {
+      "relation": "subject_to",
+      "source": "PUMP-A01",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "inspected",
+      "source": "PUMP-A01",
+      "target": "INS-2026-8004"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Carrie Jackson"
+    },
+    {
+      "relation": "inspected",
+      "source": "PUMP-A01",
+      "target": "INS-2026-8005"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Dorothy Hill"
+    },
+    {
+      "relation": "subject_to",
+      "source": "PUMP-A01",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
+      "relation": "inspected",
+      "source": "PUMP-A01",
+      "target": "INS-2026-8028"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Brian Turner"
+    },
+    {
+      "relation": "inspected",
+      "source": "PUMP-A01",
+      "target": "INS-2026-8038"
+    },
+    {
+      "relation": "works_with",
+      "source": "PUMP-A01",
+      "target": "Sherry Johnson"
+    },
+    {
+      "relation": "issued_for",
+      "source": "EQ-4002",
+      "target": "PRM-2026-5019"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-4002",
+      "target": "Frank Campbell"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-4002",
+      "target": "Michele Sanders"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-4002",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "EQ-4002",
+      "target": "INC-2026-9016"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-4002",
+      "target": "Justin Frederick\nDepartment"
+    },
+    {
+      "relation": "inspected",
+      "source": "EQ-4002",
+      "target": "INS-2026-8021"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-4002",
+      "target": "Robert Haynes"
+    },
+    {
+      "relation": "inspected",
+      "source": "EQ-4002",
+      "target": "INS-2026-8032"
+    },
+    {
+      "relation": "works_with",
+      "source": "EQ-4002",
+      "target": "Julian Frost"
+    },
+    {
+      "relation": "issued_for",
+      "source": "HX-D01",
+      "target": "PRM-2026-5020"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Jose Prairie Suite"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Maria Henry\nIssue"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Michael Scott PhD"
+    },
+    {
+      "relation": "subject_to",
+      "source": "HX-D01",
+      "target": "Section 7A"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "HX-D01",
+      "target": "INC-2026-9000"
+    },
+    {
+      "relation": "subject_to",
+      "source": "HX-D01",
+      "target": "Section 36"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "HX-D01",
+      "target": "INC-2026-9002"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Lisa Wheeler\nDepartment"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "HX-D01",
+      "target": "INC-2026-9019"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Amy Rowe\nDepartment"
+    },
+    {
+      "relation": "inspected",
+      "source": "HX-D01",
+      "target": "INS-2026-8015"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Michael Miller"
+    },
+    {
+      "relation": "inspected",
+      "source": "HX-D01",
+      "target": "INS-2026-8035"
+    },
+    {
+      "relation": "works_with",
+      "source": "HX-D01",
+      "target": "Michael Harris"
+    },
+    {
+      "relation": "issued_for",
+      "source": "TNK-T02",
+      "target": "PRM-2026-5021"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Joseph Jenkins"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Nathan Nichols"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T02",
+      "target": "WO-2026-1008"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Angel Lewis MD"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Jimmy Murillo"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T02",
+      "target": "WO-2026-1015"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Sara Ramirez"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Scott Cole"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T02",
+      "target": "WO-2026-1043"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Jason Rhodes"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Rhonda Martin"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T02",
+      "target": "WO-2026-1045"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Bobby Scott"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Michael West"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T02",
+      "target": "WO-2026-1047"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Jacob Preston"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Stephanie Hughes"
+    },
+    {
+      "relation": "subject_to",
+      "source": "TNK-T02",
+      "target": "Section 38"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "TNK-T02",
+      "target": "INC-2026-9003"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Alexandra Taylor\nDepartment"
+    },
+    {
+      "relation": "subject_to",
+      "source": "TNK-T02",
+      "target": "DGMS Technical Circular 15"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "TNK-T02",
+      "target": "INC-2026-9009"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Elizabeth Goodman"
+    },
+    {
+      "relation": "subject_to",
+      "source": "TNK-T02",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T02",
+      "target": "INS-2026-8009"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T02",
+      "target": "INS-2026-8029"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T02",
+      "target": "Latoya White"
     },
     {
       "relation": "assigned_to",
@@ -6991,9 +6319,19 @@
       "target": "INC-2026-9011"
     },
     {
+      "relation": "subject_to",
+      "source": "VAN-V02",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
       "relation": "inspected",
       "source": "VAN-V02",
       "target": "INS-2026-8001"
+    },
+    {
+      "relation": "subject_to",
+      "source": "VAN-V02",
+      "target": "DGMS Technical Circular 15"
     },
     {
       "relation": "inspected",
@@ -7046,6 +6384,11 @@
       "target": "Matthew Tucker"
     },
     {
+      "relation": "subject_to",
+      "source": "EQ-2002",
+      "target": "Section 40A"
+    },
+    {
       "relation": "involved_equipment",
       "source": "EQ-2002",
       "target": "INC-2026-9001"
@@ -7061,6 +6404,11 @@
       "target": "Phillip Burns"
     },
     {
+      "relation": "subject_to",
+      "source": "EQ-2002",
+      "target": "DGMS Circular 2022-05"
+    },
+    {
       "relation": "inspected",
       "source": "EQ-2002",
       "target": "INS-2026-8030"
@@ -7069,6 +6417,141 @@
       "relation": "works_with",
       "source": "EQ-2002",
       "target": "Stephen Bell"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "COMP-C02",
+      "target": "WO-2026-1016"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Alicia Gilmore"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Karen Bender"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "COMP-C02",
+      "target": "WO-2026-1037"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Matthew Walker"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Ryan Richardson"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "COMP-C02",
+      "target": "INC-2026-9005"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Bryan Phelps\nDepartment"
+    },
+    {
+      "relation": "subject_to",
+      "source": "COMP-C02",
+      "target": "DGMS Circular 2022-05"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "COMP-C02",
+      "target": "INC-2026-9010"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Lauren Hammond\nDepartment"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Necessary"
+    },
+    {
+      "relation": "subject_to",
+      "source": "COMP-C02",
+      "target": "Section 36"
+    },
+    {
+      "relation": "involved_equipment",
+      "source": "COMP-C02",
+      "target": "INC-2026-9018"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Dustin Nichols"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Joan Mills"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C02",
+      "target": "INS-2026-8008"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Mark Beard"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C02",
+      "target": "INS-2026-8018"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "David Moon"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C02",
+      "target": "INS-2026-8024"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Karen Miller"
+    },
+    {
+      "relation": "subject_to",
+      "source": "COMP-C02",
+      "target": "DGMS Circular 2023-01"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C02",
+      "target": "INS-2026-8025"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Hunter Silva"
+    },
+    {
+      "relation": "inspected",
+      "source": "COMP-C02",
+      "target": "INS-2026-8034"
+    },
+    {
+      "relation": "works_with",
+      "source": "COMP-C02",
+      "target": "Vickie Hernandez"
     },
     {
       "relation": "assigned_to",
@@ -7099,6 +6582,11 @@
       "relation": "works_with",
       "source": "EQ-3002",
       "target": "Mark Roberts"
+    },
+    {
+      "relation": "subject_to",
+      "source": "EQ-3002",
+      "target": "DGMS Circular 2023-01"
     },
     {
       "relation": "involved_equipment",
@@ -7189,6 +6677,46 @@
       "relation": "works_with",
       "source": "EQ-4001",
       "target": "Charles Bush"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "TNK-T03",
+      "target": "WO-2026-1030"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T03",
+      "target": "Keith Jennings"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T03",
+      "target": "INS-2026-8014"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T03",
+      "target": "Alice Jones"
+    },
+    {
+      "relation": "subject_to",
+      "source": "TNK-T03",
+      "target": "DGMS Circular 2022-05"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T03",
+      "target": "INS-2026-8033"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T03",
+      "target": "Richard Ruiz"
+    },
+    {
+      "relation": "assigned_to",
+      "source": "HX-D02",
+      "target": "WO-2026-1036"
     },
     {
       "relation": "is_type",
@@ -7324,6 +6852,21 @@
       "relation": "is_type",
       "source": "Near Miss",
       "target": "INC-2026-9018"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T01",
+      "target": "INS-2026-8019"
+    },
+    {
+      "relation": "inspected",
+      "source": "TNK-T01",
+      "target": "INS-2026-8022"
+    },
+    {
+      "relation": "works_with",
+      "source": "TNK-T01",
+      "target": "Lindsey Lewis"
     }
   ]
 }
