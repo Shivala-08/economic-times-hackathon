@@ -24,7 +24,7 @@ from src.pipeline.ingest import IngestionPipeline
 from src.pipeline.embedder import TextEmbedder
 from src.pipeline.extractor import extract_entities
 from src.pipeline.compliance import check_compliance
-from src.pipeline.llm import generate_rag_answer, get_llm, NvidiaLLM, OllamaLLM, _extract_json
+from src.pipeline.llm import get_llm, NvidiaLLM, OllamaLLM, _extract_json
 from src.pipeline.query_engine import (
     retrieve_context, generate_answer, get_embedder,
     _RAG_TEMPLATE, _CONFIDENCE_GUIDE, _semantic_cache,
@@ -710,7 +710,7 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
                 for es in expected_source_docs
             )
 
-        hit = hit_text and hit_source
+        hit = bool(hit_text and hit_source)
         if hit:
             correct += 1
 

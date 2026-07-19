@@ -108,31 +108,38 @@ class NvidiaLLM:
     def available(self) -> bool:
         return len(self._keys) > 0
 
-    def generate(self, prompt: str, max_tokens: int = 640, enable_thinking: bool = True, reasoning_budget: int = 1024, model: Optional[str] = None) -> str:
-        """Try each API key in order using streaming.
-        
-        If model is a Nemotron model, enables thinking mode parameters in extra_body.
+    def _build_extra_body(self, is_nemotron: bool, enable_thinking: bool,
+                          reasoning_budget: int) -> dict:
+        """Build the extra_body dict for Nemotron thinking-mode parameters."""
+        if not is_nemotron:
+            return {}
+        body = {"chat_template_kwargs": {"enable_thinking": enable_thinking}}
+        if enable_thinking:
+            body["reasoning_budget"] = reasoning_budget
+        return body
+
+    def _find_working_client(self, target_model: str, prompt: str,
+                             max_tokens: int, enable_thinking: bool,
+                             reasoning_budget: int, timeout: float = 15.0):
+        """Try each API key until one succeeds; yield (idx, client, completion).
+
+        Yields a single tuple on the first successful API call, then returns.
+        Raises RuntimeError if all keys are exhausted.
         """
         from openai import OpenAI, AuthenticationError, RateLimitError, APIError
 
         last_error: Optional[Exception] = None
-        target_model = model or self.model
         is_nemotron = "nemotron" in target_model.lower()
+        extra_body = self._build_extra_body(is_nemotron, enable_thinking, reasoning_budget)
 
         for idx, api_key in enumerate(self._keys, start=1):
             try:
                 logger.info(
-                    f"NVIDIA NIM — trying key {idx}/{len(self._keys)} "
-                    f"(model: {target_model}, streaming, is_nemotron={is_nemotron}, enable_thinking={enable_thinking})"
+                    f"NVIDIA NIM — key {idx}/{len(self._keys)} "
+                    f"(model: {target_model}, is_nemotron={is_nemotron}, "
+                    f"enable_thinking={enable_thinking})"
                 )
                 client = OpenAI(base_url=self.base_url, api_key=api_key)
-
-                extra_body = {}
-                if is_nemotron:
-                    extra_body["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
-                    if enable_thinking:
-                        extra_body["reasoning_budget"] = reasoning_budget
-
                 completion = client.chat.completions.create(
                     model=target_model,
                     messages=[
@@ -144,98 +151,9 @@ class NvidiaLLM:
                     max_tokens=max_tokens,
                     extra_body=extra_body if extra_body else None,
                     stream=True,
-                    timeout=15.0,
+                    timeout=timeout,
                 )
-
-                answer_parts = []
-                for chunk in completion:
-                    if not chunk.choices:
-                        continue
-                    delta = chunk.choices[0].delta
-                    # Thinking/reasoning tokens — log but don't include in answer
-                    reasoning = getattr(delta, "reasoning_content", None)
-                    if reasoning:
-                        logger.debug(f"[thinking] {reasoning}")
-                    # Final answer tokens
-                    if delta.content:
-                        answer_parts.append(delta.content)
-
-                logger.info(f"NVIDIA NIM — key {idx} succeeded.")
-                return "".join(answer_parts)
-
-            except AuthenticationError as e:
-                logger.warning(f"NVIDIA key {idx} — AuthenticationError: {e}. Trying next key.")
-                last_error = e
-            except RateLimitError as e:
-                logger.warning(f"NVIDIA key {idx} — RateLimitError (quota exceeded): {e}. Trying next key.")
-                last_error = e
-            except APIError as e:
-                logger.warning(f"NVIDIA key {idx} — APIError: {e}. Trying next key.")
-                last_error = e
-            except Exception as e:
-                logger.warning(f"NVIDIA key {idx} — Unexpected error: {e}. Trying next key.")
-                last_error = e
-
-        # All keys exhausted
-        raise RuntimeError(
-            f"All {len(self._keys)} NVIDIA API key(s) failed. "
-            f"Last error: {last_error}"
-        )
-
-    def stream_generate(self, prompt: str, max_tokens: int = 640,
-                        enable_thinking: bool = True, reasoning_budget: int = 1024,
-                        model: Optional[str] = None) -> Generator[str, None, None]:
-        """Yield answer tokens one-by-one as they arrive from NVIDIA NIM.
-
-        Same key-rotation logic as generate(), but yields each token instead of
-        accumulating and returning the full string.  The caller can pipe these
-        directly to an SSE endpoint or a Streamlit st.write_stream.
-        """
-        from openai import OpenAI, AuthenticationError, RateLimitError, APIError
-
-        last_error: Optional[Exception] = None
-        target_model = model or self.model
-        is_nemotron = "nemotron" in target_model.lower()
-
-        for idx, api_key in enumerate(self._keys, start=1):
-            try:
-                logger.info(
-                    f"NVIDIA NIM stream — key {idx}/{len(self._keys)} "
-                    f"(model: {target_model}, is_nemotron={is_nemotron})"
-                )
-                client = OpenAI(base_url=self.base_url, api_key=api_key)
-
-                extra_body = {}
-                if is_nemotron:
-                    extra_body["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
-                    if enable_thinking:
-                        extra_body["reasoning_budget"] = reasoning_budget
-
-                completion = client.chat.completions.create(
-                    model=target_model,
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user",   "content": prompt},
-                    ],
-                    temperature=1,
-                    top_p=0.95,
-                    max_tokens=max_tokens,
-                    extra_body=extra_body if extra_body else None,
-                    stream=True,
-                    timeout=30.0,
-                )
-
-                for chunk in completion:
-                    if not chunk.choices:
-                        continue
-                    delta = chunk.choices[0].delta
-                    reasoning = getattr(delta, "reasoning_content", None)
-                    if reasoning:
-                        logger.debug(f"[thinking] {reasoning}")
-                    if delta.content:
-                        yield delta.content
-
-                logger.info(f"NVIDIA NIM stream — key {idx} succeeded.")
+                yield idx, client, completion
                 return
 
             except AuthenticationError as e:
@@ -252,9 +170,52 @@ class NvidiaLLM:
                 last_error = e
 
         raise RuntimeError(
-            f"All {len(self._keys)} NVIDIA API key(s) failed (stream). "
+            f"All {len(self._keys)} NVIDIA API key(s) failed. "
             f"Last error: {last_error}"
         )
+
+    def generate(self, prompt: str, max_tokens: int = 640, enable_thinking: bool = True, reasoning_budget: int = 1024, model: Optional[str] = None) -> str:
+        """Try each API key in order, accumulate tokens, return full answer."""
+        target_model = model or self.model
+        for idx, _client, completion in self._find_working_client(
+            target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
+            timeout=15.0,
+        ):
+            answer_parts = []
+            for chunk in completion:
+                if not chunk.choices:
+                    continue
+                delta = chunk.choices[0].delta
+                reasoning = getattr(delta, "reasoning_content", None)
+                if reasoning:
+                    logger.debug(f"[thinking] {reasoning}")
+                if delta.content:
+                    answer_parts.append(delta.content)
+            return "".join(answer_parts)
+        # Should never reach here, but satisfy type checker
+        raise RuntimeError("No keys attempted")
+
+    def stream_generate(self, prompt: str, max_tokens: int = 640,
+                        enable_thinking: bool = True, reasoning_budget: int = 1024,
+                        model: Optional[str] = None) -> Generator[str, None, None]:
+        """Yield answer tokens one-by-one as they arrive from NVIDIA NIM."""
+        target_model = model or self.model
+        for idx, _client, completion in self._find_working_client(
+            target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
+            timeout=30.0,
+        ):
+            for chunk in completion:
+                if not chunk.choices:
+                    continue
+                delta = chunk.choices[0].delta
+                reasoning = getattr(delta, "reasoning_content", None)
+                if reasoning:
+                    logger.debug(f"[thinking] {reasoning}")
+                if delta.content:
+                    yield delta.content
+            return
+        # Should never reach here, but satisfy type checker
+        raise RuntimeError("No keys attempted")
 
 
 
