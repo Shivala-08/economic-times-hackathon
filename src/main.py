@@ -8,7 +8,7 @@ import json
 import os
 import shutil
 import time
-import asyncio
+
 from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional, Union
@@ -24,10 +24,15 @@ from src.pipeline.ingest import IngestionPipeline
 from src.pipeline.embedder import TextEmbedder
 from src.pipeline.extractor import extract_entities
 from src.pipeline.compliance import check_compliance
-from src.pipeline.llm import generate_rag_answer, get_llm
-from src.pipeline.query_engine import retrieve_context, generate_answer
+from src.pipeline.llm import generate_rag_answer, get_llm, NvidiaLLM, OllamaLLM, _extract_json
+from src.pipeline.query_engine import (
+    retrieve_context, generate_answer, get_embedder,
+    _RAG_TEMPLATE, _CONFIDENCE_GUIDE, _semantic_cache,
+    classify_query_complexity,
+)
 from src.storage.chroma_store import VectorStore
 from src.graph.knowledge_graph import get_knowledge_graph
+import numpy as np
 
 # In-memory feedback store (persisted to disk on each write)
 _FEEDBACK_FILE = settings.data_dir / "feedback.jsonl"
@@ -524,12 +529,6 @@ async def query_rag_stream(request: QueryRequest):
         return StreamingResponse(_no_results_gen(), media_type="text/event-stream")
 
     # ── Build the prompt (reuses shared helpers from query_engine) ────────────
-    from src.pipeline.query_engine import (
-        _RAG_TEMPLATE, _CONFIDENCE_GUIDE, get_embedder,
-        classify_query_complexity,
-    )
-    from src.pipeline.llm import NvidiaLLM, OllamaLLM, _extract_json
-    import numpy as np
 
     chunks   = context.get("vector_chunks", [])
     entities = context.get("graph_entities", [])
@@ -589,10 +588,11 @@ async def query_rag_stream(request: QueryRequest):
     # ── Generator: stream tokens via SSE ──────────────────────────────────────
     async def event_stream():
         full_answer_parts: list = []
+        error_msg: str = ""
 
-        if llm.available and is_nvidia:
-            target_model = None if enable_thinking else "meta/llama-3.1-70b-instruct"
-            try:
+        try:
+            if llm.available and is_nvidia:
+                target_model = None if enable_thinking else "meta/llama-3.1-70b-instruct"
                 for token in llm.stream_generate(
                     prompt, max_tokens=tokens_limit,
                     enable_thinking=enable_thinking,
@@ -601,47 +601,43 @@ async def query_rag_stream(request: QueryRequest):
                 ):
                     full_answer_parts.append(token)
                     yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
-            except Exception as e:
-                logger.error(f"Streaming NIM failed: {e}")
-                yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
-        else:
-            # Non-NIM or fallback: generate full then yield at once
-            try:
-                raw = llm.generate(prompt, max_tokens=settings.max_tokens) if llm.available else None
+            elif llm.available:
+                raw = llm.generate(prompt, max_tokens=settings.max_tokens)
                 if raw:
                     full_answer_parts.append(raw)
                     yield f"data: {json.dumps({'type': 'token', 'content': raw})}\n\n"
-            except Exception as e:
-                yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"Streaming failed: {e}")
+            yield f"data: {json.dumps({'type': 'error', 'content': error_msg})}\n\n"
+        finally:
+            # Always send metadata + done, even on mid-stream errors
+            full_text = "".join(full_answer_parts)
+            try:
+                result = _extract_json(full_text)
+            except Exception:
+                result = {"answer": full_text, "confidence": "Medium", "key_points": [], "entities_mentioned": []}
 
-        # Parse accumulated answer and build metadata
-        full_text = "".join(full_answer_parts)
-        try:
-            from src.pipeline.llm import _extract_json
-            result = _extract_json(full_text)
-        except Exception:
-            result = {"answer": full_text, "confidence": "Medium", "key_points": [], "entities_mentioned": []}
+            latency_ms = int((time.time() - t_start) * 1000)
+            result.setdefault("key_points", [])
+            result.setdefault("entities_mentioned", [])
+            result["entities_used"] = list(set(result.get("entities_mentioned", []) + entity_ids))
+            result["sources"] = source_list
+            result["model_used"] = llm_label
+            result["latency_ms"] = latency_ms
+            result["confidence"] = result.get("confidence", "Medium")
+            if error_msg:
+                result["error"] = error_msg
 
-        latency_ms = int((time.time() - t_start) * 1000)
-        result.setdefault("key_points", [])
-        result.setdefault("entities_mentioned", [])
-        result["entities_used"] = list(set(result.get("entities_mentioned", []) + entity_ids))
-        result["sources"] = source_list
-        result["model_used"] = llm_label
-        result["latency_ms"] = latency_ms
-        result["confidence"] = result.get("confidence", "Medium")
+            try:
+                embedder = get_embedder()
+                qe = np.array(embedder.embed_query(request.question))
+                _semantic_cache.set(qe, result)
+            except Exception:
+                pass
 
-        # Save to semantic cache
-        try:
-            from src.pipeline.query_engine import _semantic_cache, get_embedder as _ge
-            embedder = _ge()
-            qe = np.array(embedder.embed_query(request.question))
-            _semantic_cache.set(qe, result)
-        except Exception:
-            pass
-
-        yield f"data: {json.dumps({'type': 'metadata', 'content': result})}\n\n"
-        yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
+            yield f"data: {json.dumps({'type': 'metadata', 'content': result})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream",
                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -696,8 +692,6 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
         hit_text_keyword = matches >= max(1, len(expected_keywords) // 4)
 
         # 2. Embedding similarity scoring
-        from src.pipeline.embedder import TextEmbedder
-        import numpy as np
         embedder = TextEmbedder()
         emb_expected = embedder.embed_query(qa["answer"])
         emb_got = embedder.embed_query(answer_text)
@@ -812,7 +806,6 @@ async def debug_search(
 @app.get("/llm/status")
 async def llm_status():
     """Check whether NVIDIA NIM or Ollama is running and which model is selected."""
-    from src.pipeline.llm import get_llm, NvidiaLLM, OllamaLLM
     llm = get_llm()
     is_nvidia = isinstance(llm, NvidiaLLM)
     is_ollama = isinstance(llm, OllamaLLM)

@@ -402,11 +402,11 @@ def classify_query_complexity(query: str, chunks: list) -> dict:
             is_complex = True
 
     if not is_complex:
-        enable_thinking = True
-        reasoning_budget = 256
-        logger.info("Complexity classifier: simple query → reasoning_budget=256")
+        enable_thinking = False
+        reasoning_budget = 0
+        logger.info("Complexity classifier: simple query → enable_thinking=False, reasoning_budget=0 (fast-path)")
     else:
-        logger.info("Complexity classifier: complex query → reasoning_budget=1024")
+        logger.info("Complexity classifier: complex query → enable_thinking=True, reasoning_budget=1024")
 
     return {
         "enable_thinking": enable_thinking,
