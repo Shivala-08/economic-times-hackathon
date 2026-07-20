@@ -1,22 +1,12 @@
-"""Entity extraction for industrial documents using spaCy + regex.
+"""Entity extraction for industrial documents using regex.
 
-Extracts equipment tags, permit numbers, regulation references, personnel,
+Extracts equipment tags, permit numbers, regulation references,
 plants, and incident types from text content.
 """
 
 import re
 from typing import Optional
 from loguru import logger
-
-try:
-    import spacy
-    nlp = spacy.load("en_core_web_sm")
-    SPACY_AVAILABLE = True
-    logger.info("spaCy NLP model loaded successfully")
-except Exception as e:
-    nlp = None
-    SPACY_AVAILABLE = False
-    logger.warning(f"spaCy not available, using regex-only extraction: {e}")
 
 
 # --- Regex patterns for domain-specific entities ---
@@ -99,11 +89,11 @@ PERMIT_TYPE_PATTERNS = [
 
 
 class EntityExtractor:
-    """Extracts industrial entities from text using spaCy NER + regex patterns."""
+    """Extracts industrial entities from text using regex patterns."""
 
     def __init__(self):
-        self.nlp = nlp
-        self.spacy_available = SPACY_AVAILABLE
+        self.nlp = None
+        self.spacy_available = False
 
     def extract_all(self, text: str, metadata: Optional[dict] = None) -> dict:
         """Extract all entity types from text.
@@ -241,15 +231,8 @@ class EntityExtractor:
         return list(types)
 
     def _extract_personnel(self, text: str) -> list[str]:
-        """Extract person names using spaCy NER (if available)."""
-        if not self.spacy_available:
-            return []
-        doc = self.nlp(text[:100000])  # Limit to avoid memory issues
-        names = set()
-        for ent in doc.ents:
-            if ent.label_ == "PERSON":
-                names.add(ent.text.strip())
-        return list(names)
+        """Extract person names (de-featured)."""
+        return []
 
 
 # Module-level singleton

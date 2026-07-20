@@ -4,7 +4,7 @@
     "filename": "OISD-130.txt",
     "file_path": "data/corpus/real/OISD-130.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:31.952745",
+    "upload_date": "2026-07-20T14:36:15.694319",
     "chunk_count": 1,
     "entities_found": 5
   },
@@ -13,7 +13,7 @@
     "filename": "DGMS-2023-01.txt",
     "file_path": "data/corpus/real/DGMS-2023-01.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:31.991201",
+    "upload_date": "2026-07-20T14:36:15.731187",
     "chunk_count": 1,
     "entities_found": 0
   },
@@ -22,7 +22,7 @@
     "filename": "OISD-119.txt",
     "file_path": "data/corpus/real/OISD-119.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.028093",
+    "upload_date": "2026-07-20T14:36:15.763060",
     "chunk_count": 1,
     "entities_found": 3
   },
@@ -31,7 +31,7 @@
     "filename": "safety_manual.txt",
     "file_path": "data/corpus/real/safety_manual.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.051455",
+    "upload_date": "2026-07-20T14:36:15.802121",
     "chunk_count": 1,
     "entities_found": 1
   },
@@ -40,7 +40,7 @@
     "filename": "FA-SEC-36.txt",
     "file_path": "data/corpus/real/FA-SEC-36.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.079261",
+    "upload_date": "2026-07-20T14:36:15.835683",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -49,7 +49,7 @@
     "filename": "OISD-118_Section2.txt",
     "file_path": "data/corpus/real/OISD-118_Section2.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.095657",
+    "upload_date": "2026-07-20T14:36:15.864768",
     "chunk_count": 1,
     "entities_found": 1
   },
@@ -58,7 +58,7 @@
     "filename": "OISD-118_Section3.txt",
     "file_path": "data/corpus/real/OISD-118_Section3.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.113176",
+    "upload_date": "2026-07-20T14:36:15.890795",
     "chunk_count": 1,
     "entities_found": 1
   },
@@ -67,7 +67,7 @@
     "filename": "DGMS-2022-05.txt",
     "file_path": "data/corpus/real/DGMS-2022-05.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.145862",
+    "upload_date": "2026-07-20T14:36:15.928275",
     "chunk_count": 1,
     "entities_found": 0
   },
@@ -76,7 +76,7 @@
     "filename": "OISD-118_Section1.txt",
     "file_path": "data/corpus/real/OISD-118_Section1.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.168014",
+    "upload_date": "2026-07-20T14:36:15.956039",
     "chunk_count": 1,
     "entities_found": 1
   },
@@ -85,7 +85,7 @@
     "filename": "FA-SEC-38.txt",
     "file_path": "data/corpus/real/FA-SEC-38.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.190900",
+    "upload_date": "2026-07-20T14:36:15.983258",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -94,7 +94,7 @@
     "filename": "FA-SEC-41B.txt",
     "file_path": "data/corpus/real/FA-SEC-41B.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.219732",
+    "upload_date": "2026-07-20T14:36:16.011346",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -103,7 +103,7 @@
     "filename": "FA-SEC-41C.txt",
     "file_path": "data/corpus/real/FA-SEC-41C.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.242517",
+    "upload_date": "2026-07-20T14:36:16.041639",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -112,7 +112,7 @@
     "filename": "OISD-117.txt",
     "file_path": "data/corpus/real/OISD-117.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.282670",
+    "upload_date": "2026-07-20T14:36:16.079989",
     "chunk_count": 1,
     "entities_found": 3
   },
@@ -121,7 +121,7 @@
     "filename": "OISD-116.txt",
     "file_path": "data/corpus/real/OISD-116.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.328614",
+    "upload_date": "2026-07-20T14:36:16.112631",
     "chunk_count": 1,
     "entities_found": 8
   },
@@ -130,7 +130,7 @@
     "filename": "FA-SEC-7A.txt",
     "file_path": "data/corpus/real/FA-SEC-7A.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.354649",
+    "upload_date": "2026-07-20T14:36:16.139422",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -139,7 +139,7 @@
     "filename": "FA-SEC-40A.txt",
     "file_path": "data/corpus/real/FA-SEC-40A.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.380481",
+    "upload_date": "2026-07-20T14:36:16.167449",
     "chunk_count": 1,
     "entities_found": 2
   },
@@ -148,7 +148,7 @@
     "filename": "DGMS-TC-15.txt",
     "file_path": "data/corpus/real/DGMS-TC-15.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:32.409847",
+    "upload_date": "2026-07-20T14:36:16.200919",
     "chunk_count": 1,
     "entities_found": 1
   },
@@ -157,52 +157,52 @@
     "filename": "permits.csv",
     "file_path": "data/corpus/synthetic/permits.csv",
     "type": "csv",
-    "upload_date": "2026-07-20T14:26:32.804078",
+    "upload_date": "2026-07-20T14:36:16.321225",
     "chunk_count": 30,
-    "entities_found": 320
+    "entities_found": 221
   },
   "work_orders.csv": {
     "doc_id": "work_orders.csv",
     "filename": "work_orders.csv",
     "file_path": "data/corpus/synthetic/work_orders.csv",
     "type": "csv",
-    "upload_date": "2026-07-20T14:26:33.567584",
+    "upload_date": "2026-07-20T14:36:16.492798",
     "chunk_count": 50,
-    "entities_found": 344
+    "entities_found": 250
   },
   "incident_reports.csv": {
     "doc_id": "incident_reports.csv",
     "filename": "incident_reports.csv",
     "file_path": "data/corpus/synthetic/incident_reports.csv",
     "type": "csv",
-    "upload_date": "2026-07-20T14:26:33.917958",
+    "upload_date": "2026-07-20T14:36:16.612892",
     "chunk_count": 20,
-    "entities_found": 134
+    "entities_found": 107
   },
   "inspection_logs.csv": {
     "doc_id": "inspection_logs.csv",
     "filename": "inspection_logs.csv",
     "file_path": "data/corpus/synthetic/inspection_logs.csv",
     "type": "csv",
-    "upload_date": "2026-07-20T14:26:34.410395",
+    "upload_date": "2026-07-20T14:36:16.744249",
     "chunk_count": 40,
-    "entities_found": 197
+    "entities_found": 160
   },
   "6105026253.pdf": {
     "doc_id": "6105026253.pdf",
     "filename": "6105026253.pdf",
     "file_path": "data/corpus/uploads/6105026253.pdf",
     "type": "pdf",
-    "upload_date": "2026-07-20T14:26:34.741689",
+    "upload_date": "2026-07-20T14:36:16.923719",
     "chunk_count": 3,
-    "entities_found": 7
+    "entities_found": 0
   },
   "test_upload.txt": {
     "doc_id": "test_upload.txt",
     "filename": "test_upload.txt",
     "file_path": "data/corpus/uploads/test_upload.txt",
     "type": "txt",
-    "upload_date": "2026-07-20T14:26:34.758950",
+    "upload_date": "2026-07-20T14:36:16.951822",
     "chunk_count": 1,
     "entities_found": 0
   }

@@ -241,33 +241,14 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
 
     logger.debug(f"Retrieved {len(vector_chunks)} vector chunks (diverse search) from collection '{store.collection_name}'")
 
-    # 2. Extract entities from the query using the existing extractor
+    # 2. Extract entities from the query using the regex extractor
     extracted_entities = extract_entities(query)
     
     # Flatten and deduplicate all query entities
     query_entity_ids = set()
-    
-    # Check if spaCy NER returned zero entities (i.e. personnel list is empty)
-    spacy_entities = extracted_entities.get("personnel", [])
-    if not spacy_entities:
-        logger.info("spaCy NER returned zero entities. Running query-side regex fallback.")
-        from src.pipeline.extractor import EQUIPMENT_TAG_PATTERN, REGULATION_PATTERNS, PERMIT_ID_PATTERN
-        
-        # Equipment tags
-        for match in EQUIPMENT_TAG_PATTERN.finditer(query):
-            query_entity_ids.add(match.group(1).upper())
-        # Permit numbers
-        for match in PERMIT_ID_PATTERN.finditer(query):
-            query_entity_ids.add(match.group(1).upper())
-        # OISD codes / regulations
-        for pattern in REGULATION_PATTERNS:
-            for match in pattern.finditer(query):
-                query_entity_ids.add(match.group(1))
-    else:
-        # If spaCy NER returned entities, populate with all extracted entities
-        for category, entities in extracted_entities.items():
-            for entity in entities:
-                query_entity_ids.add(entity)
+    for category, entities in extracted_entities.items():
+        for entity in entities:
+            query_entity_ids.add(entity)
 
     # 2b. Also extract entity IDs from retrieved chunk metadata (Tier 1.1)
     for chunk in vector_chunks:

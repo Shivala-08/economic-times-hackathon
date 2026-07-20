@@ -20,7 +20,6 @@ torch>=2.0.0
 chromadb==0.5.23
 
 # Entity extraction & NLP
-spacy==3.7.4
 networkx==3.4.2
 
 # LLM integration

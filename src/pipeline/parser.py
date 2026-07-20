@@ -1,7 +1,6 @@
 """Document parsing module for industrial datasets (TXT, PDF, DOCX, CSV)."""
 
 from pathlib import Path
-import csv
 import pandas as pd
 import pdfplumber
 import docx
