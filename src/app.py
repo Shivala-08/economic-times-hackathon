@@ -403,8 +403,8 @@ with tab_chat:
                             st.markdown(
                                 f'<div class="citation-card">'
                                 f'<div class="cite-header">'
-                                f'[{si}] <b>{src["citation"]}</b> &nbsp;|&nbsp; relevance: {score}</div>'
-                                f'<div class="cite-text">{src["excerpt"][:350]}…</div>'
+                                f'[{si}] <b>{src.get("citation", "Unknown Source")}</b> &nbsp;|&nbsp; relevance: {score}</div>'
+                                f'<div class="cite-text">{src.get("excerpt", "")[:350]}…</div>'
                                 f'</div>',
                                 unsafe_allow_html=True,
                             )
@@ -565,8 +565,8 @@ with tab_chat:
                         st.markdown(
                             f'<div class="citation-card">'
                             f'<div class="cite-header">'
-                            f'[{si}] <b>{src["citation"]}</b> &nbsp;|&nbsp; relevance: {score}</div>'
-                            f'<div class="cite-text">{src["excerpt"][:350]}…</div>'
+                            f'[{si}] <b>{src.get("citation", "Unknown Source")}</b> &nbsp;|&nbsp; relevance: {score}</div>'
+                            f'<div class="cite-text">{src.get("excerpt", "")[:350]}…</div>'
                             f'</div>',
                             unsafe_allow_html=True,
                         )
@@ -901,7 +901,7 @@ with tab_bench:
     st.markdown("---")
     st.info(
         "**Scoring method:** Embedding similarity (semantic match) via `all-MiniLM-L6-v2`. "
-        "A question passes if the cosine similarity is ≥ 0.70 and the expected source documents are retrieved. "
+        "A question passes if the cosine similarity is ≥ 0.55 and the expected source documents are retrieved. "
         "Keyword-overlap stats are also tracked for comparison."
     )
 

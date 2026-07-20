@@ -197,13 +197,37 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
             cross_encoder = get_cross_encoder()
             pairs = [[query, c["text"]] for c in vector_chunks]
             scores = cross_encoder.predict(pairs)
+            
+            # Extract meaningful keywords from query for keyword matching boost
+            query_lower = query.lower()
+            stop_words = {'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+                         'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+                         'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
+                         'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from',
+                         'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
+                         'between', 'out', 'off', 'over', 'under', 'again', 'further', 'then',
+                         'once', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both',
+                         'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
+                         'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because',
+                         'but', 'and', 'or', 'if', 'while', 'about', 'against', 'that', 'this',
+                         'these', 'those', 'what', 'which', 'who', 'whom'}
+            query_keywords = [w for w in query_lower.split() if len(w) > 3 and w not in stop_words]
+            
             for idx, score in enumerate(scores):
                 is_csv = vector_chunks[idx]["metadata"].get("record_type") not in ["txt", "pdf", "docx"]
                 boost = 0.0 if is_csv else 8.0
+                
+                # Keyword matching boost for regulatory documents
+                keyword_boost = 0.0
+                if not is_csv and query_keywords:
+                    chunk_text_lower = vector_chunks[idx]["text"].lower()
+                    keyword_matches = sum(1 for kw in query_keywords if kw in chunk_text_lower)
+                    keyword_boost = min(12.0, keyword_matches * 3.0)  # Up to 12 points for keyword matches
+                
                 vector_chunks[idx]["cross_score"] = float(score)
-                vector_chunks[idx]["combined_score"] = float(score) - 15.0 * float(vector_chunks[idx]["distance"]) + boost
+                vector_chunks[idx]["combined_score"] = float(score) - 15.0 * float(vector_chunks[idx]["distance"]) + boost + keyword_boost
             vector_chunks.sort(key=lambda x: x["combined_score"], reverse=True)
-            logger.debug("Successfully re-ranked vector chunks using CrossEncoder with score fusion")
+            logger.debug("Successfully re-ranked vector chunks using CrossEncoder with score fusion + keyword boost")
         except Exception as e:
             logger.error(f"Failed to re-rank chunks: {e}. Falling back to similarity distance.")
             vector_chunks.sort(key=lambda x: x["distance"])

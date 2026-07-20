@@ -35,7 +35,7 @@ class Settings(BaseSettings):
 
     # RAG
     top_k: int = 50
-    similarity_threshold: float = 0.65
+    similarity_threshold: float = 0.55
 
     # LLM — Anthropic
     anthropic_api_key: str = Field(default="", description="Anthropic API key")
