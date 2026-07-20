@@ -1,0 +1,795 @@
+[
+  {
+    "id": "Q001",
+    "question": "Which equipment requires quarterly inspection?",
+    "status": "PASS",
+    "similarity": 0.7388,
+    "expected_source_docs": [
+      "OISD-116",
+      "OISD-117"
+    ],
+    "retrieved_source_docs": [
+      "OISD-130.txt",
+      "OISD-116.txt",
+      "safety_manual.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "safety_manual.txt",
+        "chunk_index": 0,
+        "distance": 0.4086,
+        "record_type": "txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pres"
+      },
+      {
+        "doc_id": "OISD-130.txt",
+        "chunk_index": 0,
+        "distance": 0.548,
+        "record_type": "txt",
+        "excerpt": "oisd - 130 : safety in electrical systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 130 safety in electrical "
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.536,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "safety_manual.txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pressure vessels tnk - t01, tnk - t02, tnk - t03 require annual internal inspection. pumps pump - a01 an"
+      },
+      {
+        "doc_id": "OISD-130.txt",
+        "excerpt": "oisd - 130 : safety in electrical systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 130 safety in electrical systems section 1 : electrical safety standards 1. 1 all electrical equipment in hazardous areas mus"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
+      }
+    ]
+  },
+  {
+    "id": "Q002",
+    "question": "What is the inspection frequency for pressure vessels TNK-T01 and TNK-T02?",
+    "status": "PASS",
+    "similarity": 0.8026,
+    "expected_source_docs": [
+      "OISD-116",
+      "OISD-117"
+    ],
+    "retrieved_source_docs": [
+      "OISD-116.txt",
+      "safety_manual.txt",
+      "OISD-117.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "safety_manual.txt",
+        "chunk_index": 0,
+        "distance": 0.4009,
+        "record_type": "txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pres"
+      },
+      {
+        "doc_id": "OISD-117.txt",
+        "chunk_index": 0,
+        "distance": 0.4318,
+        "record_type": "txt",
+        "excerpt": "oisd - 117 : storage tank integrity management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 117 storag"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.4217,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "safety_manual.txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pressure vessels tnk - t01, tnk - t02, tnk - t03 require annual internal inspection. pumps pump - a01 an"
+      },
+      {
+        "doc_id": "OISD-117.txt",
+        "excerpt": "oisd - 117 : storage tank integrity management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 117 storage tank integrity management section 1 : tank classification 1. 1 tanks tnk - t01 and tnk - t02 are c"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
+      }
+    ]
+  },
+  {
+    "id": "Q003",
+    "question": "When is a hot work permit required?",
+    "status": "PASS",
+    "similarity": 0.5538,
+    "expected_source_docs": [
+      "OISD-116"
+    ],
+    "retrieved_source_docs": [
+      "OISD-116.txt",
+      "permits.csv"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.6388,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "permits.csv",
+        "chunk_index": 25,
+        "distance": 0.4995,
+        "record_type": "permits",
+        "excerpt": "[Permits Record PRM-2026-5025]\nPermit Id: PRM-2026-5025\nPermit Type: Hot Work\nWork Description: Wall know seven bill.\nLocation: 8886 Anthony Knoll Apt"
+      },
+      {
+        "doc_id": "permits.csv",
+        "chunk_index": 9,
+        "distance": 0.5582,
+        "record_type": "permits",
+        "excerpt": "[Permits Record PRM-2026-5009]\nPermit Id: PRM-2026-5009\nPermit Type: Hot Work\nWork Description: Give value somebody event business quality here woman "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
+      },
+      {
+        "doc_id": "permits.csv",
+        "excerpt": "[Permits Record PRM-2026-5025]\nPermit Id: PRM-2026-5025\nPermit Type: Hot Work\nWork Description: Wall know seven bill.\nLocation: 8886 Anthony Knoll Apt. 995\nSmithchester, MS 11602\nPlant: Steel Mill D\nEquipment Tag: EQ-1001\nIssued To: Kristin Haney\nIss"
+      },
+      {
+        "doc_id": "permits.csv",
+        "excerpt": "[Permits Record PRM-2026-5009]\nPermit Id: PRM-2026-5009\nPermit Type: Hot Work\nWork Description: Give value somebody event business quality here woman stand.\nLocation: USNS Roberts\nFPO AA 94104\nPlant: Steel Mill D\nEquipment Tag: COMP-C01\nIssued To: Th"
+      }
+    ]
+  },
+  {
+    "id": "Q004",
+    "question": "How many emergency response teams are required per shift?",
+    "status": "PASS",
+    "similarity": 0.9535,
+    "expected_source_docs": [
+      "OISD-116"
+    ],
+    "retrieved_source_docs": [
+      "OISD-116.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.7995,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.6035,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "OISD-118_Section3.txt",
+        "chunk_index": 0,
+        "distance": 0.6828,
+        "record_type": "txt",
+        "excerpt": "oisd - 118 : process safety management \u2014 section 3 : operating procedures 3. 1 written operating procedures are required for all process units. 3. 2 p"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "minimum of 2 emergency response teams"
+      }
+    ]
+  },
+  {
+    "id": "Q005",
+    "question": "What are the PPE requirements for mining workers?",
+    "status": "PASS",
+    "similarity": 0.8736,
+    "expected_source_docs": [
+      "DGMS-2023-01"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-41B.txt",
+      "DGMS-2023-01.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.3201,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "chunk_index": 0,
+        "distance": 0.4563,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms "
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.5155,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "excerpt": "mandatory ppe including hard hats"
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "excerpt": "adequate and suitable ppe"
+      }
+    ]
+  },
+  {
+    "id": "Q006",
+    "question": "How often must safety officers be appointed in a factory?",
+    "status": "PASS",
+    "similarity": 0.9154,
+    "expected_source_docs": [
+      "FA-SEC-7A"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-7A.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-7A.txt",
+        "chunk_index": 0,
+        "distance": 0.2746,
+        "record_type": "txt",
+        "excerpt": "factory act section 7a : safety officers = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 7a : appo"
+      },
+      {
+        "doc_id": "FA-SEC-41C.txt",
+        "chunk_index": 0,
+        "distance": 0.4474,
+        "record_type": "txt",
+        "excerpt": "factory act section 41c : right to workers = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 41c"
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.4763,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-7A.txt",
+        "excerpt": "every factory having 1000 or more workers must employ a qualified safety officer"
+      }
+    ]
+  },
+  {
+    "id": "Q007",
+    "question": "What is the minimum fresh air supply requirement for underground mines?",
+    "status": "PASS",
+    "similarity": 0.9315,
+    "expected_source_docs": [
+      "DGMS-2022-05"
+    ],
+    "retrieved_source_docs": [
+      "DGMS-2022-05.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "chunk_index": 0,
+        "distance": 0.344,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms "
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.5089,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "DGMS-TC-15.txt",
+        "chunk_index": 0,
+        "distance": 0.6112,
+        "record_type": "txt",
+        "excerpt": "dgms technical circular 15 : ground control management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "0.1 m\u00b3/s per worker"
+      }
+    ]
+  },
+  {
+    "id": "Q008",
+    "question": "How frequently must fire drills be conducted in a factory?",
+    "status": "PASS",
+    "similarity": 0.9629,
+    "expected_source_docs": [
+      "FA-SEC-36"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-36.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-36.txt",
+        "chunk_index": 0,
+        "distance": 0.3304,
+        "record_type": "txt",
+        "excerpt": "factory act section 36 : fire precautions = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 36 : p"
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.5275,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.5313,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-36.txt",
+        "excerpt": "fire drills must be conducted at least once every quarter"
+      }
+    ]
+  },
+  {
+    "id": "Q009",
+    "question": "What are the requirements for HAZOP studies?",
+    "status": "PASS",
+    "similarity": 0.8958,
+    "expected_source_docs": [
+      "OISD-118"
+    ],
+    "retrieved_source_docs": [
+      "OISD-118_Section2.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-118_Section2.txt",
+        "chunk_index": 0,
+        "distance": 0.5057,
+        "record_type": "txt",
+        "excerpt": "oisd - 118 : process safety management \u2014 section 2 : process hazard analysis 2. 1 hazop studies are required for all new installations and modificatio"
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "chunk_index": 0,
+        "distance": 0.6764,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms "
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.781,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-118_Section2.txt",
+        "excerpt": "hazop studies are required for all new installations"
+      }
+    ]
+  },
+  {
+    "id": "Q010",
+    "question": "What is the inspection frequency for high-pressure piping systems?",
+    "status": "PASS",
+    "similarity": 0.9435,
+    "expected_source_docs": [
+      "OISD-119"
+    ],
+    "retrieved_source_docs": [
+      "OISD-119.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-119.txt",
+        "chunk_index": 0,
+        "distance": 0.3947,
+        "record_type": "txt",
+        "excerpt": "oisd - 119 : inspection and maintenance of piping systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.5202,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "safety_manual.txt",
+        "chunk_index": 0,
+        "distance": 0.5247,
+        "record_type": "txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pres"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-119.txt",
+        "excerpt": "annual thickness measurement"
+      }
+    ]
+  },
+  {
+    "id": "Q011",
+    "question": "How quickly must serious factory accidents be reported?",
+    "status": "PASS",
+    "similarity": 0.8769,
+    "expected_source_docs": [
+      "FA-SEC-40A"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-40A.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-40A.txt",
+        "chunk_index": 0,
+        "distance": 0.3682,
+        "record_type": "txt",
+        "excerpt": "factory act section 40a : accident reporting = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - secti"
+      },
+      {
+        "doc_id": "FA-SEC-7A.txt",
+        "chunk_index": 0,
+        "distance": 0.6426,
+        "record_type": "txt",
+        "excerpt": "factory act section 7a : safety officers = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 7a : appo"
+      },
+      {
+        "doc_id": "FA-SEC-36.txt",
+        "chunk_index": 0,
+        "distance": 0.5962,
+        "record_type": "txt",
+        "excerpt": "factory act section 36 : fire precautions = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 36 : p"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-40A.txt",
+        "excerpt": "reported to the factory inspector within 12 hours"
+      }
+    ]
+  },
+  {
+    "id": "Q012",
+    "question": "What rights do workers have regarding workplace safety?",
+    "status": "PASS",
+    "similarity": 0.8725,
+    "expected_source_docs": [
+      "FA-SEC-41C"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-41C.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-41C.txt",
+        "chunk_index": 0,
+        "distance": 0.2815,
+        "record_type": "txt",
+        "excerpt": "factory act section 41c : right to workers = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 41c"
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.4799,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      },
+      {
+        "doc_id": "FA-SEC-7A.txt",
+        "chunk_index": 0,
+        "distance": 0.5379,
+        "record_type": "txt",
+        "excerpt": "factory act section 7a : safety officers = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 7a : appo"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-41C.txt",
+        "excerpt": "workers have the right to"
+      }
+    ]
+  },
+  {
+    "id": "Q013",
+    "question": "What must be fenced according to Factory Act Section 38?",
+    "status": "PASS",
+    "similarity": 0.7028,
+    "expected_source_docs": [
+      "FA-SEC-38"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-36.txt",
+      "FA-SEC-41B.txt",
+      "FA-SEC-38.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-38.txt",
+        "chunk_index": 0,
+        "distance": 0.2423,
+        "record_type": "txt",
+        "excerpt": "factory act section 38 : fencing of machinery = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      },
+      {
+        "doc_id": "FA-SEC-36.txt",
+        "chunk_index": 0,
+        "distance": 0.4624,
+        "record_type": "txt",
+        "excerpt": "factory act section 36 : fire precautions = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 36 : p"
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.4611,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-38.txt",
+        "excerpt": "factory act section 38 : fencing of machinery = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 38 : fencing of machinery 1. every dangerous part of any machinery must be securely fenced. 2."
+      },
+      {
+        "doc_id": "FA-SEC-36.txt",
+        "excerpt": "factory act section 36 : fire precautions = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 36 : precautions against fire 1. every factory must take adequate precautions against fire. 2. fire exting"
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 41b : safety measures for hazardous processes 1. factories must provide the following for haza"
+      }
+    ]
+  },
+  {
+    "id": "Q014",
+    "question": "What safety measures are required for hazardous processes?",
+    "status": "PASS",
+    "similarity": 0.8979,
+    "expected_source_docs": [
+      "FA-SEC-41B"
+    ],
+    "retrieved_source_docs": [
+      "FA-SEC-41B.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.2909,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      },
+      {
+        "doc_id": "OISD-118_Section2.txt",
+        "chunk_index": 0,
+        "distance": 0.4314,
+        "record_type": "txt",
+        "excerpt": "oisd - 118 : process safety management \u2014 section 2 : process hazard analysis 2. 1 hazop studies are required for all new installations and modificatio"
+      },
+      {
+        "doc_id": "OISD-118_Section3.txt",
+        "chunk_index": 0,
+        "distance": 0.4524,
+        "record_type": "txt",
+        "excerpt": "oisd - 118 : process safety management \u2014 section 3 : operating procedures 3. 1 written operating procedures are required for all process units. 3. 2 p"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "excerpt": "adequate and suitable ppe for all workers"
+      }
+    ]
+  },
+  {
+    "id": "Q015",
+    "question": "What are the requirements for gas monitoring in underground mines?",
+    "status": "PASS",
+    "similarity": 0.8979,
+    "expected_source_docs": [
+      "DGMS-2022-05"
+    ],
+    "retrieved_source_docs": [
+      "DGMS-2022-05.txt",
+      "DGMS-2023-01.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "chunk_index": 0,
+        "distance": 0.3031,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms "
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.4411,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "DGMS-TC-15.txt",
+        "chunk_index": 0,
+        "distance": 0.503,
+        "record_type": "txt",
+        "excerpt": "dgms technical circular 15 : ground control management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ="
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "gas monitoring must be conducted at the working face every 2 hours"
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "excerpt": "gas monitoring equipment must be checked daily for calibration"
+      }
+    ]
+  },
+  {
+    "id": "Q016",
+    "question": "How often must safety training be conducted for mining workers?",
+    "status": "PASS",
+    "similarity": 0.8009,
+    "expected_source_docs": [
+      "DGMS-2023-01"
+    ],
+    "retrieved_source_docs": [
+      "DGMS-2023-01.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "chunk_index": 0,
+        "distance": 0.3044,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "chunk_index": 0,
+        "distance": 0.5598,
+        "record_type": "txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms "
+      },
+      {
+        "doc_id": "FA-SEC-41B.txt",
+        "chunk_index": 0,
+        "distance": 0.5559,
+        "record_type": "txt",
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - se"
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "excerpt": "40 hours safety induction training, refresher every 6 months, monthly drills"
+      }
+    ]
+  },
+  {
+    "id": "Q017",
+    "question": "What are the electrical safety requirements per OISD-130?",
+    "status": "PASS",
+    "similarity": 0.7427,
+    "expected_source_docs": [
+      "OISD-130"
+    ],
+    "retrieved_source_docs": [
+      "OISD-130.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-130.txt",
+        "chunk_index": 0,
+        "distance": 0.1993,
+        "record_type": "txt",
+        "excerpt": "oisd - 130 : safety in electrical systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 130 safety in electrical "
+      },
+      {
+        "doc_id": "safety_manual.txt",
+        "chunk_index": 0,
+        "distance": 0.5096,
+        "record_type": "txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pres"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.4638,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-130.txt",
+        "excerpt": "electrical equipment in hazardous areas must be certified"
+      },
+      {
+        "doc_id": "OISD-130.txt",
+        "excerpt": "lockout / tagout procedures must be implemented"
+      }
+    ]
+  },
+  {
+    "id": "Q018",
+    "question": "How should tank classification affect inspection frequency?",
+    "status": "PASS",
+    "similarity": 0.7409,
+    "expected_source_docs": [
+      "OISD-117"
+    ],
+    "retrieved_source_docs": [
+      "OISD-117.txt"
+    ],
+    "chunk_sources": [
+      {
+        "doc_id": "OISD-117.txt",
+        "chunk_index": 0,
+        "distance": 0.3747,
+        "record_type": "txt",
+        "excerpt": "oisd - 117 : storage tank integrity management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 117 storag"
+      },
+      {
+        "doc_id": "OISD-119.txt",
+        "chunk_index": 0,
+        "distance": 0.5918,
+        "record_type": "txt",
+        "excerpt": "oisd - 119 : inspection and maintenance of piping systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "chunk_index": 0,
+        "distance": 0.5452,
+        "record_type": "txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+      }
+    ],
+    "llm_sources": [
+      {
+        "doc_id": "OISD-117.txt",
+        "excerpt": "group a tanks : annual internal inspection"
+      }
+    ]
+  }
+]
