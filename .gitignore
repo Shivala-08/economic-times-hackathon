@@ -9,3 +9,4 @@ build/
 data/chroma_db/
 data/temp_uploads/
 .DS_Store
+demo_screenshots/
