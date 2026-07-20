@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The optimization pass transformed the system from a basic RAG pipeline into a high-performance, streaming-capable industrial knowledge intelligence platform. Through three iterative tiers of optimization, we achieved **100% accuracy** (18/18) on the 18-question benchmark set, while reducing average latency by **92.5%** in server mode.
+The optimization pass transformed the system from a basic RAG pipeline into a high-performance, streaming-capable industrial knowledge intelligence platform. Through three iterative tiers of optimization, we achieved **100% accuracy** (18/18) on the 18-question benchmark set (after warm-up), while reducing average latency by **92.5%** in server mode.
 
 ---
 
@@ -104,11 +104,11 @@ After moving the archived OISD-118_Original.txt outside the corpus tree to preve
 | Embedding similarity scoring | `main.py` | Replaces brittle keyword overlap with cosine similarity ≥ 0.65 |
 | Max tokens cap 640 | `config.py` | Reduces unnecessary output generation time |
 
-**Result:** 77.8% → 100% accuracy
+**Result:** 77.8% → 100% accuracy (after warm-up, 94.4% cold start)
 
 ### Tier 2 — Latency & Precision
 
-**Objective:** Reduce average latency while maintaining 100% accuracy
+**Objective:** Reduce average latency while maintaining 100% accuracy (after warm-up)
 
 | Change | File | Impact |
 |---|---|---|
