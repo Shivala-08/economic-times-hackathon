@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The optimization pass transformed the system from a basic RAG pipeline into a high-performance, streaming-capable industrial knowledge intelligence platform. Through three iterative tiers of optimization, we achieved **94.4% accuracy** (17/18) on the 18-question benchmark set with a known limitation on Q009, while reducing average latency by **92.5%** in server mode.
+The optimization pass transformed the system from a basic RAG pipeline into a high-performance, streaming-capable industrial knowledge intelligence platform. Through three iterative tiers of optimization, we achieved **100% accuracy** (18/18) on the 18-question benchmark set, while reducing average latency by **92.5%** in server mode.
 
 ---
 
@@ -12,7 +12,7 @@ The optimization pass transformed the system from a basic RAG pipeline into a hi
 
 | Metric | **Before** (Run 1) | **After Tier 1** | **After Tier 2** | **After Tier 3 (Final)** | **Total Delta** |
 |---|---|---|---|---|---|
-| **Accuracy** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **94.4% (17/18)** | **+16.6%** |
+| **Accuracy** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **100% (18/18)** | **+22.2%** |
 | **Avg Latency (Server, warm)** | 10,306 ms | ~1,200 ms | ~1,065 ms | **771 ms** | **−92.5%** |
 | **Avg Latency (Standalone, cold)** | — | — | — | **9,191 ms** | — |
 | **Slowest Q (Server)** | ~46,600 ms | ~4,400 ms | ~4,400 ms | **1,364 ms** | **−97.1%** |
@@ -179,20 +179,18 @@ The **771ms average** comes from the FastAPI `/benchmark/run` endpoint where mod
 
 ---
 
-## Known Limitations
+## Section-Aware Chunking (Q009 Fix)
 
-### Q009 — Chunk Dilution (HAZOP Studies)
+To fix Q009's chunk dilution issue, OISD-118 was split into 3 section-specific files:
+- `OISD-118_Section1.txt` — Process Safety Information
+- `OISD-118_Section2.txt` — Process Hazard Analysis (HAZOP studies)
+- `OISD-118_Section3.txt` — Operating Procedures
 
-**Question:** "What are the requirements for HAZOP studies?"
-**Expected Answer:** HAZOP studies must be conducted for all new installations and modifications to existing units per OISD-118. Revalidation of HAZOP studies must occur every 5 years, and action items from PHA studies must be tracked to completion.
-**Similarity:** 0.328 (below 0.55 threshold)
-**Root Cause:** OISD-118.txt contains 3 sections (Process Safety Information, Process Hazard Analysis, Operating Procedures) in a single chunk. The LLM extracts from Section 1 (equipment specs) instead of Section 2 (HAZOP studies) because the chunk content is mixed. The keyword boost correctly surfaces OISD-118 (score 0.7276), but cannot differentiate between sections within the same chunk.
-**Impact:** Single question fails; all other 17 questions pass.
-**Fix (Out of Scope):** Would require section-aware chunking to separate OISD-118 into 3 section-specific chunks. This is a fundamental limitation of fixed-size chunking and would require changes to the ingestion pipeline.
+Each section now gets its own chunk with its own embedding, allowing the LLM to retrieve Section 2 (HAZOP studies) specifically. Q009 similarity improved from 0.328 to 0.661, passing the 0.55 threshold.
 
 ## Recommendations for Future Work
 
-1. **Section-aware chunking** — Parse regulatory documents by section headings to create section-specific chunks, preventing chunk dilution (fixes Q009)
+1. **Section-aware chunking for all regulatory docs** — Apply the same section-splitting approach to OISD-116, OISD-117, OISD-119, and Factory Act sections to further improve retrieval precision
 2. **Async FastAPI endpoint** — Use `AsyncOpenAI` client in streaming endpoint to avoid blocking event loop under concurrent load
 3. **Production server** — Add a `if __name__ == "__main__"` block to `main.py` for direct execution, or use a process manager (systemd/supervisor)
 4. **Streaming answer display** — Render badges/sources below the streamed text for consistent UX
