@@ -667,6 +667,7 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
     total     = min(len(qa_pairs), max_questions)
     correct   = 0
     total_ms  = 0
+    retrieval_log = []  # Track retrieval sources for each question
 
     for qa in qa_pairs[:total]:
         t0 = time.time()
@@ -674,6 +675,20 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
         expected = qa["answer"].lower()
 
         context = retrieve_context(question, top_k=50)
+        
+        # Log retrieval sources for this question
+        retrieved_chunks = context.get("vector_chunks", [])
+        chunk_sources = []
+        for chunk in retrieved_chunks:
+            meta = chunk.get("metadata", {})
+            chunk_sources.append({
+                "doc_id": meta.get("doc_id", "unknown"),
+                "chunk_index": meta.get("chunk_index", 0),
+                "distance": round(chunk.get("distance", 0.0), 4),
+                "record_type": meta.get("record_type", "unknown"),
+                "excerpt": chunk.get("text", "")[:150]
+            })
+        
         llm_result = generate_answer(question, context)
         
         answer_text = llm_result.get("answer", "")
@@ -720,6 +735,18 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
         if llm_result.get("confidence") == "Low": reason.append("low confidence")
         reason_str = ", ".join(reason) if not hit else ""
 
+        # Store in retrieval log
+        retrieval_log.append({
+            "id": qa.get("id", ""),
+            "question": question,
+            "status": "PASS" if hit else "FAIL",
+            "similarity": round(float(similarity), 4),
+            "expected_source_docs": list(expected_source_docs),
+            "retrieved_source_docs": list(retrieved_source_docs),
+            "chunk_sources": chunk_sources,
+            "llm_sources": sources_list[:3]
+        })
+
         results.append({
             "id":           qa.get("id", ""),
             "question":     question,
@@ -738,6 +765,16 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
     accuracy = round(correct / total * 100, 1) if total > 0 else 0.0
     avg_ms   = round(total_ms / total) if total > 0 else 0
 
+    # Save retrieval log to disk for post-benchmark analysis
+    retrieval_log_path = settings.benchmarks_dir / "retrieval_log.json"
+    try:
+        retrieval_log_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(retrieval_log_path, "w") as f:
+            json.dump(retrieval_log, f, indent=2)
+        logger.info(f"Retrieval log saved to: {retrieval_log_path}")
+    except Exception as e:
+        logger.warning(f"Failed to save retrieval log: {e}")
+
     return {
         "total":           total,
         "correct":         correct,
@@ -745,6 +782,7 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
         "avg_latency_ms":  avg_ms,
         "model_used":      get_llm().model or "smart-fallback",
         "results":         results,
+        "retrieval_log":   retrieval_log,  # Include log for debugging regressions
     }
 
 

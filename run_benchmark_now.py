@@ -28,6 +28,7 @@ print(f"Running {len(qa_pairs)} questions...\n")
 results = []
 correct = 0
 total_ms = 0
+retrieval_log = []  # Track retrieval sources for each question
 
 for i, qa in enumerate(qa_pairs, 1):
     t0 = time.time()
@@ -36,6 +37,20 @@ for i, qa in enumerate(qa_pairs, 1):
     expected_source_docs = set(qa.get("source_docs", []))
 
     context = retrieve_context(question, top_k=50)
+    
+    # Log retrieval sources for this question
+    retrieved_chunks = context.get("vector_chunks", [])
+    chunk_sources = []
+    for chunk in retrieved_chunks:
+        meta = chunk.get("metadata", {})
+        chunk_sources.append({
+            "doc_id": meta.get("doc_id", "unknown"),
+            "chunk_index": meta.get("chunk_index", 0),
+            "distance": round(chunk.get("distance", 0.0), 4),
+            "record_type": meta.get("record_type", "unknown"),
+            "excerpt": chunk.get("text", "")[:150]
+        })
+    
     llm_result = generate_answer(question, context)
 
     answer_text = llm_result.get("answer", "")
@@ -91,6 +106,22 @@ for i, qa in enumerate(qa_pairs, 1):
         print(f"        -> {reason_str}")
         print(f"        Expected: {qa['answer']}")
         print(f"        Got:      {answer_text}")
+    
+    # Log retrieval sources (only for failed questions)
+    if not hit:
+        print(f"        Sources: {[cs['doc_id'] for cs in chunk_sources[:3]]}")
+    
+    # Store in retrieval log
+    retrieval_log.append({
+        "id": qa["id"],
+        "question": question,
+        "status": status,
+        "similarity": round(similarity, 4),
+        "expected_source_docs": list(expected_source_docs),
+        "retrieved_source_docs": list(retrieved_source_docs),
+        "chunk_sources": chunk_sources,
+        "llm_sources": sources_list[:3]
+    })
 
     results.append({"id": qa["id"], "passed": hit, "latency_ms": elapsed_ms, "category": qa.get("category", "")})
 
@@ -119,3 +150,9 @@ for cat, s in sorted(cat_stats.items()):
     pct = round(s["pass"] / total_cat * 100) if total_cat > 0 else 0
     bar = "#" * s["pass"] + "-" * s["fail"]
     print(f"  {cat:<25s} {s['pass']}/{total_cat} ({pct:3d}%) {bar}")
+
+# Save retrieval log to JSON for analysis
+log_path = "data/benchmarks/retrieval_log.json"
+with open(log_path, "w") as f:
+    json.dump(retrieval_log, f, indent=2)
+print(f"\nRetrieval log saved to: {log_path}")
