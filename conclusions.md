@@ -14,7 +14,7 @@ The optimization pass transformed the system from a basic RAG pipeline into a hi
 |---|---|---|---|---|---|
 | **Accuracy** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **100% (18/18)** | **+22.2%** |
 | **Avg Latency (Server, steady-state)** | 10,306 ms | ~1,200 ms | ~1,065 ms | **771 ms** (steady-state) | **−92.5%** |
-| **Avg Latency (Standalone, cold)** | — | — | — | **9,191 ms** | — |
+| **Avg Latency (Standalone, cold)** | — | — | — | **4,225 ms** | — |
 | **Slowest Q (Server)** | ~46,600 ms | ~4,400 ms | ~4,400 ms | **1,364 ms** | **−97.1%** |
 | **Fastest Q (Server)** | ~5,000 ms | ~570 ms | ~570 ms | **566 ms** | **−88.7%** |
 | **Model** | Ollama llama3.1 | NVIDIA NIM nemotron | NVIDIA NIM nemotron | NVIDIA NIM nemotron | — |
@@ -28,9 +28,9 @@ Latency varies significantly based on server warm-up state:
 |---|---|---|
 | **Server, fully warm** | 771 ms | Models pre-loaded, semantic cache populated |
 | **Server, cold start** | 4,448 ms | Fresh restart, cache empty, first queries slow |
-| **Standalone script** | 9,191 ms | Runs cold — first query takes ~15s for model loading |
+| **Standalone script** | 4,225 ms | Runs cold — first query takes ~15s for model loading |
 
-The **771ms average** represents steady-state performance after the semantic cache is warm (models loaded, recent queries cached). The **4,448ms average** comes from a fresh server restart where the cache is empty — subsequent warm queries drop to ~1,000ms. The standalone `run_benchmark_now.py` runs completely cold with first-query overhead of ~15s (spaCy NLP, sentence-transformers embedder, cross-encoder re-ranker initialization).
+The **771ms average** represents steady-state performance after the semantic cache is warm (models loaded, recent queries cached). The **4,448ms average** comes from a fresh server restart where the cache is empty — subsequent warm queries drop to ~1,000ms. The standalone `run_benchmark_now.py` runs completely cold with first-query overhead of ~15s (spaCy NLP, sentence-transformers embedder, cross-encoder re-ranker initialization). The latest standalone run (July 20, 2026) shows **4,225ms average latency** with 100% accuracy.
 
 **Warm Server Benchmark (Post-Cleanup, July 20, 2026):**
 
@@ -215,6 +215,12 @@ After moving the archived OISD-118_Original.txt outside the corpus tree to preve
 |---|---|
 | `2e66844` | Optimization Pass: Tier 1-3 complete, 100% accuracy, 771ms avg latency |
 | `490380b` | Refactor: extract `_find_working_client()`, remove dead imports |
+| `b11a87d` | Fix duplicate embedding: move OISD-118_Original.txt outside corpus tree |
+| `9b08d63` | Add retrieval source logging for benchmark regression diagnosis |
+| `7d67a58` | Update conclusions.md with warm server benchmark and regression findings |
+| `517cb44` | Clarify headline metrics: 771ms is steady-state, not cold-start |
+| `d2c0c03` | Update README with optimization pass docs and benchmark guide |
+| `10e0fcf` | Add retrieval log from final benchmark run |
 
 ---
 
