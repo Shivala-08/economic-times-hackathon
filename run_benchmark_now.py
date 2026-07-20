@@ -23,6 +23,24 @@ from src.pipeline.query_engine import get_embedder
 embedder = get_embedder()
 print(f"Vector store: {store.count()} chunks")
 print(f"LLM: {type(llm).__name__} | model={llm.model} | available={llm.available}")
+
+# Warm-up phase: run 5 representative queries to ensure consistent
+# cold-start results (warms LLM connections, ChromaDB planner, spaCy, embeddings)
+WARMUP_QUERIES = [
+    "Which equipment requires quarterly inspection?",
+    "What are the PPE requirements for mining workers?",
+    "When is a hot work permit required?",
+    "How quickly must serious factory accidents be reported?",
+    "What are the electrical safety requirements per OISD-130?",
+]
+print(f"Warming up with {len(WARMUP_QUERIES)} queries...")
+warmup_start = time.time()
+for wq in WARMUP_QUERIES:
+    ctx = retrieve_context(wq, top_k=50)
+    _ = generate_answer(wq, ctx)
+warmup_ms = int((time.time() - warmup_start) * 1000)
+print(f"Warm-up complete ({warmup_ms}ms total). Starting benchmark.\n")
+
 print(f"Running {len(qa_pairs)} questions...\n")
 
 results = []
