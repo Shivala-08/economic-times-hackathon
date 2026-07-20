@@ -3,15 +3,15 @@
     "id": "Q001",
     "question": "Which equipment requires quarterly inspection?",
     "status": "PASS",
-    "similarity": 0.7388,
+    "similarity": 0.8553,
     "expected_source_docs": [
       "OISD-116",
       "OISD-117"
     ],
     "retrieved_source_docs": [
       "OISD-130.txt",
-      "OISD-116.txt",
-      "safety_manual.txt"
+      "safety_manual.txt",
+      "OISD-116.txt"
     ],
     "chunk_sources": [
       {
@@ -39,15 +39,15 @@
     "llm_sources": [
       {
         "doc_id": "safety_manual.txt",
-        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pressure vessels tnk - t01, tnk - t02, tnk - t03 require annual internal inspection. pumps pump - a01 an"
+        "excerpt": "eq-1001 to eq-4002 quarterly inspections"
       },
       {
         "doc_id": "OISD-130.txt",
-        "excerpt": "oisd - 130 : safety in electrical systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 130 safety in electrical systems section 1 : electrical safety standards 1. 1 all electrical equipment in hazardous areas mus"
+        "excerpt": "transformer oil testing must be conducted quarterly"
       },
       {
         "doc_id": "OISD-116.txt",
-        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
+        "excerpt": "compressors comp-c01 comp-c02 quarterly bearing inspection"
       }
     ]
   },
@@ -55,7 +55,7 @@
     "id": "Q002",
     "question": "What is the inspection frequency for pressure vessels TNK-T01 and TNK-T02?",
     "status": "PASS",
-    "similarity": 0.8026,
+    "similarity": 0.8184,
     "expected_source_docs": [
       "OISD-116",
       "OISD-117"
@@ -91,15 +91,15 @@
     "llm_sources": [
       {
         "doc_id": "safety_manual.txt",
-        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pressure vessels tnk - t01, tnk - t02, tnk - t03 require annual internal inspection. pumps pump - a01 an"
+        "excerpt": "annual internal inspection"
       },
       {
         "doc_id": "OISD-117.txt",
-        "excerpt": "oisd - 117 : storage tank integrity management = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 117 storage tank integrity management section 1 : tank classification 1. 1 tanks tnk - t01 and tnk - t02 are c"
+        "excerpt": "group a tanks annual internal"
       },
       {
         "doc_id": "OISD-116.txt",
-        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
+        "excerpt": "annual internal inspection"
       }
     ]
   },
@@ -112,8 +112,8 @@
       "OISD-116"
     ],
     "retrieved_source_docs": [
-      "OISD-116.txt",
-      "permits.csv"
+      "permits.csv",
+      "OISD-116.txt"
     ],
     "chunk_sources": [
       {
@@ -198,13 +198,14 @@
     "id": "Q005",
     "question": "What are the PPE requirements for mining workers?",
     "status": "PASS",
-    "similarity": 0.8736,
+    "similarity": 0.7101,
     "expected_source_docs": [
       "DGMS-2023-01"
     ],
     "retrieved_source_docs": [
-      "FA-SEC-41B.txt",
-      "DGMS-2023-01.txt"
+      "DGMS-2022-05.txt",
+      "DGMS-2023-01.txt",
+      "FA-SEC-41B.txt"
     ],
     "chunk_sources": [
       {
@@ -232,11 +233,15 @@
     "llm_sources": [
       {
         "doc_id": "DGMS-2023-01.txt",
-        "excerpt": "mandatory ppe including hard hats"
+        "excerpt": "dgms circular 2023 - 01 : safety in mining operations = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms circular 2023 - 01 : safety in mining operations subject : mandatory safety equipment and p"
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms circular 2022 - 05 : ventilation requirements in underground mines subject : minimum ventilation sta"
       },
       {
         "doc_id": "FA-SEC-41B.txt",
-        "excerpt": "adequate and suitable ppe"
+        "excerpt": "factory act section 41b : hazardous processes = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = factory act - section 41b : safety measures for hazardous processes 1. factories must provide the following for haza"
       }
     ]
   },
@@ -244,7 +249,7 @@
     "id": "Q006",
     "question": "How often must safety officers be appointed in a factory?",
     "status": "PASS",
-    "similarity": 0.9154,
+    "similarity": 0.8035,
     "expected_source_docs": [
       "FA-SEC-7A"
     ],
@@ -318,7 +323,7 @@
     "llm_sources": [
       {
         "doc_id": "DGMS-2022-05.txt",
-        "excerpt": "0.1 m\u00b3/s per worker"
+        "excerpt": "fresh air supply must be maintained"
       }
     ]
   },
@@ -326,7 +331,7 @@
     "id": "Q008",
     "question": "How frequently must fire drills be conducted in a factory?",
     "status": "PASS",
-    "similarity": 0.9629,
+    "similarity": 0.9052,
     "expected_source_docs": [
       "FA-SEC-36"
     ],
@@ -367,12 +372,14 @@
     "id": "Q009",
     "question": "What are the requirements for HAZOP studies?",
     "status": "PASS",
-    "similarity": 0.8958,
+    "similarity": 0.6267,
     "expected_source_docs": [
       "OISD-118"
     ],
     "retrieved_source_docs": [
-      "OISD-118_Section2.txt"
+      "DGMS-2022-05.txt",
+      "OISD-118_Section2.txt",
+      "OISD-116.txt"
     ],
     "chunk_sources": [
       {
@@ -400,7 +407,15 @@
     "llm_sources": [
       {
         "doc_id": "OISD-118_Section2.txt",
-        "excerpt": "hazop studies are required for all new installations"
+        "excerpt": "oisd - 118 : process safety management \u2014 section 2 : process hazard analysis 2. 1 hazop studies are required for all new installations and modifications to existing units. 2. 2 hazop studies must be revalidated every 5 years. 2. 3 all action items re"
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "dgms circular 2022 - 05 : ventilation requirements = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = dgms circular 2022 - 05 : ventilation requirements in underground mines subject : minimum ventilation sta"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
       }
     ]
   },
@@ -408,7 +423,7 @@
     "id": "Q010",
     "question": "What is the inspection frequency for high-pressure piping systems?",
     "status": "PASS",
-    "similarity": 0.9435,
+    "similarity": 0.941,
     "expected_source_docs": [
       "OISD-119"
     ],
@@ -441,7 +456,7 @@
     "llm_sources": [
       {
         "doc_id": "OISD-119.txt",
-        "excerpt": "annual thickness measurement"
+        "excerpt": "high-pressure piping (>15 bar) requires annual thickness measurement"
       }
     ]
   },
@@ -449,7 +464,7 @@
     "id": "Q011",
     "question": "How quickly must serious factory accidents be reported?",
     "status": "PASS",
-    "similarity": 0.8769,
+    "similarity": 0.9146,
     "expected_source_docs": [
       "FA-SEC-40A"
     ],
@@ -523,7 +538,7 @@
     "llm_sources": [
       {
         "doc_id": "FA-SEC-41C.txt",
-        "excerpt": "workers have the right to"
+        "excerpt": "workers have the right to be informed"
       }
     ]
   },
@@ -536,9 +551,9 @@
       "FA-SEC-38"
     ],
     "retrieved_source_docs": [
+      "FA-SEC-38.txt",
       "FA-SEC-36.txt",
-      "FA-SEC-41B.txt",
-      "FA-SEC-38.txt"
+      "FA-SEC-41B.txt"
     ],
     "chunk_sources": [
       {
@@ -582,11 +597,12 @@
     "id": "Q014",
     "question": "What safety measures are required for hazardous processes?",
     "status": "PASS",
-    "similarity": 0.8979,
+    "similarity": 0.7432,
     "expected_source_docs": [
       "FA-SEC-41B"
     ],
     "retrieved_source_docs": [
+      "OISD-118_Section2.txt",
       "FA-SEC-41B.txt"
     ],
     "chunk_sources": [
@@ -616,6 +632,10 @@
       {
         "doc_id": "FA-SEC-41B.txt",
         "excerpt": "adequate and suitable ppe for all workers"
+      },
+      {
+        "doc_id": "OISD-118_Section2.txt",
+        "excerpt": "hazop studies are required for all new installations"
       }
     ]
   },
@@ -623,7 +643,7 @@
     "id": "Q015",
     "question": "What are the requirements for gas monitoring in underground mines?",
     "status": "PASS",
-    "similarity": 0.8979,
+    "similarity": 0.7444,
     "expected_source_docs": [
       "DGMS-2022-05"
     ],
@@ -657,11 +677,15 @@
     "llm_sources": [
       {
         "doc_id": "DGMS-2022-05.txt",
-        "excerpt": "gas monitoring must be conducted at the working face every 2 hours"
+        "excerpt": "methane and carbon monoxide"
       },
       {
-        "doc_id": "DGMS-2023-01.txt",
-        "excerpt": "gas monitoring equipment must be checked daily for calibration"
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "working face every 2 hours"
+      },
+      {
+        "doc_id": "DGMS-2022-05.txt",
+        "excerpt": "ventilation surveys weekly"
       }
     ]
   },
@@ -669,7 +693,7 @@
     "id": "Q016",
     "question": "How often must safety training be conducted for mining workers?",
     "status": "PASS",
-    "similarity": 0.8009,
+    "similarity": 0.8127,
     "expected_source_docs": [
       "DGMS-2023-01"
     ],
@@ -702,7 +726,11 @@
     "llm_sources": [
       {
         "doc_id": "DGMS-2023-01.txt",
-        "excerpt": "40 hours safety induction training, refresher every 6 months, monthly drills"
+        "excerpt": "40 hours safety induction training"
+      },
+      {
+        "doc_id": "DGMS-2023-01.txt",
+        "excerpt": "refresher training every 6 months"
       }
     ]
   },
@@ -710,12 +738,14 @@
     "id": "Q017",
     "question": "What are the electrical safety requirements per OISD-130?",
     "status": "PASS",
-    "similarity": 0.7427,
+    "similarity": 0.7391,
     "expected_source_docs": [
       "OISD-130"
     ],
     "retrieved_source_docs": [
-      "OISD-130.txt"
+      "OISD-130.txt",
+      "safety_manual.txt",
+      "OISD-116.txt"
     ],
     "chunk_sources": [
       {
@@ -743,11 +773,15 @@
     "llm_sources": [
       {
         "doc_id": "OISD-130.txt",
-        "excerpt": "electrical equipment in hazardous areas must be certified"
+        "excerpt": "oisd - 130 : safety in electrical systems = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 130 safety in electrical systems section 1 : electrical safety standards 1. 1 all electrical equipment in hazardous areas mus"
       },
       {
-        "doc_id": "OISD-130.txt",
-        "excerpt": "lockout / tagout procedures must be implemented"
+        "doc_id": "safety_manual.txt",
+        "excerpt": "safety manual section 3 : equipment inspection requirements. all equipment tagged eq - 1001 through eq - 4002 must undergo quarterly inspections. pressure vessels tnk - t01, tnk - t02, tnk - t03 require annual internal inspection. pumps pump - a01 an"
+      },
+      {
+        "doc_id": "OISD-116.txt",
+        "excerpt": "oisd - 116 : safety guidelines for petroleum refineries = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = oisd - 116 safety guidelines for petroleum refineries section 1 : scope and applicability "
       }
     ]
   },
@@ -755,7 +789,7 @@
     "id": "Q018",
     "question": "How should tank classification affect inspection frequency?",
     "status": "PASS",
-    "similarity": 0.7409,
+    "similarity": 0.7397,
     "expected_source_docs": [
       "OISD-117"
     ],
@@ -788,7 +822,11 @@
     "llm_sources": [
       {
         "doc_id": "OISD-117.txt",
-        "excerpt": "group a tanks : annual internal inspection"
+        "excerpt": "Group A tanks: annual internal inspection"
+      },
+      {
+        "doc_id": "OISD-117.txt",
+        "excerpt": "Group B tanks: biennial internal inspection"
       }
     ]
   }

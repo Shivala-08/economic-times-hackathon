@@ -38,83 +38,199 @@ st.markdown("""
 
     html, body, [class*="css"], .stApp {
         font-family: 'Outfit', 'Inter', sans-serif !important;
+        background-color: #060813 !important;
     }
-    .main .block-container { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .main .block-container { padding-top: 2rem; padding-bottom: 3rem; }
 
-    /* ── Header banner ── */
-    .title-container {
-        background: linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #120636 100%);
-        padding: 2rem 2.5rem;
-        border-radius: 16px;
-        color: white;
-        margin-bottom: 2rem;
-        border: 1px solid rgba(99, 102, 241, 0.35);
-        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.1);
-        position: relative; overflow: hidden;
+    /* ── Header Toolbar ── */
+    div[data-testid="stHeader"] {
+        background-color: rgba(6, 8, 19, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
     }
-    .title-container h1 {
-        margin: 0; font-weight: 800; font-size: 2.3rem; letter-spacing: -0.02em;
-        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .title-container p { margin: 0.5rem 0 0 0; font-size: 1.05rem; color: #cbd5e1; opacity: 0.9; }
 
-    /* ── Cards ── */
+    /* ── Sidebar Styling ── */
+    section[data-testid="stSidebar"] {
+        background-color: #04050b !important;
+        border-right: 1px solid rgba(99, 102, 241, 0.2) !important;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.4) !important;
+    }
+    section[data-testid="stSidebar"] .stMarkdown h3 {
+        font-weight: 700 !important;
+        letter-spacing: -0.02em;
+        color: #f1f5f9 !important;
+        margin-top: 1.5rem !important;
+        border-left: 3px solid #818cf8;
+        padding-left: 0.5rem;
+    }
+
+    /* ── Custom Selectboxes & Input Elements ── */
+    .stTextInput input, .stSelectbox div[data-baseweb="select"], .stNumberInput input {
+        background-color: rgba(13, 17, 33, 0.7) !important;
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        border-radius: 12px !important;
+        color: #f1f5f9 !important;
+        font-weight: 500 !important;
+        padding: 0.4rem 0.8rem !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .stTextInput input:focus, .stSelectbox div[data-baseweb="select"]:focus-within, .stNumberInput input:focus {
+        border-color: rgba(99, 102, 241, 0.6) !important;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.3) !important;
+        background-color: rgba(15, 23, 42, 0.9) !important;
+    }
+    
+    /* Dropdown list items */
+    ul[data-baseweb="menu"] {
+        background-color: #0f172a !important;
+        border: 1px solid rgba(99, 102, 241, 0.3) !important;
+        border-radius: 10px !important;
+    }
+    li[role="option"] {
+        color: #e2e8f0 !important;
+        font-family: 'Outfit', sans-serif !important;
+        transition: background 0.15s ease !important;
+    }
+    li[role="option"]:hover {
+        background-color: rgba(99, 102, 241, 0.15) !important;
+    }
+
+    /* ── Navigation Tabs ── */
+    div[data-role="tablist"] {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        gap: 0.5rem !important;
+    }
+    button[data-baseweb="tab"] {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0.75rem 1.6rem !important;
+        border-radius: 12px 12px 0 0 !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        margin-bottom: -1px !important;
+    }
+    button[data-baseweb="tab"]:hover {
+        color: #cbd5e1 !important;
+        background-color: rgba(255, 255, 255, 0.03) !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #818cf8 !important;
+        border-bottom: 2px solid #818cf8 !important;
+        background-color: rgba(99, 102, 241, 0.08) !important;
+        box-shadow: inset 0 -2px 0 #818cf8 !important;
+    }
+
+    /* ── Premium Metric Cards ── */
+    div[data-testid="stMetricValue"] {
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        letter-spacing: -0.03em !important;
+        background: linear-gradient(135deg, #ffffff, #a5b4fc) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="metric-container"] {
+        background: rgba(13, 17, 33, 0.6) !important;
+        border: 1px solid rgba(99, 102, 241, 0.15) !important;
+        border-radius: 16px !important;
+        padding: 1.2rem 1.5rem !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    }
+
+    /* ── Cards & Panels ── */
     .doc-card {
-        background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px);
-        border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px;
-        padding: 1.25rem 1.5rem; margin-bottom: 1rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: #f8fafc;
+        background: rgba(13, 17, 33, 0.65); backdrop-filter: blur(12px);
+        border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 16px;
+        padding: 1.4rem 1.8rem; margin-bottom: 1.2rem;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); color: #f8fafc;
     }
-    .doc-card:hover { transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.5); }
+    .doc-card:hover { 
+        transform: translateY(-4px); 
+        border-color: rgba(99, 102, 241, 0.55);
+        box-shadow: 0 16px 50px rgba(99, 102, 241, 0.15);
+    }
 
-    /* ── Citation card ── */
+    /* ── Citation Cards ── */
     .citation-card {
-        background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(10px);
-        border: 1px solid rgba(99, 102, 241, 0.2); border-left: 4px solid #6366f1;
-        border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 0.75rem;
+        background: rgba(10, 12, 22, 0.7); backdrop-filter: blur(10px);
+        border: 1px solid rgba(99, 102, 241, 0.2); border-left: 5px solid #818cf8;
+        border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 0.9rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
-    .citation-card .cite-header { font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.4rem; }
-    .citation-card .cite-text   { font-size: 0.9rem; color: #e2e8f0; line-height: 1.55; }
+    .citation-card .cite-header { 
+        font-size: 0.82rem; color: #818cf8; font-weight: 600; margin-bottom: 0.5rem; 
+        display: flex; justify-content: space-between;
+    }
+    .citation-card .cite-text { font-size: 0.92rem; color: #cbd5e1; line-height: 1.6; }
 
-    /* ── Key-points card ── */
+    /* ── Key-points box ── */
     .keypoints-box {
-        background: rgba(16, 185, 129, 0.06);
-        border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px;
-        padding: 0.9rem 1.2rem; margin-top: 0.75rem;
+        background: rgba(16, 185, 129, 0.05);
+        border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px;
+        padding: 1rem 1.4rem; margin-top: 1rem;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.03);
     }
     .keypoints-box ul { margin: 0; padding-left: 1.2rem; }
-    .keypoints-box li { color: #6ee7b7; font-size: 0.9rem; line-height: 1.6; }
+    .keypoints-box li { color: #a7f3d0; font-size: 0.92rem; line-height: 1.65; }
 
     /* ── Badges ── */
     .badge {
-        display: inline-block; padding: 0.3rem 0.75rem; border-radius: 9999px;
-        font-size: 0.75rem; font-weight: 600; margin-right: 0.4rem; margin-bottom: 0.4rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05);
+        display: inline-block; padding: 0.35rem 0.85rem; border-radius: 9999px;
+        font-size: 0.76rem; font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);
+        letter-spacing: 0.02em;
     }
-    .badge-blue   { background-color: rgba(59,130,246,0.2)!important; color: #93c5fd!important; border-color: rgba(59,130,246,0.3)!important; }
-    .badge-green  { background-color: rgba(16,185,129,0.2)!important; color: #6ee7b7!important; border-color: rgba(16,185,129,0.3)!important; }
-    .badge-purple { background-color: rgba(139,92,246,0.2)!important; color: #c4b5fd!important; border-color: rgba(139,92,246,0.3)!important; }
-    .badge-yellow { background-color: rgba(245,158,11,0.2)!important; color: #fde047!important; border-color: rgba(245,158,11,0.3)!important; }
-    .badge-red    { background-color: rgba(239,68,68,0.2)!important;  color: #fca5a5!important; border-color: rgba(239,68,68,0.3)!important; }
-    .badge-gray   { background-color: rgba(107,114,128,0.2)!important;color: #d1d5db!important; border-color: rgba(107,114,128,0.3)!important; }
-    .badge-teal   { background-color: rgba(6,182,212,0.2)!important;  color: #67e8f9!important; border-color: rgba(6,182,212,0.3)!important; }
+    .badge-blue   { background-color: rgba(59,130,246,0.15)!important; color: #93c5fd!important; border-color: rgba(59,130,246,0.3)!important; }
+    .badge-green  { background-color: rgba(16,185,129,0.15)!important; color: #6ee7b7!important; border-color: rgba(16,185,129,0.3)!important; }
+    .badge-purple { background-color: rgba(139,92,246,0.15)!important; color: #c4b5fd!important; border-color: rgba(139,92,246,0.3)!important; }
+    .badge-yellow { background-color: rgba(245,158,11,0.15)!important; color: #fde047!important; border-color: rgba(245,158,11,0.3)!important; }
+    .badge-red    { background-color: rgba(239,68,68,0.15)!important;  color: #fca5a5!important; border-color: rgba(239,68,68,0.3)!important; }
+    .badge-gray   { background-color: rgba(107,114,128,0.15)!important;color: #d1d5db!important; border-color: rgba(107,114,128,0.3)!important; }
+    .badge-teal   { background-color: rgba(6,182,212,0.15)!important;  color: #67e8f9!important; border-color: rgba(6,182,212,0.3)!important; }
 
     /* ── Chat bubbles ── */
     .chat-bubble {
-        padding: 1.25rem 1.5rem; border-radius: 12px; margin-bottom: 1.25rem;
-        font-size: 0.98rem; line-height: 1.6; border: 1px solid transparent;
-        transition: all 0.2s ease;
+        border-radius: 20px !important;
+        padding: 1.4rem 2rem !important;
+        margin-bottom: 1.5rem !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        font-size: 1rem; line-height: 1.65;
     }
     .chat-user {
-        background-color: rgba(30,41,59,0.5); border: 1px solid rgba(255,255,255,0.08);
-        border-left: 5px solid #94a3b8; color: #f1f5f9;
+        background: linear-gradient(135deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.7) 100%) !important;
+        border-left: 6px solid #6366f1 !important;
+        box-shadow: 0 8px 30px rgba(99,102,241,0.06) !important;
+        color: #f1f5f9;
     }
     .chat-assistant {
-        background-color: rgba(79,70,229,0.08); border: 1px solid rgba(99,102,241,0.2);
-        border-left: 5px solid #6366f1; color: #f8fafc;
-        box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+        background: linear-gradient(135deg, rgba(79,70,229,0.08) 0%, rgba(10,12,22,0.85) 100%) !important;
+        border-left: 6px solid #818cf8 !important;
+        box-shadow: 0 15px 40px rgba(99,102,241,0.15) !important;
+        color: #f8fafc;
+    }
+
+    /* ── File Uploader Styling ── */
+    section[data-testid="stFileUploader"] {
+        background-color: rgba(13, 17, 33, 0.5) !important;
+        border: 2px dashed rgba(99, 102, 241, 0.3) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        transition: all 0.25s ease !important;
+    }
+    section[data-testid="stFileUploader"]:hover {
+        border-color: rgba(99, 102, 241, 0.7) !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
     }
 
     /* ── Scrollbars ── */
@@ -123,30 +239,33 @@ st.markdown("""
     ::-webkit-scrollbar-thumb { background: rgba(156,163,175,0.25); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(156,163,175,0.45); }
 
-    /* ── Buttons ── */
+    /* ── Premium Buttons ── */
     div.stButton > button {
         background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%) !important;
-        color: white !important; border: none !important; border-radius: 10px !important;
-        font-weight: 600 !important; font-size: 0.92rem !important;
-        padding: 0.55rem 1.4rem !important;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        box-shadow: 0 4px 15px rgba(79,70,229,0.25) !important;
+        color: white !important; border: none !important; border-radius: 12px !important;
+        font-weight: 600 !important; font-size: 0.95rem !important;
+        padding: 0.65rem 1.6rem !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 6px 20px rgba(79,70,229,0.3) !important;
+        letter-spacing: 0.02em !important;
     }
     div.stButton > button:hover {
-        transform: scale(1.015) translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(79,70,229,0.4) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 30px rgba(79,70,229,0.5) !important;
+        border-color: transparent !important;
     }
-    div.stButton > button:active { transform: scale(0.98) !important; }
+    div.stButton > button:active { transform: translateY(0) scale(0.98) !important; }
 
     /* ── Benchmark table ── */
-    .bench-pass { color: #4ade80 !important; font-weight: 700; }
+    .bench-pass { color: #34d399 !important; font-weight: 700; }
     .bench-fail { color: #f87171 !important; font-weight: 700; }
 
     /* ── LLM status pill ── */
     .llm-pill-on  { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4);
-                    border-radius: 8px; padding: 0.5rem 0.9rem; color: #6ee7b7; font-size: 0.82rem; }
+                    border-radius: 10px; padding: 0.55rem 1rem; color: #6ee7b7; font-size: 0.84rem;
+                    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.08); }
     .llm-pill-off { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35);
-                    border-radius: 8px; padding: 0.5rem 0.9rem; color: #fde047; font-size: 0.82rem; }
+                    border-radius: 10px; padding: 0.55rem 1rem; color: #fde047; font-size: 0.84rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -245,16 +364,34 @@ def show_entity_graph(entity_id: str):
 
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="title-container">
-    <h1>🏭 Industrial Knowledge Intelligence</h1>
-    <p>RAG-Powered Industrial Document Analysis &nbsp;·&nbsp; Vector Store + Knowledge Graph + Local LLM</p>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; margin-bottom: 2rem; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; backdrop-filter: blur(10px);">
+    <div>
+        <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; background: linear-gradient(90deg, #ffffff, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Industrial Knowledge Platform</h1>
+        <p style="margin: 0.2rem 0 0 0; font-size: 0.9rem; color: #94a3b8; font-weight: 500;">Unified RAG & Entity Graph Knowledge Retrieval System</p>
+    </div>
+    <div style="display: flex; gap: 1rem;">
+        <div style="text-align: right; border-right: 1px solid rgba(255, 255, 255, 0.1); padding-right: 1rem;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Engine Status</div>
+            <div style="font-size: 0.9rem; color: #10b981; font-weight: 700;">ACTIVE</div>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Security Level</div>
+            <div style="font-size: 0.9rem; color: #818cf8; font-weight: 700;">ENTERPRISE</div>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://img.icons8.com/isometric-line/100/factory.png", width=60)
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 1.5rem; padding: 1.2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.8) 100%); border-radius: 14px; border: 1px solid rgba(99, 102, 241, 0.25);">
+        <img src="https://img.icons8.com/isometric-line/100/factory.png" width="55" style="margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));">
+        <h2 style="margin:0; font-size: 1.3rem; font-weight:800; background: linear-gradient(90deg, #818cf8, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">IND-INTELLIGENCE</h2>
+        <span style="font-size:0.7rem; color:#94a3b8; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">ET Hackathon PS8</span>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown("### **System Status**")
 
     # FastAPI health
@@ -317,19 +454,17 @@ with st.sidebar:
         pass
 
     st.markdown("---")
-    st.markdown("### **Hackathon Phase**")
-    st.success("**Day 4** ✅ — Query Engine + LLM")
-    st.caption("ET AI Hackathon 2026 · Problem Statement 8")
+    st.caption("© 2026 Enterprise Industrial Knowledge Engine. Licensed for site operators.")
 
 
 # ── Tabs ───────────────────────────────────────────────────────────────────────
 tab_chat, tab_docs, tab_graph, tab_entities, tab_bench, tab_setup = st.tabs([
-    "💬 Chat Q&A",
-    "📁 Document Library",
-    "🕸️ Knowledge Graph",
-    "🏷️ Entity Explorer",
-    "⚡ Benchmark",
-    "⚙️ Control Panel",
+    "Query Console",
+    "Document Repository",
+    "Knowledge Network",
+    "Entity Dictionary",
+    "System Evaluation",
+    "Settings",
 ])
 
 
@@ -337,7 +472,7 @@ tab_chat, tab_docs, tab_graph, tab_entities, tab_bench, tab_setup = st.tabs([
 # TAB 1 — CHAT Q&A (Day 4: real LLM, key-points, feedback)
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
-    st.subheader("🤖 Ask the Industrial Knowledge System")
+    st.subheader("Interactive Query Interface")
     llm_status = st.session_state.get("llm_status", {})
     if llm_status.get("nvidia_available"):
         caption_text = "Powered by **Vector Search + Knowledge Graph + NVIDIA LLM API**."
@@ -672,56 +807,154 @@ with tab_graph:
                 st.info("Graph is empty. Initialise the corpus first.")
             else:
                 st.write(f"**{len(nodes)} nodes** · **{len(edges)} edges**")
-                if AGRAPH_AVAILABLE:
-                    ag_nodes = [
-                        Node(
-                            id=n["id"],
-                            label=n["id"] if len(n["id"]) < 20 else n["id"][:18] + "..",
-                            color=n.get("color", "#6b7280"),
-                            size=max(n.get("size", 5) * 2, 10),
-                            title=f"{n['id']} ({n['type']})",
-                        )
-                        for n in nodes
-                    ]
-                    ag_edges = [
-                        Edge(
-                            source=e["from"],
-                            target=e["to"],
-                            label=e.get("relation", "")[:15],
-                            title=e.get("relation", ""),
-                        )
-                        for e in edges
-                    ]
-                    config = Config(
-                        width="100%", height=600, directed=False, hierarchical=False,
-                        node={"font": {"size": 12}},
-                        physics={
-                            "enabled": True, "solver": "barnesHut",
-                            "barnesHut": {
-                                "gravitationalConstant": -3000, "centralGravity": 0.15,
-                                "springLength": 100, "springConstant": 0.05,
-                                "damping": 0.09, "avoidOverlap": 0.5,
-                            },
-                            "stabilization": {"enabled": True, "iterations": 200, "fit": True},
-                            "minVelocity": 0.75,
-                        },
-                    )
-                    agraph(nodes=ag_nodes, edges=ag_edges, config=config)
-                else:
-                    st.warning("streamlit-agraph not installed. Showing table view.")
-                    ca, cb = st.columns(2)
-                    with ca:
-                        st.markdown("**Nodes**")
-                        st.dataframe(
-                            [{"id": n["id"], "type": n["type"]} for n in nodes[:100]],
-                            use_container_width=True, height=400,
-                        )
-                    with cb:
-                        st.markdown("**Edges**")
-                        st.dataframe(
-                            [{"from": e["from"], "relation": e["relation"], "to": e["to"]} for e in edges[:100]],
-                            use_container_width=True, height=400,
-                        )
+                # Format nodes and edges to JSON for HTML injection
+                nodes_json = json.dumps(nodes)
+                edges_json = json.dumps(edges)
+                
+                html_code = """
+                <div id="3d-graph" style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(99, 102, 241, 0.25); background: #090d16; position: relative;"></div>
+                <script>
+                  function initGraph() {
+                    const elem = document.getElementById('3d-graph');
+                    if (!elem) {
+                      setTimeout(initGraph, 50);
+                      return;
+                    }
+
+                    const rawNodes = {nodes_json};
+                    const rawEdges = {edges_json};
+
+                    const links = rawEdges.map(e => ({
+                      source: e.from,
+                      target: e.to,
+                      relation: e.relation || 'linked_to'
+                    }));
+
+                    const degrees = {};
+                    links.forEach(l => {
+                      degrees[l.source] = (degrees[l.source] || 0) + 1;
+                      degrees[l.target] = (degrees[l.target] || 0) + 1;
+                    });
+
+                    const nodes = rawNodes.map(n => ({
+                      id: n.id,
+                      label: n.id,
+                      type: n.type,
+                      color: n.color || '#6366f1',
+                      val: Math.max(Math.sqrt(degrees[n.id] || 1) * 3, 2.5)
+                    }));
+
+                    const Graph = ForceGraph3D()(elem)
+                      .graphData({ nodes, links })
+                      .backgroundColor('#090d16')
+                      .nodeColor(node => node.color)
+                      .nodeVal(node => node.val)
+                      .nodeLabel(node => {
+                        const typeLabel = node.type.replace('_', ' ').toUpperCase();
+                        const nodeColor = node.color || '#6366f1';
+                        const connCount = degrees[node.id] || 0;
+                        return `
+                          <div style="
+                            background: rgba(9, 13, 22, 0.96);
+                            backdrop-filter: blur(12px);
+                            border: 1px solid ${nodeColor};
+                            box-shadow: 0 10px 25px rgba(0,0,0,0.6), 0 0 12px ${nodeColor}33;
+                            border-radius: 10px;
+                            padding: 12px 16px;
+                            min-width: 180px;
+                            color: #f1f5f9;
+                            font-family: sans-serif;
+                            font-size: 12px;
+                            pointer-events: none;
+                            line-height: 1.5;
+                          ">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
+                              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${nodeColor}; box-shadow: 0 0 8px ${nodeColor};"></span>
+                              <strong style="color: #fff; font-size: 13px;">${node.id}</strong>
+                            </div>
+                            <div style="color: #94a3b8; font-size: 10px; margin-bottom: 4px;">
+                              CLASS: <span style="color: ${nodeColor}; font-weight: 700; letter-spacing: 0.03em;">${typeLabel}</span>
+                            </div>
+                            <div style="color: #cbd5e1; font-size: 10px;">
+                              CONNECTIONS: <strong style="color: #fff;">${connCount}</strong>
+                            </div>
+                          </div>
+                        `;
+                      })
+                      .linkLabel(link => `<div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 4px 8px; color: #cbd5e1; font-family: sans-serif; font-size: 11px;">${link.relation}</div>`)
+                      .linkWidth(1.2)
+                      .linkColor(() => 'rgba(99, 102, 241, 0.25)')
+                      .linkDirectionalParticles(4)
+                      .linkDirectionalParticleSpeed(0.007)
+                      .linkDirectionalParticleWidth(2.0)
+                      .linkDirectionalParticleColor(() => '#a5b4fc');
+
+                    Graph.controls().autoRotate = true;
+                    Graph.controls().autoRotateSpeed = 0.6;
+
+                    let rotationTimeout;
+                    const controls = Graph.controls();
+                    controls.addEventListener('start', () => {
+                      controls.autoRotate = false;
+                      clearTimeout(rotationTimeout);
+                    });
+                    controls.addEventListener('end', () => {
+                      rotationTimeout = setTimeout(() => {
+                        controls.autoRotate = true;
+                      }, 5000);
+                    });
+
+                    Graph.onNodeClick(node => {
+                      const distance = 50;
+                      const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+
+                      Graph.cameraPosition(
+                        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+                        node,
+                        2000
+                      );
+
+                      let overlay = document.getElementById('node-info-overlay');
+                      if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.id = 'node-info-overlay';
+                        overlay.style.position = 'absolute';
+                        overlay.style.bottom = '15px';
+                        overlay.style.right = '15px';
+                        overlay.style.background = 'rgba(15, 23, 42, 0.95)';
+                        overlay.style.backdropFilter = 'blur(10px)';
+                        overlay.style.border = '1px solid rgba(99, 102, 241, 0.4)';
+                        overlay.style.borderRadius = '12px';
+                        overlay.style.padding = '15px';
+                        overlay.style.width = '240px';
+                        overlay.style.color = '#fff';
+                        overlay.style.fontFamily = 'sans-serif';
+                        overlay.style.fontSize = '12px';
+                        overlay.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+                        overlay.style.pointerEvents = 'auto';
+                        overlay.style.zIndex = '999';
+                        elem.appendChild(overlay);
+                      }
+                      overlay.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                          <strong style="font-size:14px; color:#818cf8;">${node.id}</strong>
+                          <span style="font-size:10px; font-weight:600; text-transform:uppercase; padding: 2px 6px; background: rgba(99, 102, 241, 0.2); border-radius: 4px; color: #a5b4fc;">${node.type}</span>
+                        </div>
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px; color: #94a3b8; line-height: 1.5;">
+                          Degree (Connections): <strong>${degrees[node.id] || 0}</strong><br>
+                          Status: <span style="color:#10b981;">CONNECTED</span>
+                        </div>
+                        <div style="margin-top: 8px; text-align: right;">
+                          <button onclick="document.getElementById('node-info-overlay').remove()" style="background:transparent; border:none; color:#ef4444; font-size:10px; font-weight:600; cursor:pointer;">Dismiss</button>
+                        </div>
+                      `;
+                    });
+                  }
+                </script>
+                <script src="https://cdn.jsdelivr.net/npm/3d-force-graph" onload="initGraph()"></script>
+                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json)
+                import streamlit.components.v1 as components
+                components.html(html_code, height=620)
         else:
             st.error(f"Graph API error {gr.status_code}")
     except requests.exceptions.ConnectionError:
@@ -802,17 +1035,17 @@ with tab_entities:
 # TAB 5 — BENCHMARK  (NEW in Day 4)
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_bench:
-    st.subheader("⚡ Ground-Truth Q&A Benchmark")
+    st.subheader("Accuracy & Latency Metrics Evaluation")
     st.write(
-        "Runs the 18-question curated test set against the live RAG engine and reports "
-        "**accuracy %** and **average latency**. Use this number in your pitch deck."
+        "Runs the ground-truth verification suite against the active pipeline to evaluate "
+        "context retrieval precision, LLM generation semantic similarity, and P95 latency."
     )
 
     col_run, col_n = st.columns([3, 1])
     with col_n:
         max_q = st.number_input("Questions to run", min_value=1, max_value=18, value=18, step=1)
     with col_run:
-        run_btn = st.button("🚀 Run Benchmark Now", use_container_width=True)
+        run_btn = st.button("Run Verification Suite", use_container_width=True)
 
     if run_btn:
         prog_bar = st.progress(0, text="Starting benchmark…")

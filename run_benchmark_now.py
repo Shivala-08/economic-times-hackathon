@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Run the full 18-question benchmark and report results."""
-import json, time, sys
+"""Run the full benchmark and report results.
+
+Usage:
+    python run_benchmark_now.py                    # Use default qa_pairs.json
+    python run_benchmark_now.py --qa-file qa_pairs_new.json   # Use new QnA file
+"""
+import json, time, sys, argparse
 import numpy as np
 from src.pipeline.query_engine import retrieve_context, generate_answer
 from src.pipeline.llm import get_llm
@@ -9,9 +14,20 @@ from src.pipeline.embedder import TextEmbedder
 from src.config import settings
 from collections import defaultdict
 
-qa_file = "data/benchmarks/qa_pairs.json"
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Run benchmark with specified Q&A file')
+parser.add_argument('--qa-file', default='data/benchmarks/qa_pairs.json',
+                    help='Path to Q&A JSON file (default: data/benchmarks/qa_pairs.json)')
+args = parser.parse_args()
+
+qa_file = args.qa_file
+if not qa_file.startswith('/') and not qa_file.startswith('data/'):
+    qa_file = f'data/benchmarks/{qa_file}'
+
+print(f'Using Q&A file: {qa_file}')
 with open(qa_file) as f:
     qa_pairs = json.load(f)
+print(f'Loaded {len(qa_pairs)} questions')
 
 store = VectorStore()
 if store.count() == 0:
