@@ -15,7 +15,7 @@ The optimization pass transformed the system from a basic RAG pipeline into a hi
 | **Accuracy (Cold Start)** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **94.4% (17/18)** | **+16.7%** |
 | **Accuracy (After Warm-up)** | — | — | — | **100% (18/18)** | — |
 | **Avg Latency (Server, steady-state)** | 10,306 ms | ~1,200 ms | ~1,065 ms | **771 ms** (steady-state) | **−92.5%** |
-| **Avg Latency (Standalone, cold)** | — | — | — | **3,930 ms** | — |
+| **Avg Latency (Standalone, cold)** | — | — | — | **5,429 ms** | — |
 | **Slowest Q (Server)** | ~46,600 ms | ~4,400 ms | ~4,400 ms | **1,364 ms** | **−97.1%** |
 | **Fastest Q (Server)** | ~5,000 ms | ~570 ms | ~570 ms | **566 ms** | **−88.7%** |
 | **Model** | Ollama llama3.1 | NVIDIA NIM nemotron | NVIDIA NIM nemotron | NVIDIA NIM nemotron | — |
@@ -29,9 +29,9 @@ Latency varies significantly based on server warm-up state:
 |---|---|---|
 | **Server, fully warm** | 771 ms | Models pre-loaded, semantic cache populated |
 | **Server, cold start** | 4,448 ms | Fresh restart, cache empty, first queries slow |
-| **Standalone script** | 3,930 ms | Runs cold — first query takes ~15s for model loading |
+| **Standalone script** | 5,429 ms | Runs cold — first query takes ~15s for model loading |
 
-The **771ms average** represents steady-state performance after the semantic cache is warm (models loaded, recent queries cached). The **4,448ms average** comes from a fresh server restart where the cache is empty — subsequent warm queries drop to ~1,000ms. The standalone `run_benchmark_now.py` runs completely cold with first-query overhead of ~15s (spaCy NLP, sentence-transformers embedder, cross-encoder re-ranker initialization). The latest standalone run (July 20, 2026) shows **3,930ms average latency** with 100% accuracy (18/18 after warm-up).
+The **771ms average** represents steady-state performance after the semantic cache is warm (models loaded, recent queries cached). The **4,448ms average** comes from a fresh server restart where the cache is empty — subsequent warm queries drop to ~1,000ms. The standalone `run_benchmark_now.py` runs completely cold with first-query overhead of ~15s (spaCy NLP, sentence-transformers embedder, cross-encoder re-ranker initialization). The latest standalone run (July 20, 2026) shows **5,429ms average latency** with 100% accuracy (18/18 after warm-up).
 
 **Warm Server Benchmark (Post-Cleanup, July 20, 2026):**
 
@@ -40,7 +40,7 @@ After moving the archived OISD-118_Original.txt outside the corpus tree to preve
 | Metric | Value |
 |---|---|
 | **Accuracy** | **100% (18/18)** |
-| **Avg Latency** | 3,930 ms (fresh run, with warm-up) |
+| **Avg Latency** | 5,429 ms (fresh run, with warm-up) |
 | **Steady-State Latency** | ~1,000 ms (after warm-up) |
 | **Model** | nvidia/nemotron-3-ultra-550b-a55b |
 
@@ -202,7 +202,8 @@ After moving the archived OISD-118_Original.txt outside the corpus tree to preve
 | `src/pipeline/llm.py` | `stream_generate()` generator, `_find_working_client()` refactor, `_build_extra_body()` helper |
 | `src/main.py` | `/query/stream` SSE endpoint with try/finally error recovery, cleaned imports |
 | `src/app.py` | Streaming chat UI with `httpx.Client.stream()` |
-| `src/config.py` | `chunk_size=1024`, `chunk_overlap=200`, `max_tokens=640`, `similarity_threshold=0.65` |
+| `src/config.py` | `chunk_size=1024`, `chunk_overlap=200`, `max_tokens=640`, `similarity_threshold=0.55` |
+| `run_benchmark_now.py` | Added warm-up phase with 5 representative queries |
 | `requirements.txt` | Added `httpx>=0.27.0` |
 | `data/benchmarks/qa_pairs.json` | Updated expected answers and source docs |
 | `data/documents.json` | Updated chunk counts and entity counts |
