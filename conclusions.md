@@ -12,7 +12,8 @@ The optimization pass transformed the system from a basic RAG pipeline into a hi
 
 | Metric | **Before** (Run 1) | **After Tier 1** | **After Tier 2** | **After Tier 3 (Final)** | **Total Delta** |
 |---|---|---|---|---|---|
-| **Accuracy** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **100% (18/18)** | **+22.2%** |
+| **Accuracy (Cold Start)** | 77.8% (14/18) | 100% (18/18) | 100% (18/18) | **94.4% (17/18)** | **+16.7%** |
+| **Accuracy (After Warm-up)** | — | — | — | **100% (18/18)** | — |
 | **Avg Latency (Server, steady-state)** | 10,306 ms | ~1,200 ms | ~1,065 ms | **771 ms** (steady-state) | **−92.5%** |
 | **Avg Latency (Standalone, cold)** | — | — | — | **4,225 ms** | — |
 | **Slowest Q (Server)** | ~46,600 ms | ~4,400 ms | ~4,400 ms | **1,364 ms** | **−97.1%** |
