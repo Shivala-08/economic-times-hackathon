@@ -38,6 +38,21 @@ _embedder: Optional[TextEmbedder] = None
 _vector_store: Optional[VectorStore] = None
 _cross_encoder: Optional[Any] = None
 
+# Stop words for keyword extraction in re-ranking boost
+_KEYWORD_STOP_WORDS = frozenset({
+    'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+    'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+    'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
+    'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from',
+    'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
+    'between', 'out', 'off', 'over', 'under', 'again', 'further', 'then',
+    'once', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both',
+    'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
+    'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because',
+    'but', 'and', 'or', 'if', 'while', 'about', 'against', 'that', 'this',
+    'these', 'those', 'what', 'which', 'who', 'whom',
+})
+
 
 class SemanticCache:
     """In-memory rolling cache for semantic similarity search over recent queries."""
@@ -200,18 +215,7 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
             
             # Extract meaningful keywords from query for keyword matching boost
             query_lower = query.lower()
-            stop_words = {'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-                         'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-                         'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
-                         'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from',
-                         'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
-                         'between', 'out', 'off', 'over', 'under', 'again', 'further', 'then',
-                         'once', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both',
-                         'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
-                         'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because',
-                         'but', 'and', 'or', 'if', 'while', 'about', 'against', 'that', 'this',
-                         'these', 'those', 'what', 'which', 'who', 'whom'}
-            query_keywords = [w for w in query_lower.split() if len(w) > 3 and w not in stop_words]
+            query_keywords = [w for w in query_lower.split() if len(w) > 3 and w not in _KEYWORD_STOP_WORDS]
             
             for idx, score in enumerate(scores):
                 is_csv = vector_chunks[idx]["metadata"].get("record_type") not in ["txt", "pdf", "docx"]
