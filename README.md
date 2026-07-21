@@ -8,45 +8,61 @@ A premium, production-ready RAG-powered system that ingests heterogeneous indust
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────┐
-│   Document Corpus   │  PDFs, CSVs, DOCX (safety manuals, work orders,
-│                     │  permits, regulatory docs, incident reports)
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Ingestion Pipeline  │  Parse (pdfplumber/docx/pandas) → Clean → Chunk
-└──────────┬──────────┘
-           │
-     ┌─────┴─────┐
-     │           │
-┌────▼─────┐ ┌───▼──────────┐
-│ Embedding│ │    Entity    │
-│ (all-    │ │  Extraction  │
-│ MiniLM)  │ │ (spaCy+Regex)│
-└────┬─────┘ └───┬──────────┘
-     │           │
-┌────▼─────┐ ┌───▼──────────┐
-│  Vector  │ │  Knowledge   │
-│  Store   │ │    Graph     │
-│(ChromaDB)│ │ (NetworkX)   │
-└────┬─────┘ └───┬──────────┘
-     │           │
-     └─────┬─────┘
-           │
-┌──────────▼──────────┐
-│    Query Engine     │  Retrieve top-k chunks + traverse graph
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│  Claude API Call    │  Assembles context → structured JSON:
-│                     │  {answer, sources[], confidence}
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│    Streamlit UI     │  Interactive Chat + Citations + Badges
-│                     │  + Document Library + Upload Panel + Graph View
-└─────────────────────┘
+```mermaid
+flowchart TD
+    %% Styling
+    classDef default fill:#0a0e1a,stroke:#6366f1,stroke-width:2px,color:#f1f5f9;
+    classDef storage fill:#060813,stroke:#10b981,stroke-width:2px,color:#f1f5f9;
+    classDef router fill:#111827,stroke:#f59e0b,stroke-width:2px,color:#f1f5f9;
+    classDef client fill:#0f172a,stroke:#a5b4fc,stroke-width:2px,color:#f1f5f9;
+
+    %% Ingestion Pipeline
+    subgraph Ingestion ["Ingestion Pipeline (parser.py, chunker.py)"]
+        A[Raw Corpus: PDF, CSV, DOCX, TXT] --> B[Parser: pdfplumber, docx, pandas]
+        B --> C[Token-based Chunker: 1024 Token Size]
+    end
+
+    %% Parallel Processing
+    subgraph Parallel ["Parallel Feature Extraction (ingest.py, extractor.py)"]
+        C --> D1[Embedding Generation: all-MiniLM-L6-v2]
+        C --> D2[Entity Extraction: spaCy + Regex]
+    end
+
+    %% Storage Layer
+    subgraph Storage ["Storage Layer"]
+        D1 --> E1[(Vector Store: ChromaDB)]
+        D2 --> E2[(Knowledge Graph: NetworkX)]
+    end
+
+    %% Query Engine & Adaptive Router
+    subgraph Query ["Query Engine & Adaptive Router (query_engine.py)"]
+        Q[User Query] --> SC{Semantic Cache <br/> cosine sim <1ms}
+        SC -- Cache Hit --> Ans[Immediate Response: 196ms]
+        SC -- Cache Miss --> CC[Complexity Classifier]
+        
+        CC --> R[Adaptive Router]
+        R -- Fast Path --> FP[meta/llama-3.1-8b-instruct <br/> no thinking, low latency]
+        R -- Deep Reasoning --> DP[nvidia/nemotron-3-ultra-550b-a55b <br/> 1024 budget thinking]
+        
+        %% Context Assembly
+        E1 --> CA[Hybrid Search: BM25 + Vector Fusion <br/> Cross-Encoder Re-ranking Top 3]
+        E2 --> CA
+        CA --> R
+        
+        FP --> Ans
+        DP --> Ans
+    end
+
+    %% UI Consumers
+    subgraph UI ["User Interface (app.py)"]
+        Cons[Interactive Query Console] --> Q
+        KE[Knowledge Explorer: streamlit_agraph] --> E2
+    end
+
+    %% Styles
+    class E1,E2 storage;
+    class SC,CC,R router;
+    class Cons,KE client;
 ```
 
 ---
