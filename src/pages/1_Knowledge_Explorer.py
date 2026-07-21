@@ -592,7 +592,19 @@ with detail_col:
                 st.info(f"**Querying:** {ai_query}")
                 with st.spinner("AI is analyzing this entity..."):
                     try:
-                        resp = requests.post(f"{API_URL}/query", json={"question": ai_query, "top_k": 5}, timeout=120)
+                        payload = {"question": ai_query, "top_k": 5}
+                        doc_type_map = {
+                            "regulation": "regulation",
+                            "work_order": "work_order",
+                            "permit": "permit",
+                            "incident": "incident_report",
+                            "sop": "sop"
+                        }
+                        if ntype in doc_type_map:
+                            payload["filters"] = {"doc_type": doc_type_map[ntype]}
+                            st.caption(f"⚡ Applying metadata pre-filter: `doc_type` = `{doc_type_map[ntype]}`")
+                        
+                        resp = requests.post(f"{API_URL}/query", json=payload, timeout=120)
                         if resp.status_code == 200:
                             data = resp.json()
                             st.markdown(f"**Confidence:** `{data.get('confidence', 'Unknown')}`")

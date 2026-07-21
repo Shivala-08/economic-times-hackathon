@@ -15,7 +15,7 @@ from src.pipeline.parser import parse_file
 from src.pipeline.chunker import chunk_text
 from src.pipeline.embedder import TextEmbedder
 from src.pipeline.extractor import extract_entities
-from src.storage.chroma_store import VectorStore
+from src.storage.chroma_store import VectorStore, get_doc_type
 from src.graph.knowledge_graph import get_knowledge_graph
 
 
@@ -145,9 +145,31 @@ class IngestionPipeline:
             entity_count = 0
 
         # 5. Save to ChromaDB (after metadata updated with entity_ids)
+        doc_type = get_doc_type(doc_id)
+        for c in chunks:
+            c["metadata"]["doc_type"] = doc_type
+
         ids = [c["id"] for c in chunks]
         metadatas = [c["metadata"] for c in chunks]
         self.store.add_documents(ids, embeddings, texts_to_embed, metadatas)
+
+        # Rebuild/update BM25 index to reflect new ingested documents
+        try:
+            from src.pipeline.bm25_index import get_bm25_index
+            index = get_bm25_index()
+            all_chunks = self.store.collection.get(include=["documents"])
+            c_ids = all_chunks.get("ids", [])
+            documents = all_chunks.get("documents", [])
+            chunks_list = []
+            for i in range(len(c_ids)):
+                chunks_list.append({
+                    "id": c_ids[i],
+                    "text": documents[i]
+                })
+            index.build(chunks_list)
+            logger.info("BM25Index: Rebuilt successfully after document ingestion")
+        except Exception as e:
+            logger.error(f"BM25Index: Failed to rebuild index after ingestion: {e}")
 
         # 6. Persist file copy in data/corpus/uploads if requested
         dest_path = file_path

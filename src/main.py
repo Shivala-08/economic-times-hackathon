@@ -62,6 +62,7 @@ class QueryRequest(BaseModel):
     """Schema for incoming RAG queries."""
     question: str = Field(..., min_length=1, max_length=1000, description="The query string")
     top_k: Optional[int] = Field(settings.top_k, ge=1, le=20)
+    filters: Optional[dict] = None
 
 
 class QueryResponse(BaseModel):
@@ -451,7 +452,7 @@ async def query_rag(request: QueryRequest):
 
         # ── Step 1: Retrieve merged context (vector + graph) ────────────────────
         top_k   = request.top_k or settings.top_k
-        context = retrieve_context(request.question, top_k=top_k)
+        context = retrieve_context(request.question, top_k=top_k, filters=request.filters)
 
         # ── Guard: no results found ────────────────────────────────────────────
         if not context["vector_chunks"] and not context["graph_entities"]:
@@ -520,7 +521,7 @@ async def query_rag_stream(request: QueryRequest):
         return StreamingResponse(_empty_gen(), media_type="text/event-stream")
 
     top_k = request.top_k or settings.top_k
-    context = retrieve_context(request.question, top_k=top_k)
+    context = retrieve_context(request.question, top_k=top_k, filters=request.filters)
 
     if not context["vector_chunks"] and not context["graph_entities"]:
         async def _no_results_gen():

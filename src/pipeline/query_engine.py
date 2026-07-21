@@ -32,6 +32,7 @@ from src.storage.chroma_store import VectorStore
 from src.pipeline.extractor import extract_entities
 from src.graph.knowledge_graph import get_knowledge_graph
 from src.pipeline.llm import get_llm, _extract_json, _smart_fallback
+from src.pipeline.bm25_index import get_bm25_index
 
 # Singletons for reusing instances across calls
 _embedder: Optional[TextEmbedder] = None
@@ -141,13 +142,35 @@ def get_cross_encoder() -> Any:
     return _cross_encoder
 
 
-def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) -> Dict[str, Any]:
+def init_bm25_index_lazy():
+    """Lazily load all documents from ChromaDB and build the BM25 index if not already built."""
+    index = get_bm25_index()
+    if index.bm25 is None:
+        logger.info("BM25Index: Lazily building index from ChromaDB...")
+        try:
+            store = get_vector_store()
+            all_chunks = store.collection.get(include=["documents"])
+            c_ids = all_chunks.get("ids", [])
+            documents = all_chunks.get("documents", [])
+            chunks_list = []
+            for i in range(len(c_ids)):
+                chunks_list.append({
+                    "id": c_ids[i],
+                    "text": documents[i]
+                })
+            index.build(chunks_list)
+        except Exception as e:
+            logger.error(f"BM25Index: Failed to build index lazily: {e}")
+
+
+def retrieve_context(query: str, top_k: int = 5, collection_name: str = None, filters: dict = None) -> Dict[str, Any]:
     """Retrieve and merge context from ChromaDB (vector) and NetworkX (graph).
 
     Args:
         query: The natural language search query.
         top_k: Number of chunks to retrieve from the vector store.
         collection_name: ChromaDB collection to search against.
+        filters: Metadata filters to restrict retrieval.
 
     Returns:
         A dictionary with merged and deduplicated context:
@@ -178,7 +201,12 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
             ]
         }
     """
-    logger.info(f"Retrieving context for query: '{query}'")
+    logger.info(f"Retrieving context for query: '{query}' with filters: {filters}")
+
+    # Lazily initialize BM25 index and compute scores
+    init_bm25_index_lazy()
+    bm25_index = get_bm25_index()
+    bm25_scores = bm25_index.get_scores(query)
 
     # 1. Embed the query and retrieve top_k chunks from ChromaDB (diverse search)
     embedder = get_embedder()
@@ -188,8 +216,16 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
     
     # Pull top_k=10 chunks from ChromaDB instead of 3 by default, or respect top_k parameter
     n_part = max(10, top_k)
-    reg_results = store.query(query_embedding, n_results=n_part, where={"record_type": {"$in": ["txt", "pdf", "docx"]}})
-    csv_results = store.query(query_embedding, n_results=n_part, where={"record_type": {"$nin": ["txt", "pdf", "docx"]}})
+    
+    if filters:
+        where_reg = {"$and": [{"record_type": {"$in": ["txt", "pdf", "docx"]}}, filters]}
+        where_csv = {"$and": [{"record_type": {"$nin": ["txt", "pdf", "docx"]}}, filters]}
+    else:
+        where_reg = {"record_type": {"$in": ["txt", "pdf", "docx"]}}
+        where_csv = {"record_type": {"$nin": ["txt", "pdf", "docx"]}}
+
+    reg_results = store.query(query_embedding, n_results=n_part, where=where_reg)
+    csv_results = store.query(query_embedding, n_results=n_part, where=where_csv)
 
     vector_chunks = []
     for search_results in [reg_results, csv_results]:
@@ -206,6 +242,25 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
                     "distance": distance
                 })
     
+    # Normalization and BM25 + Vector Hybrid Fusion
+    if vector_chunks:
+        chunk_bm25_scores = [bm25_scores.get(c["chunk_id"], 0.0) for c in vector_chunks]
+        max_bm25 = max(chunk_bm25_scores) if chunk_bm25_scores else 0.0
+        
+        alpha = 0.4
+        for c in vector_chunks:
+            # Preserving absolute cosine similarity range [0, 1]
+            norm_vector = max(0.0, min(1.0, 1.0 - c["distance"]))
+            
+            b_score = bm25_scores.get(c["chunk_id"], 0.0)
+            norm_bm25 = b_score / max_bm25 if max_bm25 > 0 else 0.0
+            
+            c["hybrid_score"] = alpha * norm_bm25 + (1 - alpha) * norm_vector
+        
+        # Sort by hybrid score and keep top 16 candidates for CrossEncoder re-ranking
+        vector_chunks.sort(key=lambda x: x["hybrid_score"], reverse=True)
+        vector_chunks = vector_chunks[:16]
+
     # Re-rank chunks locally using CrossEncoder
     if vector_chunks:
         try:
@@ -229,12 +284,12 @@ def retrieve_context(query: str, top_k: int = 5, collection_name: str = None) ->
                     keyword_boost = min(12.0, keyword_matches * 3.0)  # Up to 12 points for keyword matches
                 
                 vector_chunks[idx]["cross_score"] = float(score)
-                vector_chunks[idx]["combined_score"] = float(score) - 15.0 * float(vector_chunks[idx]["distance"]) + boost + keyword_boost
+                vector_chunks[idx]["combined_score"] = float(score) + 15.0 * vector_chunks[idx]["hybrid_score"] + boost + keyword_boost
             vector_chunks.sort(key=lambda x: x["combined_score"], reverse=True)
-            logger.debug("Successfully re-ranked vector chunks using CrossEncoder with score fusion + keyword boost")
+            logger.debug("Successfully re-ranked vector chunks using CrossEncoder with hybrid score fusion + keyword boost")
         except Exception as e:
-            logger.error(f"Failed to re-rank chunks: {e}. Falling back to similarity distance.")
-            vector_chunks.sort(key=lambda x: x["distance"])
+            logger.error(f"Failed to re-rank chunks: {e}. Falling back to hybrid score.")
+            vector_chunks.sort(key=lambda x: x["hybrid_score"], reverse=True)
         
         # Keep only the top 3 chunks for context assembly
         vector_chunks = vector_chunks[:3]

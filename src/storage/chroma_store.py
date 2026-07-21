@@ -7,6 +7,24 @@ from loguru import logger
 from src.config import settings
 
 
+def get_doc_type(filename: str) -> str:
+    filename_lower = filename.lower()
+    if "work_order" in filename_lower or "wo_" in filename_lower or "workorder" in filename_lower:
+        return "work_order"
+    elif "permit" in filename_lower or "pt_" in filename_lower:
+        return "permit"
+    elif "incident" in filename_lower or "inc_" in filename_lower:
+        return "incident_report"
+    elif "sop" in filename_lower:
+        return "sop"
+    elif "regulation" in filename_lower or "oisd" in filename_lower or "dgms" in filename_lower or "fa-sec" in filename_lower:
+        return "regulation"
+    elif "manual" in filename_lower or "safety_manual" in filename_lower:
+        return "sop"
+    else:
+        return "other"
+
+
 class VectorStore:
     """Manages ChromaDB collections for document embeddings."""
 
@@ -20,6 +38,35 @@ class VectorStore:
             metadata={"hnsw:space": "cosine"},
         )
         logger.info(f"VectorStore initialized: collection='{self.collection_name}'")
+        self._ensure_doc_types()
+
+    def _ensure_doc_types(self):
+        """Ensure all stored document chunks have doc_type populated."""
+        try:
+            all_items = self.collection.get(include=["metadatas"])
+            ids = all_items.get("ids", [])
+            metadatas = all_items.get("metadatas", [])
+            
+            if not ids or not metadatas:
+                return
+
+            update_ids = []
+            update_metadatas = []
+            
+            for idx, meta in enumerate(metadatas):
+                if meta is None:
+                    meta = {}
+                if "doc_type" not in meta:
+                    doc_id = meta.get("doc_id", ids[idx])
+                    meta["doc_type"] = get_doc_type(doc_id)
+                    update_ids.append(ids[idx])
+                    update_metadatas.append(meta)
+            
+            if update_ids:
+                logger.info(f"Ensuring doc_type in metadata: migrating {len(update_ids)} chunks")
+                self.collection.update(ids=update_ids, metadatas=update_metadatas)
+        except Exception as e:
+            logger.error(f"Failed to migrate metadata for doc_type: {e}")
 
     def add_documents(self, ids: list[str], embeddings: list[list[float]], documents: list[str], metadatas: list[dict]):
         """Add documents with embeddings to the collection."""

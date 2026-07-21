@@ -14,6 +14,7 @@ Eliminates CSS/HTML duplication across Streamlit pages. Import and use:
 
 import requests
 import json
+import html as html_mod
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
@@ -277,6 +278,208 @@ GLOBAL_CSS = """
     .main .block-container { padding-top: 1.5rem !important; padding-bottom: 3rem !important; max-width: 100% !important; }
 
     @keyframes gradientSlide { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+    /* ═══ PREMIUM ANIMATIONS & MICRO-INTERACTIONS ═══ */
+
+    /* ── Page Load Fade-In ── */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .stApp > div > div > div { animation: fadeIn 0.6s ease-out; }
+    section[data-testid="stSidebar"] > div { animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* ── Button Ripple Effect ── */
+    div.stButton > button {
+        position: relative; overflow: hidden;
+    }
+    div.stButton > button::after {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 0; height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+        opacity: 0;
+    }
+    div.stButton > button:active::after {
+        width: 300px; height: 300px;
+        opacity: 0;
+        transition: 0s;
+    }
+
+    /* ── Typing Indicator ── */
+    .typing-indicator {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.8rem 1.2rem;
+        background: rgba(99, 102, 241, 0.06);
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        border-radius: var(--radius-lg);
+        margin-bottom: 1rem;
+    }
+    .typing-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--accent-primary);
+        animation: typingBounce 1.4s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+        30% { transform: translateY(-8px); opacity: 1; }
+    }
+
+    /* ── Skeleton Loading ── */
+    .skeleton {
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.06) 25%, rgba(99, 102, 241, 0.12) 50%, rgba(99, 102, 241, 0.06) 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.5s ease-in-out infinite;
+        border-radius: var(--radius-md);
+        min-height: 20px;
+    }
+    @keyframes skeletonShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    .skeleton-line { height: 14px; margin-bottom: 0.5rem; }
+    .skeleton-line:last-child { width: 60%; }
+    .skeleton-circle { width: 40px; height: 40px; border-radius: 50%; }
+
+    /* ── Neon Glow Pulse ── */
+    .neon-glow {
+        animation: neonPulse 2s ease-in-out infinite;
+    }
+    @keyframes neonPulse {
+        0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.2), 0 0 10px rgba(99, 102, 241, 0.1); }
+        50% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.4), 0 0 20px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1); }
+    }
+
+    /* ── Stat Counter Animation ── */
+    .stat-counter-animated .stats-value {
+        animation: countFadeIn 0.8s ease-out;
+    }
+    @keyframes countFadeIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ── Card Hover Glow ── */
+    .entity-card::after, .doc-card::after, .citation-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+    }
+    .entity-card:hover::after {
+        background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+        opacity: 1;
+    }
+    .doc-card:hover::after {
+        background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+        opacity: 1;
+    }
+
+    /* ── Smooth Scroll ── */
+    html { scroll-behavior: smooth; }
+
+    /* ── Tab Transition ── */
+    div[data-baseweb="tab-panel"] {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    /* ── Badge Hover Effects ── */
+    .badge {
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .badge:hover {
+        transform: translateY(-1px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ── Neighbor Row Slide ── */
+    .neighbor-row {
+        animation: fadeInUp 0.3s ease-out backwards;
+    }
+    .neighbor-row:nth-child(1) { animation-delay: 0.05s; }
+    .neighbor-row:nth-child(2) { animation-delay: 0.1s; }
+    .neighbor-row:nth-child(3) { animation-delay: 0.15s; }
+    .neighbor-row:nth-child(4) { animation-delay: 0.2s; }
+    .neighbor-row:nth-child(5) { animation-delay: 0.25s; }
+
+    /* ── Success/Error Flash ── */
+    @keyframes successFlash {
+        0% { background-color: rgba(16, 185, 129, 0.1); }
+        100% { background-color: transparent; }
+    }
+    @keyframes errorFlash {
+        0% { background-color: rgba(239, 68, 68, 0.1); }
+        100% { background-color: transparent; }
+    }
+    .stAlert[data-testid="stAlert"] {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    /* ── Progress Bar Glow ── */
+    div[data-testid="stProgress"] > div > div {
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    }
+
+    /* ── Sidebar Item Hover ── */
+    section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] .stMarkdown li {
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+    section[data-testid="stSidebar"] .stMarkdown p:hover,
+    section[data-testid="stSidebar"] .stMarkdown li:hover {
+        color: var(--text-primary) !important;
+        transform: translateX(2px);
+    }
+
+    /* ── Metric Container Glow on Hover ── */
+    div[data-testid="metric-container"]:hover {
+        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.08), 0 0 20px rgba(99, 102, 241, 0.05) !important;
+    }
+
+    /* ── File Uploader Drag Animation ── */
+    section[data-testid="stFileUploader"]:hover {
+        animation: scaleIn 0.2s ease-out;
+    }
+
+    /* ── Expander Smooth Transition ── */
+    details > summary {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    details > summary:hover {
+        color: var(--accent-neon) !important;
+    }
+    details[open] > summary {
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        padding-bottom: 0.5rem;
+    }
 </style>
 """
 
@@ -425,9 +628,10 @@ def particle_starfield(container_id: str = "hero-starfield") -> str:
 def hero_header(
     title: str, subtitle: str, badge_text: str = "🏆 Hackathon 2026",
     stats: list = None, extra_right: str = "", show_starfield: bool = True,
-) -> str:
+) -> None:
     """Render the cinematic hero header with optional embedded particle starfield."""
     import streamlit as st
+    import streamlit.components.v1 as components
     import uuid
 
     stats_html = ""
@@ -447,7 +651,7 @@ def hero_header(
 
     starfield_html = particle_starfield(f"hero-{uuid.uuid4().hex[:6]}") if show_starfield else ""
 
-    st.markdown(f"""
+    hero_html = f"""
 <div style="position:relative;padding:2rem 2.5rem;margin-bottom:2rem;
             background:linear-gradient(135deg,rgba(99,102,241,0.08) 0%,rgba(10,14,26,0.9) 40%,rgba(139,92,246,0.06) 100%);
             border:1px solid rgba(99,102,241,0.2); border-radius:20px;
@@ -482,7 +686,8 @@ def hero_header(
         <div style="display:flex;gap:1.2rem;align-items:center;">{right_section}</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+"""
+    components.html(hero_html, height=400, scrolling=False)
 
 
 def sidebar_brand(name: str = "IND-INTELLIGENCE", badge: str = "🏆 ET Hackathon PS8", icon_url: str = "https://img.icons8.com/isometric-line/100/factory.png"):
@@ -527,31 +732,41 @@ def llm_status_pill(model: str, available: bool, mode: str = "ollama"):
 
 
 def entity_card_html(entity_id: str, entity_type: str, color: str, degree: int) -> str:
-    return f"""<div class="entity-card"><div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;"><span style="width:14px;height:14px;border-radius:50%;background:{color};display:inline-block;box-shadow:0 0 8px {color};"></span><strong style="font-size:1.1rem;">{entity_id}</strong></div><div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><span class="stat-chip"><span class="dot" style="background:{color};"></span>{entity_type.replace('_',' ').title()}</span><span class="stat-chip">⬡ {degree} connections</span></div></div>"""
+    eid = html_mod.escape(str(entity_id))
+    etype = html_mod.escape(entity_type.replace('_',' ').title())
+    return f"""<div class="entity-card"><div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;"><span style="width:14px;height:14px;border-radius:50%;background:{color};display:inline-block;box-shadow:0 0 8px {color};"></span><strong style="font-size:1.1rem;">{eid}</strong></div><div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><span class="stat-chip"><span class="dot" style="background:{color};"></span>{etype}</span><span class="stat-chip">⬡ {degree} connections</span></div></div>"""
 
 
 def neighbor_row_html(nid: str, color: str, relation: str) -> str:
-    return f"""<div class="neighbor-row"><span class="n-dot" style="background:{color};"></span><span><strong>{nid}</strong></span><span class="n-relation">{relation}</span></div>"""
+    nid_safe = html_mod.escape(str(nid))
+    rel_safe = html_mod.escape(str(relation))
+    return f"""<div class="neighbor-row"><span class="n-dot" style="background:{color};"></span><span><strong>{nid_safe}</strong></span><span class="n-relation">{rel_safe}</span></div>"""
 
 
 def doc_card_html(filename: str, doc_type: str, chunk_count: int, upload_date: str, entities_found: int) -> str:
-    return f"""<div class="doc-card"><h4 style="margin:0;color:#c7d2fe;">📄 {filename}</h4><div style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.4rem;"><span class="badge badge-purple">{doc_type.upper()}</span><span class="badge badge-blue">{chunk_count} chunks</span><span class="badge badge-gray">📅 {fmt_time(upload_date)}</span><span class="badge badge-green">🏷 {entities_found} entities</span></div></div>"""
+    fname_safe = html_mod.escape(str(filename))
+    dtype_safe = html_mod.escape(str(doc_type.upper()))
+    return f"""<div class="doc-card"><h4 style="margin:0;color:#c7d2fe;">📄 {fname_safe}</h4><div style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.4rem;"><span class="badge badge-purple">{dtype_safe}</span><span class="badge badge-blue">{chunk_count} chunks</span><span class="badge badge-gray">📅 {fmt_time(upload_date)}</span><span class="badge badge-green">🏷 {entities_found} entities</span></div></div>"""
 
 
 def citation_card(index: int, citation: str, distance: float, excerpt: str) -> str:
     score = round(1 - distance, 3)
-    return f"""<div class="citation-card"><div class="cite-header">[{index}] <b>{citation}</b> &nbsp;|&nbsp; relevance: {score}</div><div class="cite-text">{excerpt[:350]}…</div></div>"""
+    cite_safe = html_mod.escape(str(citation))
+    exc_safe = html_mod.escape(str(excerpt[:350]))
+    return f"""<div class="citation-card"><div class="cite-header">[{index}] <b>{cite_safe}</b> &nbsp;|&nbsp; relevance: {score}</div><div class="cite-text">{exc_safe}…</div></div>"""
 
 
 def keypoints_box(key_points: list) -> str:
-    bullets = "".join(f"<li>{p}</li>" for p in key_points)
+    bullets = "".join(f"<li>{html_mod.escape(str(p))}</li>" for p in key_points)
     return f"""<div class="keypoints-box"><b style="color:#a7f3d0">📌 Key Points</b><ul>{bullets}</ul></div>"""
 
 
 def chat_bubble(role: str, content: str, label: str = None) -> str:
     css_class = "chat-user" if role == "user" else "chat-assistant"
     label = label or ("👤 You" if role == "user" else "🤖 System")
-    return f"""<div class="chat-bubble {css_class}"><div style="font-size:0.72rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">{label}</div>{content}</div>"""
+    safe_content = html_mod.escape(str(content))
+    safe_label = html_mod.escape(str(label))
+    return f"""<div class="chat-bubble {css_class}"><div style="font-size:0.72rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">{safe_label}</div>{safe_content}</div>"""
 
 
 def stats_grid(stats: dict) -> str:
@@ -564,9 +779,92 @@ def stats_grid(stats: dict) -> str:
 
 
 def info_banner(icon: str, title: str, description: str) -> str:
-    return f"""<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding:0.8rem 1.2rem;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);border-radius:12px;"><span style="font-size:1.2rem;">{icon}</span><div><div style="font-size:0.95rem;font-weight:700;color:#f1f5f9;">{title}</div><div style="font-size:0.8rem;color:#94a3b8;">{description}</div></div></div>"""
+    t = html_mod.escape(str(title))
+    d = html_mod.escape(str(description))
+    return f"""<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding:0.8rem 1.2rem;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);border-radius:12px;"><span style="font-size:1.2rem;">{icon}</span><div><div style="font-size:0.95rem;font-weight:700;color:#f1f5f9;">{t}</div><div style="font-size:0.8rem;color:#94a3b8;">{d}</div></div></div>"""
 
 
 def settings_section(title: str, description: str = "") -> str:
-    desc_html = f'<div style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem;">{description}</div>' if description else ""
-    return f"""<div style="padding:1.2rem;background:rgba(13,17,33,0.5);border:1px solid rgba(99,102,241,0.12);border-radius:12px;margin-bottom:1rem;"><div style="font-size:0.95rem;font-weight:700;color:#f1f5f9;">{title}</div>{desc_html}</div>"""
+    t = html_mod.escape(str(title))
+    d = html_mod.escape(str(description)) if description else ""
+    desc_html = f'<div style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem;">{d}</div>' if description else ""
+    return f"""<div style="padding:1.2rem;background:rgba(13,17,33,0.5);border:1px solid rgba(99,102,241,0.12);border-radius:12px;margin-bottom:1rem;"><div style="font-size:0.95rem;font-weight:700;color:#f1f5f9;">{t}</div>{desc_html}</div>"""
+
+
+def typing_indicator(label: str = "AI is thinking") -> str:
+    """Render an animated typing indicator with bouncing dots."""
+    return f"""<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="font-size:0.78rem;color:#64748b;margin-left:0.3rem;">{label}...</span></div>"""
+
+
+def skeleton_loader(lines: int = 3, height: str = "14px") -> str:
+    """Render a skeleton loading placeholder with shimmer animation."""
+    line_html = "".join(
+        f'<div class="skeleton skeleton-line" style="height:{height};"></div>'
+        for _ in range(lines)
+    )
+    return f"""<div style="padding:1rem;">{line_html}</div>"""
+
+
+def skeleton_card() -> str:
+    """Render a skeleton card placeholder."""
+    return f"""<div style="padding:1.2rem;background:rgba(13,17,33,0.4);border:1px solid rgba(99,102,241,0.08);border-radius:var(--radius-lg);"><div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;"><div class="skeleton skeleton-circle"></div><div style="flex:1;"><div class="skeleton skeleton-line" style="width:70%;height:16px;"></div><div class="skeleton skeleton-line" style="width:40%;height:12px;margin-top:0.4rem;"></div></div></div><div class="skeleton skeleton-line" style="height:12px;"></div><div class="skeleton skeleton-line" style="height:12px;"></div><div class="skeleton skeleton-line" style="height:12px;width:50%;"></div></div>"""
+
+
+def neon_stat_card(value: str, label: str, color: str = "#818cf8", icon: str = "") -> str:
+    """Render a neon-glowing stat card with animation."""
+    icon_html = f'<div style="font-size:1.8rem;margin-bottom:0.3rem;">{icon}</div>' if icon else ""
+    v = html_mod.escape(str(value))
+    l = html_mod.escape(str(label))
+    return f"""<div class="stat-counter-card neon-glow" style="min-width:100px;">{icon_html}<div style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,{color},{color}aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Space Grotesk',sans-serif;">{v}</div><div style="font-size:0.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">{l}</div></div>"""
+
+
+def animated_counter_html(value: int, label: str, color: str = "#818cf8") -> str:
+    """Render a stat counter with count-up animation via CSS."""
+    v = html_mod.escape(str(value))
+    l = html_mod.escape(str(label))
+    return f"""<div class="stat-counter-animated stat-counter-card" style="flex:1;"><div class="stats-value" style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,{color},{color}aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{v}</div><div style="font-size:0.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">{l}</div></div>"""
+
+
+def glow_button(label: str, key: str = None, icon: str = "", color: str = "#6366f1") -> str:
+    """Return HTML for a premium glowing button with ripple effect."""
+    safe_label = html_mod.escape(str(label))
+    safe_key = html_mod.escape(str(key)) if key else ""
+    key_attr = f' key="{safe_key}"' if key else ""
+    icon_html = f'{icon} ' if icon else ""
+    return f"""<div style="margin-bottom:0.5rem;"><div class="glow-btn-wrap"><button class="glow-btn"{key_attr} style="width:100%;padding:0.7rem 1.2rem;background:linear-gradient(135deg,{color} 0%,{color}cc 100%);color:white;border:1px solid {color}44;border-radius:var(--radius-md);font-weight:600;font-size:0.88rem;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 15px {color}33;">{icon_html}{safe_label}</button></div></div>"""
+
+
+def particle_background_js(container_id: str = "particles-bg", count: int = 50) -> str:
+    """Return HTML+JS for a subtle floating particle background effect."""
+    return f"""
+<div id="{container_id}" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:hidden;">
+<script>
+(function() {{
+    var c = document.getElementById('{container_id}');
+    if (!c) return;
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'width:100%;height:100%;';
+    c.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var w, h, dots = [];
+    function resize() {{ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }}
+    resize(); window.addEventListener('resize', resize);
+    for (var i = 0; i < {count}; i++) {{
+        dots.push({{ x: Math.random()*w, y: Math.random()*h, r: 0.5+Math.random()*1.5, vx: (Math.random()-0.5)*0.15, vy: (Math.random()-0.5)*0.15, a: 0.1+Math.random()*0.2 }});
+    }}
+    function draw() {{
+        ctx.clearRect(0,0,w,h);
+        for (var i=0;i<dots.length;i++) {{ var d=dots[i]; d.x+=d.vx; d.y+=d.vy;
+            if(d.x<0) d.x=w; if(d.x>w) d.x=0; if(d.y<0) d.y=h; if(d.y>h) d.y=0;
+            ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+            ctx.fillStyle='rgba(99,102,241,'+d.a+')'; ctx.fill();
+        }}
+        requestAnimationFrame(draw);
+    }}
+    draw();
+}})();
+</script>
+</div>
+"""
+
+
