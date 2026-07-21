@@ -364,6 +364,7 @@ with tab_chat:
             st.error(f"Unexpected error: {e}")
 
         if answer:
+            stream_placeholder.markdown(answer)
             conf_badge = confidence_badge(confidence)
             model_badge = f'<span class="badge badge-teal"> {model_used}</span>'
             latency_badge = f'<span class="badge badge-gray">⏱ {latency_ms} ms</span>'
