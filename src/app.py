@@ -470,14 +470,26 @@ with tab_graph:
             if not nodes:
                 st.info("Graph is empty. Initialise the corpus first.")
             else:
+                # Retrieve the true, uncapped total nodes and edges of the full graph (matching the sidebar metrics)
+                total_n = len(nodes)
+                total_e = len(edges)
+                try:
+                    stats_resp = requests.get(f"{API_URL}/entities", timeout=5)
+                    if stats_resp.status_code == 200:
+                        stats_data = stats_resp.json().get("stats", {})
+                        total_n = stats_data.get("total_nodes", total_n)
+                        total_e = stats_data.get("total_edges", total_e)
+                except Exception:
+                    pass
+
                 st.markdown(f"""
                 <div style="display:flex;gap:0.8rem;margin-bottom:1rem;">
                     <div class="stat-counter-card" style="flex:1;">
-                        <div style="font-size:1.5rem;font-weight:800;color:#818cf8;">{len(nodes)}</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#818cf8;">{total_n}</div>
                         <div style="font-size:0.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Nodes</div>
                     </div>
                     <div class="stat-counter-card" style="flex:1;">
-                        <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">{len(edges)}</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">{total_e}</div>
                         <div style="font-size:0.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Edges</div>
                     </div>
                     <div class="stat-counter-card" style="flex:1;">
