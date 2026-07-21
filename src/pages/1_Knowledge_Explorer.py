@@ -476,8 +476,20 @@ with graph_col:
                   .linkWidth(0.8).linkColor(() => 'rgba(255, 255, 255, 0.15)');
                 
                 // Adjust layout forces to spread nodes out (Obsidian look)
-                Graph.d3Force('charge').strength(-200);
-                Graph.d3Force('link').distance(85);
+                setTimeout(() => {
+                  try {
+                    const chargeForce = Graph.d3Force('charge');
+                    if (chargeForce && typeof chargeForce.strength === 'function') {
+                      chargeForce.strength(-220);
+                    }
+                    const linkForce = Graph.d3Force('link');
+                    if (linkForce && typeof linkForce.distance === 'function') {
+                      linkForce.distance(90);
+                    }
+                  } catch(err) {
+                    console.warn("Failed to apply layout forces:", err);
+                  }
+                }, 150);
                 
                 Graph.onNodeClick(node => {
                   // Beautiful flight orbit animation

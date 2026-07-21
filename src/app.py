@@ -521,9 +521,21 @@ with tab_graph:
                       .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
                       .linkWidth(0.8).linkColor(() => 'rgba(255, 255, 255, 0.15)');
                     
-                    // Adjust layout forces to spread nodes out (Obsidian look)
-                    Graph.d3Force('charge').strength(-200);
-                    Graph.d3Force('link').distance(85);
+                    setTimeout(() => {
+                      try {
+                        const chargeForce = Graph.d3Force('charge');
+                        if (chargeForce && typeof chargeForce.strength === 'function') {
+                          chargeForce.strength(-220);
+                        }
+                        const linkForce = Graph.d3Force('link');
+                        if (linkForce && typeof linkForce.distance === 'function') {
+                          linkForce.distance(90);
+                        }
+                      } catch(err) {
+                        console.warn("Failed to apply layout forces:", err);
+                      }
+                    }, 150);
+                    
                     Graph.onNodeClick(node => {
                       const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
                       Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 2000);
