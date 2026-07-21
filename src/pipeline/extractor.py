@@ -43,7 +43,7 @@ INSPECTION_ID_PATTERN = re.compile(
 
 # Regulation references: OISD-116, DGMS Circular 2023-01, Factory Act Section 7A, Section 36
 REGULATION_PATTERNS = [
-    re.compile(r'\b(OISD-(?:GDN-|STD-)?\d{2,3})\b', re.IGNORECASE),
+    re.compile(r'\b(OISD(?:\s*[\-\–\—\─]\s*(?:GDN-|STD-|GDN|STD)?\s*[\-\–\—\─]?\s*)?\d{2,3})\b', re.IGNORECASE),
     re.compile(r'\b(DGMS(?:\s+(?:Circular|Technical\s+Circular))?\s+\d{4}-\d{2})\b', re.IGNORECASE),
     re.compile(r'\b(DGMS\s+Technical\s+Circular\s+\d+)\b', re.IGNORECASE),
     re.compile(r'\b(Factory\s+Act\s+Section\s+\d+[A-Z]?)\b', re.IGNORECASE),
