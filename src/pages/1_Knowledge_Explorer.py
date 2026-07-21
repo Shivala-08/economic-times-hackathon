@@ -46,12 +46,17 @@ ALL_NODE_TYPES = [
 ]
 
 NODE_TYPE_LABELS = {
-    "equipment": "⚙️ Equipment", "regulation": "📜 Regulation",
-    "plant": "🏭 Plant / Location", "permit": "🎫 Permit",
-    "work_order": "📋 Work Order", "incident": "🚨 Incident",
-    "inspection": "🔍 Inspection", "person": "👤 Person",
-    "hazard": "⚠️ Hazard", "permit_type": "🏷️ Permit Type",
-    "incident_type": "🏷️ Incident Type",
+    "equipment": "🔵 ⚙️ Equipment",
+    "regulation": "🔴 📜 Regulation",
+    "plant": "🟢 🏭 Plant / Location",
+    "permit": "🟡 🎫 Permit",
+    "work_order": "🟣 📋 Work Order",
+    "incident": "🌸 🚨 Incident",
+    "inspection": "🌐 🔍 Inspection",
+    "person": "🟠 👤 Person",
+    "hazard": "🔴 ⚠️ Hazard",
+    "permit_type": "🟡 🏷️ Permit Type",
+    "incident_type": "🌸 🏷️ Incident Type",
 }
 
 NODE_TYPE_COLORS = {
@@ -101,7 +106,7 @@ def fetch_json(url, timeout=10, use_cache=True):
 
 
 def load_initial_graph():
-    data = fetch_json(f"{API_URL}/graph/top?n=40")
+    data = fetch_json(f"{API_URL}/graph/top?n=100")
     if data and data.get("nodes"):
         st.session_state.ke_visible_nodes = {n["id"] for n in data["nodes"]}
         st.session_state.ke_visible_edges = data.get("edges", [])
