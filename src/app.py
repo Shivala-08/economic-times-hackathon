@@ -4,7 +4,6 @@ Premium upgrades:
   • Cinematic animated hero header with gradient glow
   • Glassmorphism cards and panels
   • Neon glow accents and animated borders
-  • Hackathon branding with trophy badges
   • Animated stat counters
   • Premium chat interface with typing indicators
   • Micro-interactions on every element
@@ -16,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
+import streamlit.components.v1 as components
 import requests
 import json
 import os
@@ -23,7 +23,7 @@ from src.ui.design_system import (
     inject_global_css, hero_header, gradient_divider, section_header,
     sidebar_brand, sidebar_footer, llm_status_pill, confidence_badge,
     fmt_time, post_feedback, chat_bubble, citation_card, keypoints_box,
-    info_banner, settings_section, doc_card_html,
+    info_banner, settings_section, doc_card_html, skeleton_card,
 )
 
 try:
@@ -34,8 +34,8 @@ except ImportError:
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Industrial Knowledge Intelligence",
-    page_icon="🏭",
+    page_title="Industrial Knowledge Intelligence — Real-Time Safety & Regulation RAG Search",
+    page_icon="K",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -113,7 +113,7 @@ def show_entity_graph(entity_id: str):
 hero_header(
     title="Industrial Knowledge Platform",
     subtitle="Unified RAG & Entity Graph Intelligence System",
-    badge_text="🏆 Hackathon 2026",
+    badge_text="v4.0",
     extra_right="""
         <div style="display: flex; gap: 1.2rem; align-items: center;">
             <div style="text-align: right; padding-right: 1.2rem; border-right: 1px solid rgba(255,255,255,0.08);">
@@ -137,17 +137,17 @@ hero_header(
 # SIDEBAR
 # ══════════════════════════════════════════════════════════════════════════════
 with st.sidebar:
-    sidebar_brand(name="IND-INTELLIGENCE", badge="🏆 ET Hackathon PS8")
+    sidebar_brand(name="IND-KNOWLEDGE", badge="v4.0")
 
     st.markdown("### **System Status**")
     try:
         h = requests.get(f"{API_URL}/health", timeout=15)
         if h.status_code == 200:
-            st.success("⚡ FastAPI: Connected")
+            st.success("FastAPI: Connected")
         else:
-            st.warning("⚠️ FastAPI: Unhealthy")
+            st.warning("FastAPI: Unhealthy")
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        st.error("❌ FastAPI: Offline")
+        st.error("FastAPI: Offline")
 
     gradient_divider()
     st.markdown("### **LLM Engine**")
@@ -180,7 +180,7 @@ with st.sidebar:
             c2.metric("Edges", stats.get("total_edges", 0))
             nt = stats.get("node_types", {})
             if nt:
-                with st.expander("📋 Entity Breakdown"):
+                with st.expander("Entity Breakdown"):
                     for etype, cnt in sorted(nt.items(), key=lambda x: -x[1]):
                         color_map = {
                             "equipment": "#ef4444", "regulation": "#10b981",
@@ -205,8 +205,8 @@ with st.sidebar:
 # TABS
 # ══════════════════════════════════════════════════════════════════════════════
 tab_chat, tab_docs, tab_graph, tab_entities, tab_bench, tab_setup = st.tabs([
-    "💬 Query Console", "📚 Documents", "🕸️ Knowledge Network",
-    "📦 Entity Explorer", "📊 Evaluation", "⚙️ Settings",
+    "Query Console", "Documents", "Knowledge Network",
+    "Entity Explorer", "Evaluation", "Settings",
 ])
 
 
@@ -217,13 +217,13 @@ with tab_chat:
     llm_status = st.session_state.get("llm_status", {})
     if llm_status.get("nvidia_available"):
         caption_text = "Powered by **Vector Search + Knowledge Graph + NVIDIA LLM API**"
-        caption_icon = "⚡"
+        caption_icon = "*"
     elif llm_status.get("ollama_available"):
         caption_text = "Powered by **Vector Search + Knowledge Graph + Local LLM (Ollama)** — no API key required"
-        caption_icon = "🏠"
+        caption_icon = "~"
     else:
         caption_text = "Powered by **Vector Search + Knowledge Graph + Smart Context Fallback**"
-        caption_icon = "🧠"
+        caption_icon = ">"
 
     st.markdown(info_banner(caption_icon, "Interactive Query Console", caption_text), unsafe_allow_html=True)
 
@@ -239,7 +239,7 @@ with tab_chat:
         else:
             with st.container():
                 conf_badge = confidence_badge(msg.get("confidence", "Medium"))
-                model_badge = f'<span class="badge badge-teal">🤖 {msg.get("model_used","")}</span>'
+                model_badge = f'<span class="badge badge-teal"> {msg.get("model_used","")}</span>'
                 latency_badge = f'<span class="badge badge-gray">⏱ {msg.get("latency_ms", 0)} ms</span>'
                 st.markdown(
                     chat_bubble("assistant", f'{conf_badge} {model_badge} {latency_badge}'),
@@ -257,12 +257,12 @@ with tab_chat:
                     cols = st.columns(min(len(ents[:6]), 6))
                     for i, e in enumerate(ents[:6]):
                         with cols[i]:
-                            if st.button(f"⚙ {e}", key=f"ent_btn_{idx}_{i}", use_container_width=True):
+                            if st.button(f"{e}", key=f"ent_btn_{idx}_{i}", use_container_width=True):
                                 show_entity_graph(e)
 
                 srcs = msg.get("sources", [])
                 if srcs:
-                    with st.expander(f"📎 {len(srcs)} Source(s) cited", expanded=False):
+                    with st.expander(f"{len(srcs)} Source(s) cited", expanded=False):
                         for si, src in enumerate(srcs, 1):
                             st.markdown(
                                 citation_card(si, src.get("citation", "Unknown"), src.get("distance", 0), src.get("excerpt", "")),
@@ -270,12 +270,12 @@ with tab_chat:
                             )
 
                 c1, c2, _ = st.columns([1, 1, 8])
-                if c1.button("👍", key=f"up_{idx}", help="Good answer"):
+                if c1.button("Good", key=f"up_{idx}", help="Good answer"):
                     post_feedback(msg.get("question", ""), msg["content"][:300], +1, API_URL)
-                    st.toast("Thanks for the feedback!", icon="👍")
-                if c2.button("👎", key=f"dn_{idx}", help="Poor answer"):
+                    st.toast("Thanks for the feedback!", icon="Good")
+                if c2.button("Poor", key=f"dn_{idx}", help="Poor answer"):
                     post_feedback(msg.get("question", ""), msg["content"][:300], -1, API_URL)
-                    st.toast("Feedback logged. We'll improve!", icon="👎")
+                    st.toast("Feedback logged. We'll improve!", icon="Poor")
 
     # Input
     user_query = st.chat_input(
@@ -323,7 +323,7 @@ with tab_chat:
                             elif etype == "error":
                                 st.error(f"LLM error: {content}")
         except ImportError:
-            with st.spinner("🧠 Generating answer…"):
+            with st.spinner("Generating answer..."):
                 try:
                     resp = requests.post(f"{API_URL}/query", json={"question": user_query, "top_k": 5}, timeout=120)
                     if resp.status_code == 200:
@@ -340,13 +340,13 @@ with tab_chat:
         except requests.exceptions.Timeout:
             st.error("⏳ Request timed out (>120 s). If using Ollama for the first time, it may be loading the model — please try again in a moment.")
         except requests.exceptions.ConnectionError:
-            st.error("❌ Cannot reach the FastAPI server at `localhost:8000`. Start it with: `PYTHONPATH=. uvicorn src.main:app --reload`")
+            st.error(" Cannot reach the FastAPI server at `localhost:8000`. Start it with: `PYTHONPATH=. uvicorn src.main:app --reload`")
         except Exception as e:
             st.error(f"Unexpected error: {e}")
 
         if answer:
             conf_badge = confidence_badge(confidence)
-            model_badge = f'<span class="badge badge-teal">🤖 {model_used}</span>'
+            model_badge = f'<span class="badge badge-teal"> {model_used}</span>'
             latency_badge = f'<span class="badge badge-gray">⏱ {latency_ms} ms</span>'
             st.markdown(chat_bubble("assistant", f'{conf_badge} {model_badge} {latency_badge}'), unsafe_allow_html=True)
 
@@ -358,11 +358,11 @@ with tab_chat:
                 cols = st.columns(min(len(entities[:6]), 6))
                 for i, e in enumerate(entities[:6]):
                     with cols[i]:
-                        if st.button(f"⚙ {e}", key=f"ent_btn_live_{i}", use_container_width=True):
+                        if st.button(f"{e}", key=f"ent_btn_live_{i}", use_container_width=True):
                             show_entity_graph(e)
 
             if sources:
-                with st.expander(f"📎 {len(sources)} Source(s) cited", expanded=True):
+                with st.expander(f"{len(sources)} Source(s) cited", expanded=True):
                     for si, src in enumerate(sources, 1):
                         st.markdown(citation_card(si, src.get("citation", "Unknown"), src.get("distance", 0), src.get("excerpt", "")), unsafe_allow_html=True)
 
@@ -374,7 +374,7 @@ with tab_chat:
             st.session_state.last_answer = answer
 
     if st.session_state.messages:
-        if st.button("🗑️ Clear Chat", use_container_width=False):
+        if st.button("Clear Chat", use_container_width=False):
             st.session_state.messages = []; st.session_state.last_answer = None; st.rerun()
 
 
@@ -382,11 +382,14 @@ with tab_chat:
 # TAB 2 — DOCUMENT LIBRARY
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_docs:
-    section_header("📚", "Document Repository", "Browse indexed regulatory documents and structured plant logs")
+    section_header("Documents", "Document Repository", "Browse indexed regulatory documents and structured plant logs")
+    docs_skeleton = st.empty()
+    docs_skeleton.markdown(skeleton_card(), unsafe_allow_html=True)
 
     try:
-        docs_resp = requests.get(f"{API_URL}/documents", timeout=5)
+        docs_resp = requests.get(f"{API_URL}/documents", timeout=25)
         if docs_resp.status_code == 200:
+            docs_skeleton.empty()
             docs = docs_resp.json()
             if not docs:
                 st.info("No documents indexed yet. Go to the **Settings** tab to initialise.")
@@ -397,9 +400,9 @@ with tab_docs:
                 filtered = [d for d in docs if d["type"] in sel_types and (not search_q or search_q.lower() in d["filename"].lower())]
 
                 c1, c2, c3 = st.columns(3)
-                c1.metric("📄 Total Documents", len(docs))
-                c2.metric("🔍 Showing", len(filtered))
-                c3.metric("📊 Types", len(file_types))
+                c1.metric("Total Documents", len(docs))
+                c2.metric("Showing", len(filtered))
+                c3.metric("Types", len(file_types))
 
                 gradient_divider()
 
@@ -409,10 +412,10 @@ with tab_docs:
                             doc_card_html(doc['filename'], doc['type'], doc['chunk_count'], doc['upload_date'], doc.get('entities_found', 0)),
                             unsafe_allow_html=True,
                         )
-                        with st.expander(f"🔍 Inspect chunks — {doc['filename']}"):
+                        with st.expander(f" Inspect chunks — {doc['filename']}"):
                             if st.button("Load Chunks", key=f"btn_{doc['doc_id']}"):
                                 try:
-                                    cr = requests.get(f"{API_URL}/documents/{doc['doc_id']}", timeout=5)
+                                    cr = requests.get(f"{API_URL}/documents/{doc['doc_id']}", timeout=25)
                                     if cr.status_code == 200:
                                         cd = cr.json()
                                         st.write(f"**{len(cd['chunks'])} chunks**")
@@ -424,8 +427,10 @@ with tab_docs:
                                 except Exception as err:
                                     st.error(str(err))
         else:
+            docs_skeleton.empty()
             st.error(f"Failed to fetch documents: {docs_resp.status_code}")
     except Exception as e:
+        docs_skeleton.empty()
         st.error(f"Could not connect to API: {e}")
 
 
@@ -433,11 +438,14 @@ with tab_docs:
 # TAB 3 — KNOWLEDGE GRAPH (3D WebGL)
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_graph:
-    section_header("🕸️", "Knowledge Network", "Interactive 3D entity-relationship graph with force-directed layout")
+    section_header("Knowledge", "Knowledge Network", "Interactive 3D entity-relationship graph with force-directed layout")
+    graph_skeleton = st.empty()
+    graph_skeleton.markdown(skeleton_card(), unsafe_allow_html=True)
 
     try:
-        gr = requests.get(f"{API_URL}/graph?max_nodes=200", timeout=10)
+        gr = requests.get(f"{API_URL}/graph?max_nodes=200", timeout=25)
         if gr.status_code == 200:
+            graph_skeleton.empty()
             gd = gr.json(); nodes = gd.get("nodes", []); edges = gd.get("edges", [])
             if not nodes:
                 st.info("Graph is empty. Initialise the corpus first.")
@@ -494,16 +502,18 @@ with tab_graph:
                     });
                   }
                 </script>
-                <script src="https://cdn.jsdelivr.net/npm/3d-force-graph" onload="initGraph()"></script>
-                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json)
+                <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
+                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
-                import streamlit.components.v1 as components
                 components.html(html_code, height=640)
         else:
+            graph_skeleton.empty()
             st.error(f"Graph API error {gr.status_code}")
     except requests.exceptions.ConnectionError:
+        graph_skeleton.empty()
         st.error("Cannot reach FastAPI server.")
     except Exception as e:
+        graph_skeleton.empty()
         st.error(f"Error: {e}")
 
 
@@ -511,13 +521,18 @@ with tab_graph:
 # TAB 4 — ENTITY EXPLORER
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_entities:
-    section_header("📦", "Entity Explorer", "Browse entities extracted from the document corpus")
+    entities_skeleton = st.empty()
+    entities_skeleton.markdown(skeleton_card() + skeleton_card() + skeleton_card(), unsafe_allow_html=True)
+
+    section_header("Entities", "Entity Explorer", "Browse entities extracted from the document corpus")
 
     try:
-        er = requests.get(f"{API_URL}/entities", timeout=10)
+        er = requests.get(f"{API_URL}/entities", timeout=25)
         if er.status_code == 200:
+            entities_skeleton.empty()
             ed = er.json(); ebt = ed.get("entities", {}); stats = ed.get("stats", {})
             if not ebt:
+                entities_skeleton.empty()
                 st.info("No entities found. Initialise the corpus first.")
             else:
                 c1, c2, c3 = st.columns(3)
@@ -532,14 +547,14 @@ with tab_entities:
                     srch = st.text_input("Search entities", "", key="ent_srch")
                     if srch:
                         elist = [e for e in elist if srch.lower() in e.lower()]
-                    st.markdown(info_banner("📦", f"{len(elist)} {sel.replace('_',' ').title()} entities", ""), unsafe_allow_html=True)
+                    st.markdown(info_banner("", f"{len(elist)} {sel.replace('_',' ').title()} entities", ""), unsafe_allow_html=True)
 
                     for eid in elist[:50]:
                         with st.container():
                             st.markdown(f"**{eid}**")
                             if st.button("View relationships", key=f"sub_{eid}"):
                                 try:
-                                    sr = requests.get(f"{API_URL}/graph/entity/{eid}?depth=1", timeout=5)
+                                    sr = requests.get(f"{API_URL}/graph/entity/{eid}?depth=1", timeout=25)
                                     if sr.status_code == 200:
                                         sd = sr.json(); nb = sd.get("neighbors", [])
                                         if nb:
@@ -555,10 +570,13 @@ with tab_entities:
                     if len(elist) > 50:
                         st.info(f"Showing first 50 of {len(elist)} entities.")
         else:
+            entities_skeleton.empty()
             st.error(f"Entities API error {er.status_code}")
     except requests.exceptions.ConnectionError:
+        entities_skeleton.empty()
         st.error("Cannot reach FastAPI server.")
     except Exception as e:
+        entities_skeleton.empty()
         st.error(f"Error: {e}")
 
 
@@ -566,13 +584,13 @@ with tab_entities:
 # TAB 5 — BENCHMARK
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_bench:
-    section_header("📊", "System Evaluation", "Ground-truth accuracy & latency metrics for the active RAG pipeline")
+    section_header("Evaluation", "System Evaluation", "Ground-truth accuracy & latency metrics for the active RAG pipeline")
 
     col_run, col_n = st.columns([3, 1])
     with col_n:
         max_q = st.number_input("Questions to run", min_value=1, max_value=18, value=18, step=1)
     with col_run:
-        run_btn = st.button("🚀 Run Verification Suite", use_container_width=True)
+        run_btn = st.button("Run Verification Suite", use_container_width=True)
 
     if run_btn:
         prog_bar = st.progress(0, text="Starting benchmark…")
@@ -587,13 +605,13 @@ with tab_bench:
                     gradient_divider()
 
                     mc1, mc2, mc3, mc4 = st.columns(4)
-                    mc1.metric("✅ Accuracy", f"{acc}%"); mc2.metric("🎯 Correct", f"{correct} / {total}")
-                    mc3.metric("⏱ Avg Latency", f"{avg_ms} ms"); mc4.metric("🤖 Model", model)
+                    mc1.metric("Accuracy", f"{acc}%"); mc2.metric("Correct", f"{correct} / {total}")
+                    mc3.metric("⏱ Avg Latency", f"{avg_ms} ms"); mc4.metric(" Model", model)
                     gradient_divider()
 
                     st.markdown("### Detailed Results")
                     for r in results:
-                        icon = "✅" if r["passed"] else "❌"
+                        icon = "PASS" if r["passed"] else ""
                         sim_info = f" · Sim: {r['similarity']:.2f}" if "similarity" in r else ""
                         with st.expander(f"{icon} [{r['id']}] {r['question']}{sim_info} · {r['latency_ms']} ms", expanded=False):
                             st.markdown(f"**Category:** `{r.get('category','')}`")
@@ -605,7 +623,7 @@ with tab_bench:
                                     st.markdown(f"**Embedding Similarity:** `{r['similarity']:.3f}`")
                             with cols[1]:
                                 if "passed_keyword" in r:
-                                    kw_pass = "✅ Pass" if r["passed_keyword"] else "❌ Fail"
+                                    kw_pass = " Pass" if r["passed_keyword"] else " Fail"
                                     st.markdown(f"**Keyword Overlap:** {kw_pass}")
                             conf_col = "green" if r["confidence"] in ["High", 0.85] else "blue"
                             st.markdown(f'<span class="badge badge-{conf_col}">Confidence: {r["confidence"]}</span>', unsafe_allow_html=True)
@@ -639,19 +657,19 @@ with tab_bench:
 # TAB 6 — SETTINGS
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_setup:
-    section_header("⚙️", "Settings & Control Panel", "Manage vector database, ingest documents, and debug retrieval")
+    section_header("Settings", "Settings & Control Panel", "Manage vector database, ingest documents, and debug retrieval")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(settings_section("🚀 Core Corpus Initialisation"), unsafe_allow_html=True)
+        st.markdown(settings_section("Core Corpus Initialisation"), unsafe_allow_html=True)
         st.write("Index all pre-bundled files: OISD / DGMS / Factory Act regulatory docs plus synthetic work orders, permits, and incident reports.")
-        if st.button("🚀 Scan & Index Default Corpus", use_container_width=True):
+        if st.button(" Scan & Index Default Corpus", use_container_width=True):
             with st.spinner("Parsing, embedding, and building knowledge graph… (~60 s)"):
                 try:
                     r = requests.post(f"{API_URL}/ingest/initialize", timeout=180)
                     if r.status_code == 200:
                         s = r.json()["stats"]
-                        st.success(f"✅ Indexed **{s['files_ingested']}** documents · **{s['total_chunks']}** chunks")
+                        st.success(f" Indexed **{s['files_ingested']}** documents · **{s['total_chunks']}** chunks")
                         st.rerun()
                     else:
                         st.error(f"Error: {r.text}")
@@ -659,11 +677,11 @@ with tab_setup:
                     st.error(str(e))
 
     with col2:
-        st.markdown(settings_section("📤 Upload New Documents"), unsafe_allow_html=True)
+        st.markdown(settings_section("Upload New Documents"), unsafe_allow_html=True)
         st.write("Upload PDF, DOCX, CSV, or TXT files to add to the live search index.")
         uploaded = st.file_uploader("Select Files", type=["txt", "pdf", "docx", "csv"], accept_multiple_files=True)
         if uploaded:
-            if st.button("📤 Ingest Selected Files", use_container_width=True):
+            if st.button("Ingest Selected Files", use_container_width=True):
                 files_payload = [("files", (uf.name, uf.getvalue(), uf.type)) for uf in uploaded]
                 with st.spinner(f"Ingesting {len(uploaded)} files…"):
                     try:
@@ -671,12 +689,12 @@ with tab_setup:
                         if r.status_code == 200:
                             results = r.json()["results"]
                             ok = sum(1 for x in results if x.get("status") == "success")
-                            st.success(f"✅ Uploaded and ingested {ok} file(s)")
+                            st.success(f" Uploaded and ingested {ok} file(s)")
                             for x in results:
                                 if x.get("status") == "success":
-                                    st.write(f"✓ **{x['doc_id']}** · {x['chunk_count']} chunks")
+                                    st.write(f" **{x['doc_id']}** · {x['chunk_count']} chunks")
                                 else:
-                                    st.error(f"✗ **{x['doc_id']}**: {x.get('error')}")
+                                    st.error(f" **{x['doc_id']}**: {x.get('error')}")
                             st.rerun()
                         else:
                             st.error(f"Upload failed: {r.text}")
@@ -684,11 +702,11 @@ with tab_setup:
                         st.error(str(e))
 
     gradient_divider()
-    st.markdown(settings_section("🔍 Debug: Raw Vector Search", "Test retrieval quality without LLM — great for tuning chunk size / top-k"), unsafe_allow_html=True)
+    st.markdown(settings_section(" Debug: Raw Vector Search", "Test retrieval quality without LLM — great for tuning chunk size / top-k"), unsafe_allow_html=True)
 
     dq = st.text_input("Search query (raw vector similarity)", "quarterly inspection")
     dn = st.slider("Top-k", 1, 10, 5)
-    if st.button("🔍 Run Debug Search"):
+    if st.button(" Run Debug Search"):
         try:
             dr = requests.get(f"{API_URL}/debug/search?q={dq}&n={dn}", timeout=15)
             if dr.status_code == 200:

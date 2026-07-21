@@ -56,13 +56,44 @@ _KEYWORD_STOP_WORDS = frozenset({
 
 
 class SemanticCache:
-    """In-memory rolling cache for semantic similarity search over recent queries."""
+    """Persistent rolling cache for semantic similarity search over recent queries."""
 
     def __init__(self, max_size: int = 500, threshold: float = 0.95):
         self.max_size = max_size
         self.threshold = threshold
-        # list of dicts: {"embedding": np.ndarray, "answer": Dict[str, Any]}
         self.cache = []
+        self.cache_path = settings.data_dir / "semantic_cache.json"
+        self._load_cache()
+
+    def _load_cache(self):
+        """Load cache entries from local JSON file."""
+        try:
+            if self.cache_path.exists():
+                with open(self.cache_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for item in data:
+                        self.cache.append({
+                            "embedding": np.array(item["embedding"]),
+                            "answer": item["answer"]
+                        })
+                logger.info(f"Semantic Cache: Loaded {len(self.cache)} entries from {self.cache_path}")
+        except Exception as e:
+            logger.error(f"Semantic Cache: Failed to load cache from disk: {e}")
+
+    def _save_cache(self):
+        """Save cache entries to local JSON file."""
+        try:
+            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+            serializable_cache = []
+            for entry in self.cache:
+                serializable_cache.append({
+                    "embedding": entry["embedding"].tolist(),
+                    "answer": entry["answer"]
+                })
+            with open(self.cache_path, "w", encoding="utf-8") as f:
+                json.dump(serializable_cache, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Semantic Cache: Failed to save cache to disk: {e}")
 
     def get(self, query_embedding: np.ndarray) -> Optional[Dict[str, Any]]:
         if not self.cache or query_embedding is None:
@@ -110,6 +141,7 @@ class SemanticCache:
             "answer": copy.deepcopy(answer)
         })
         logger.debug(f"Cached answer in semantic cache. Cache size: {len(self.cache)}/{self.max_size}")
+        self._save_cache()
 
 
 _semantic_cache = SemanticCache(max_size=500, threshold=0.95)
@@ -479,13 +511,14 @@ def classify_query_complexity(query: str, chunks: list) -> dict:
     }
 
 
-def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
+def generate_answer(query: str, context: Dict[str, Any], routing_mode: str = "auto") -> Dict[str, Any]:
     """Generate a structured RAG answer from the context object produced by retrieve_context().
 
     Args:
         query:   The original user question.
         context: Output of retrieve_context() — must contain keys
                  vector_chunks, graph_entities, graph_relations.
+        routing_mode: Manual override selection ('auto', 'fast', 'deep').
 
     Returns:
         A dict with:
@@ -498,16 +531,18 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
     """
     # ── Check semantic cache ──────────────────────────────────────────────────
     embedder = get_embedder()
-    try:
-        query_embedding = np.array(embedder.embed_query(query))
-        cached_res = _semantic_cache.get(query_embedding)
-        if cached_res is not None:
-            cached_copy = copy.deepcopy(cached_res)
-            cached_copy["model_used"] = cached_copy.get("model_used", "") + " (Semantic Cache)"
-            return cached_copy
-    except Exception as e:
-        logger.error(f"Semantic Cache check failed: {e}")
-        query_embedding = None
+    query_embedding = None
+    if routing_mode == "auto":
+        try:
+            query_embedding = np.array(embedder.embed_query(query))
+            cached_res = _semantic_cache.get(query_embedding)
+            if cached_res is not None:
+                cached_copy = copy.deepcopy(cached_res)
+                cached_copy["model_used"] = cached_copy.get("model_used", "") + " (Semantic Cache)"
+                return cached_copy
+        except Exception as e:
+            logger.error(f"Semantic Cache check failed: {e}")
+            query_embedding = None
 
     chunks   = context.get("vector_chunks", [])
     entities = context.get("graph_entities", [])
@@ -565,17 +600,29 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
         confidence_guide=conf_guide,
     )
 
-    # ── Call LLM or fall back to smart context formatter ─────────────
-    complexity = classify_query_complexity(query, chunks)
-    enable_thinking = complexity["enable_thinking"]
-    reasoning_budget = complexity["reasoning_budget"]
+    # ── Determine Model and Reasoning Settings based on Routing Mode ──────────
+    if routing_mode == "fast":
+        target_model = "meta/llama-3.1-8b-instruct"
+        enable_thinking = False
+        reasoning_budget = 0
+        logger.info("Routing override: fast answer -> model=meta/llama-3.1-8b-instruct, enable_thinking=False")
+    elif routing_mode == "deep":
+        target_model = "nvidia/nemotron-3-ultra-550b-a55b"
+        enable_thinking = True
+        reasoning_budget = 1024
+        logger.info("Routing override: deep reasoning -> model=nvidia/nemotron-3-ultra-550b-a55b, enable_thinking=True")
+    else:  # "auto"
+        target_model = settings.nvidia_model
+        complexity = classify_query_complexity(query, chunks)
+        enable_thinking = complexity["enable_thinking"]
+        reasoning_budget = complexity["reasoning_budget"]
 
     llm = get_llm()
     is_nvidia = "NvidiaLLM" in type(llm).__name__
     llm_label = "NVIDIA API" if is_nvidia else "Ollama"
 
     if llm.available:
-        logger.info(f"generate_answer: calling {llm_label} [{llm.model}]")
+        logger.info(f"generate_answer: calling {llm_label} [{target_model}]")
         try:
             if is_nvidia:
                 tokens_limit = 2048 if enable_thinking else 1024
@@ -584,7 +631,7 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
                     max_tokens=tokens_limit,
                     enable_thinking=enable_thinking,
                     reasoning_budget=reasoning_budget,
-                    model=None
+                    model=target_model
                 )
             else:
                 raw = llm.generate(prompt, max_tokens=settings.max_tokens)
@@ -610,12 +657,6 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
         result["sources"] = source_list
         result["model_used"] = "Smart Context"
         result["entities_used"] = entity_ids
-        # Save to cache even on fallback
-        if query_embedding is not None:
-            try:
-                _semantic_cache.set(query_embedding, result)
-            except Exception as e:
-                logger.error(f"Failed to cache result: {e}")
         return result
 
     # ── Normalise output schema ───────────────────────────────────────────────
@@ -638,11 +679,10 @@ def generate_answer(query: str, context: Dict[str, Any]) -> Dict[str, Any]:
 
     result.setdefault("key_points", [])
     result["model_used"] = (
-        f"{llm_label} / {llm.model}" if llm.available else "Smart Context"
+        f"{llm_label} / {target_model}" if llm.available else "Smart Context"
     )
 
-    # ── Save to semantic cache ────────────────────────────────────────────────
-    if query_embedding is not None:
+    if query_embedding is not None and routing_mode == "auto" and "Smart Context" not in result.get("model_used", ""):
         try:
             _semantic_cache.set(query_embedding, result)
         except Exception as e:

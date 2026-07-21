@@ -12,7 +12,9 @@ import time
 from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional, Union
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi import File, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -28,7 +30,7 @@ from src.pipeline.llm import get_llm, NvidiaLLM, OllamaLLM, _extract_json
 from src.pipeline.query_engine import (
     retrieve_context, generate_answer, get_embedder,
     _RAG_TEMPLATE, _CONFIDENCE_GUIDE, _semantic_cache,
-    classify_query_complexity,
+    classify_query_complexity, get_vector_store,
 )
 from src.storage.chroma_store import VectorStore
 from src.graph.knowledge_graph import get_knowledge_graph
@@ -40,8 +42,15 @@ _FEEDBACK_FILE = settings.data_dir / "feedback.jsonl"
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="RAG-powered industrial knowledge intelligence system with vector search + knowledge graph.",
+    description="RAG-powered industrial knowledge system with vector search + knowledge graph.",
 )
+
+# Serve static assets (e.g. bundled JS libraries)
+from fastapi.staticfiles import StaticFiles
+
+_static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static")
+if os.path.isdir(_static_dir):
+    app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,6 +59,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def startup_event():
+    logger.info("Pre-warming models and services...")
+    try:
+        get_embedder()
+        get_vector_store()
+        get_knowledge_graph()
+        get_llm()
+        logger.info("Pre-warming complete. All services ready.")
+    except Exception as e:
+        logger.error(f"Error during startup pre-warming: {e}")
 
 
 class ComplianceRequest(BaseModel):
@@ -63,6 +85,7 @@ class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=1000, description="The query string")
     top_k: Optional[int] = Field(settings.top_k, ge=1, le=20)
     filters: Optional[dict] = None
+    routing_mode: Optional[str] = Field("auto", description="Routing mode: 'auto', 'fast', or 'deep'")
 
 
 class QueryResponse(BaseModel):
@@ -300,7 +323,7 @@ async def upload_documents(files: List[UploadFile] = File(...)):
     temp_dir.mkdir(parents=True, exist_ok=True)
     
     try:
-        store = VectorStore()
+        store = get_vector_store()
         existing_docs = store.collection.get(include=["metadatas"])
         existing_filenames = set()
         if existing_docs and existing_docs.get("metadatas"):
@@ -380,7 +403,7 @@ async def list_documents():
 @app.get("/documents/{doc_id}")
 async def get_document(doc_id: str):
     """Get full details and chunks for a specific document."""
-    store = VectorStore()
+    store = get_vector_store()
     
     # Query ChromaDB for all chunks where doc_id matches
     # Use ChromaDB client collection.get
@@ -434,7 +457,7 @@ async def query_rag(request: QueryRequest):
         logger.info(f"POST /query: '{request.question}'")
 
         # ── Guard: empty database ────────────────────────────────────────────
-        store = VectorStore()
+        store = get_vector_store()
         if store.count() == 0:
             return QueryResponse(
                 answer=(
@@ -470,7 +493,7 @@ async def query_rag(request: QueryRequest):
             )
 
         # ── Step 2: Generate answer (LLM / smart fallback) ─────────────────────
-        ans = generate_answer(request.question, context)
+        ans = generate_answer(request.question, context, routing_mode=request.routing_mode)
 
         latency_ms = int((time.time() - t_start) * 1000)
         logger.info(
@@ -513,7 +536,7 @@ async def query_rag_stream(request: QueryRequest):
         raise HTTPException(status_code=422, detail="question must not be empty")
 
     # ── Pre-flight: retrieve context (vector + graph) synchronously ───────────
-    store = VectorStore()
+    store = get_vector_store()
     if store.count() == 0:
         async def _empty_gen():
             yield f"data: {json.dumps({'type': 'metadata', 'content': {'answer': 'No documents indexed yet.', 'sources': [], 'confidence': 0.0, 'entities_used': [], 'key_points': [], 'model_used': 'N/A', 'latency_ms': 0}})}\n\n"
@@ -576,15 +599,30 @@ async def query_rag_stream(request: QueryRequest):
         question=request.question, confidence_guide=conf_guide,
     )
 
-    # ── Complexity classifier (shared with generate_answer) ───────────────────
-    complexity = classify_query_complexity(request.question, chunks)
-    enable_thinking = complexity["enable_thinking"]
-    reasoning_budget = complexity["reasoning_budget"]
+    # ── Determine Model and Reasoning Settings based on Routing Mode ──────────
+    routing_mode = request.routing_mode or "auto"
+    if routing_mode == "fast":
+        target_model = "meta/llama-3.1-8b-instruct"
+        enable_thinking = False
+        reasoning_budget = 0
+        tokens_limit = 1024
+        logger.info("Routing override: fast answer -> model=meta/llama-3.1-8b-instruct, enable_thinking=False")
+    elif routing_mode == "deep":
+        target_model = "nvidia/nemotron-3-ultra-550b-a55b"
+        enable_thinking = True
+        reasoning_budget = 1024
+        tokens_limit = 2048
+        logger.info("Routing override: deep reasoning -> model=nvidia/nemotron-3-ultra-550b-a55b, enable_thinking=True")
+    else:  # "auto"
+        target_model = settings.nvidia_model
+        complexity = classify_query_complexity(request.question, chunks)
+        enable_thinking = complexity["enable_thinking"]
+        reasoning_budget = complexity["reasoning_budget"]
+        tokens_limit = 2048 if enable_thinking else 1024
 
     llm = get_llm()
     is_nvidia = isinstance(llm, NvidiaLLM)
     llm_label = "NVIDIA API" if is_nvidia else ("Ollama" if isinstance(llm, OllamaLLM) else "Smart Context")
-    tokens_limit = 2048 if enable_thinking else 1024
 
     # ── Generator: stream tokens via SSE ──────────────────────────────────────
     async def event_stream():
@@ -593,7 +631,6 @@ async def query_rag_stream(request: QueryRequest):
 
         try:
             if llm.available and is_nvidia:
-                target_model = None if enable_thinking else "meta/llama-3.1-70b-instruct"
                 for token in llm.stream_generate(
                     prompt, max_tokens=tokens_limit,
                     enable_thinking=enable_thinking,
@@ -624,18 +661,19 @@ async def query_rag_stream(request: QueryRequest):
             result.setdefault("entities_mentioned", [])
             result["entities_used"] = list(set(result.get("entities_mentioned", []) + entity_ids))
             result["sources"] = source_list
-            result["model_used"] = llm_label
+            result["model_used"] = f"{llm_label} / {target_model}" if is_nvidia else llm_label
             result["latency_ms"] = latency_ms
             result["confidence"] = result.get("confidence", "Medium")
             if error_msg:
                 result["error"] = error_msg
 
-            try:
-                embedder = get_embedder()
-                qe = np.array(embedder.embed_query(request.question))
-                _semantic_cache.set(qe, result)
-            except Exception:
-                pass
+            if routing_mode == "auto":
+                try:
+                    embedder = get_embedder()
+                    qe = np.array(embedder.embed_query(request.question))
+                    _semantic_cache.set(qe, result)
+                except Exception:
+                    pass
 
             yield f"data: {json.dumps({'type': 'metadata', 'content': result})}\n\n"
             yield f"data: {json.dumps({'type': 'done', 'content': ''})}\n\n"
@@ -659,7 +697,7 @@ async def run_benchmark(max_questions: int = Query(default=18, le=50)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to load benchmark file: {e}")
 
-    store    = VectorStore()
+    store    = get_vector_store()
 
     if store.count() == 0:
         raise HTTPException(status_code=400, detail="Vector store is empty. Run /ingest/initialize first.")
@@ -819,7 +857,7 @@ async def debug_search(
     """Raw vector similarity search without LLM — useful for tuning chunk size / top-k."""
     try:
         embedder = TextEmbedder()
-        store    = VectorStore()
+        store    = get_vector_store()
         emb      = embedder.embed_query(q)
         results  = store.query(emb, n_results=n)
 

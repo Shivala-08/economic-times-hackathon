@@ -11,3 +11,6 @@ data/temp_uploads/
 .DS_Store
 demo_screenshots/
 data/benchmarks/retrieval_log.json
+
+static/js/
+*.log
