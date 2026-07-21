@@ -291,10 +291,10 @@ with tab_chat:
                 c1, c2, _ = st.columns([1, 1, 8])
                 if c1.button("Good", key=f"up_{idx}", help="Good answer"):
                     post_feedback(msg.get("question", ""), msg["content"][:300], +1, API_URL)
-                    st.toast("Thanks for the feedback!", icon="Good")
+                    st.toast("Thanks for the feedback!", icon="👍")
                 if c2.button("Poor", key=f"dn_{idx}", help="Poor answer"):
                     post_feedback(msg.get("question", ""), msg["content"][:300], -1, API_URL)
-                    st.toast("Feedback logged. We'll improve!", icon="Poor")
+                    st.toast("Feedback logged. We'll improve!", icon="👎")
 
     # Input
     user_query = st.chat_input(
