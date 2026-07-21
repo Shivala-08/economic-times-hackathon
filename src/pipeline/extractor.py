@@ -89,24 +89,43 @@ PERMIT_TYPE_PATTERNS = [
 
 
 class EntityExtractor:
-    """Extracts industrial entities from text using regex patterns."""
+    """Extracts industrial entities from text using spaCy and regex patterns."""
 
     def __init__(self):
         self.nlp = None
         self.spacy_available = False
+        try:
+            import spacy
+            from src.config import settings
+            model_name = getattr(settings, "spacy_model", "en_core_web_sm")
+            logger.info(f"Loading spaCy model for NER: {model_name}")
+            self.nlp = spacy.load(model_name)
+            self.spacy_available = True
+            logger.info("spaCy model loaded successfully.")
+        except Exception as e:
+            logger.warning(f"spaCy not available or failed to load: {e}. Falling back to pure regex.")
 
     def extract_all(self, text: str, metadata: Optional[dict] = None) -> dict:
         """Extract all entity types from text.
 
-        Args:
-            text: The text content to extract entities from.
-            metadata: Optional metadata dict (e.g., from CSV row) to supplement extraction.
-
-        Returns:
-            Dict with lists of entities grouped by type.
+        Uses spaCy (when available) for general entity types like Personnel (PERSON)
+        and custom regular expressions for domain-specific industrial entities.
+        If spaCy fails or returns 0 entities, the system falls back to regex-based extraction.
         """
         metadata = metadata or {}
+        spacy_entities = []
 
+        # 1. Try to extract entities using spaCy
+        if self.spacy_available and self.nlp:
+            try:
+                doc = self.nlp(text[:50000])  # limit length to avoid memory spikes
+                for ent in doc.ents:
+                    if ent.label_ in ("PERSON", "ORG"):
+                        spacy_entities.append(ent.text)
+            except Exception as e:
+                logger.error(f"spaCy NER extraction failed: {e}")
+
+        # 2. Extract domain entities using custom regexes
         entities = {
             "equipment": sorted(set(self._extract_equipment(text, metadata))),
             "permits": sorted(set(self._extract_permits(text, metadata))),
@@ -118,8 +137,13 @@ class EntityExtractor:
             "hazards": sorted(set(self._extract_hazards(text, metadata))),
             "incident_types": sorted(set(self._extract_incident_types(text, metadata))),
             "permit_types": sorted(set(self._extract_permit_types(text, metadata))),
-            "personnel": sorted(set(self._extract_personnel(text))),
+            "personnel": sorted(set(spacy_entities)) if spacy_entities else [],
         }
+
+        # Query-side regex fallback logic: if spaCy returned 0 entities, fallback/ensure regex is populated
+        if not spacy_entities:
+            logger.debug("spaCy returned 0 entities. Relying on query-side regex fallback.")
+            entities["personnel"] = sorted(set(self._extract_personnel(text)))
 
         # Count total
         total = sum(len(v) for v in entities.values())
@@ -231,8 +255,12 @@ class EntityExtractor:
         return list(types)
 
     def _extract_personnel(self, text: str) -> list[str]:
-        """Extract person names (de-featured)."""
-        return []
+        """Extract person names (fallback regex)."""
+        pattern = re.compile(r'\b(?:Mr\.|Ms\.|Dr\.)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b')
+        names = []
+        for match in pattern.finditer(text):
+            names.add(match.group(1))
+        return names
 
 
 # Module-level singleton
