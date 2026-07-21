@@ -511,7 +511,7 @@ with tab_graph:
                     const links = rawEdges.map(e => ({source: e.from, target: e.to, relation: e.relation || 'linked_to'}));
                     const degrees = {};
                     links.forEach(l => { degrees[l.source] = (degrees[l.source] || 0) + 1; degrees[l.target] = (degrees[l.target] || 0) + 1; });
-                    const nodes = rawNodes.map(n => ({id: n.id, label: n.id, type: n.type, color: n.color || '#6366f1', val: Math.max(Math.sqrt(degrees[n.id] || 1) * 3, 2.5)}));
+                    const nodes = rawNodes.map(n => ({id: n.id, label: n.id, type: n.type, color: n.color || '#6366f1', val: Math.max(Math.sqrt(degrees[n.id] || 1) * 1.5, 1.5)}));
                     const Graph = ForceGraph3D()(elem).graphData({nodes, links}).backgroundColor('#090d16')
                       .nodeColor(node => node.color).nodeVal(node => node.val)
                       .nodeLabel(node => {
@@ -519,12 +519,11 @@ with tab_graph:
                         return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
                       })
                       .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
-                      .linkWidth(1.2).linkColor(() => 'rgba(99,102,241,0.25)')
-                      .linkDirectionalParticles(4).linkDirectionalParticleSpeed(0.007).linkDirectionalParticleWidth(2.0).linkDirectionalParticleColor(() => '#a5b4fc');
-                    Graph.controls().autoRotate = true; Graph.controls().autoRotateSpeed = 0.6;
-                    let rt; const ct = Graph.controls();
-                    ct.addEventListener('start', () => { ct.autoRotate = false; clearTimeout(rt); });
-                    ct.addEventListener('end', () => { rt = setTimeout(() => { ct.autoRotate = true; }, 5000); });
+                      .linkWidth(0.8).linkColor(() => 'rgba(255, 255, 255, 0.15)');
+                    
+                    // Adjust layout forces to spread nodes out (Obsidian look)
+                    Graph.d3Force('charge').strength(-200);
+                    Graph.d3Force('link').distance(85);
                     Graph.onNodeClick(node => {
                       const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
                       Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 2000);
