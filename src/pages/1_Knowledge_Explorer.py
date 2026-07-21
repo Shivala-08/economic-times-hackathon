@@ -4,14 +4,12 @@ An Obsidian-style graph view over the existing NetworkX knowledge graph.
 Users browse entities (equipment, permits, regulations, SOPs, incidents, documents)
 and their relationships visually.
 
-New features:
-- Path-finding between any two entities
-- Graph statistics dashboard
-- Interactive color legend with toggle filters
-- Breadcrumb navigation trail
-- Relationship table view
-- Export graph data
+Refactored to use the shared design system module.
 """
+
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
 import requests
@@ -24,6 +22,11 @@ try:
     AGRAPH_AVAILABLE = True
 except ImportError:
     AGRAPH_AVAILABLE = False
+
+from src.ui.design_system import (
+    inject_global_css, hero_header, gradient_divider, section_header,
+    stats_grid, entity_card_html, neighbor_row_html,
+)
 
 # ── Page Config ──
 st.set_page_config(
@@ -57,139 +60,10 @@ NODE_TYPE_COLORS = {
     "permit_type": "#d97706", "incident_type": "#db2777",
 }
 
-# ── Custom CSS ──
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
-
-    html, body, [class*="css"], .stApp {
-        font-family: 'Outfit', 'Inter', sans-serif !important;
-    }
-
-    .ke-header {
-        background: linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #120636 100%);
-        padding: 1.75rem 2.25rem; border-radius: 16px; color: white;
-        margin-bottom: 1.5rem;
-        border: 1px solid rgba(99, 102, 241, 0.35);
-        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-    .ke-header h1 {
-        margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .ke-header p { margin: 0.4rem 0 0 0; opacity: 0.85; font-size: 1rem; color: #cbd5e1; }
-
-    .entity-card {
-        background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px);
-        border: 1px solid rgba(99, 102, 241, 0.3); border-left: 5px solid #818cf8;
-        border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); color: #f8fafc;
-    }
-    .entity-card:hover {
-        transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.5);
-        box-shadow: 0 12px 28px rgba(99, 102, 241, 0.25);
-    }
-
-    .stat-chip {
-        display: inline-flex; align-items: center; gap: 0.45rem;
-        background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 9999px; padding: 0.35rem 0.8rem; font-size: 0.82rem;
-        font-weight: 600; color: #e2e8f0; margin-right: 0.4rem; margin-bottom: 0.4rem;
-        transition: all 0.2s ease;
-    }
-    .stat-chip:hover { background: rgba(30, 41, 59, 0.95); border-color: rgba(255, 255, 255, 0.15); }
-    .stat-chip .dot {
-        width: 9px; height: 9px; border-radius: 50%; display: inline-block;
-        box-shadow: 0 0 6px currentColor;
-    }
-
-    .neighbor-row {
-        padding: 0.7rem 0.9rem; border-radius: 10px; margin-bottom: 0.45rem;
-        font-size: 0.88rem; display: flex; align-items: center; gap: 0.6rem;
-        background: rgba(30, 41, 59, 0.35); border: 1px solid rgba(255, 255, 255, 0.04);
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); color: #e2e8f0;
-    }
-    .neighbor-row:hover {
-        background: rgba(99, 102, 241, 0.12); border-color: rgba(99, 102, 241, 0.3);
-        transform: translateX(5px);
-    }
-    .neighbor-row .n-dot {
-        width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-        box-shadow: 0 0 6px currentColor;
-    }
-    .neighbor-row .n-relation {
-        color: #cbd5e1; font-size: 0.75rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.04em; margin-left: auto;
-        background: rgba(30, 41, 59, 0.85); padding: 0.15rem 0.45rem;
-        border-radius: 5px; border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    /* Stats dashboard cards */
-    .stats-grid {
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;
-        margin-bottom: 1rem;
-    }
-    .stats-card {
-        background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(10px);
-        border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 10px;
-        padding: 0.75rem 1rem; text-align: center; transition: all 0.2s ease;
-    }
-    .stats-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-2px); }
-    .stats-card .stats-value {
-        font-size: 1.4rem; font-weight: 800;
-        background: linear-gradient(135deg, #818cf8, #6366f1);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .stats-card .stats-label { font-size: 0.72rem; color: #94a3b8; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
-    /* Path result card */
-    .path-result {
-        background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25);
-        border-radius: 12px; padding: 1rem 1.25rem; margin-top: 0.75rem;
-    }
-    .path-node {
-        display: inline-flex; align-items: center; gap: 0.3rem;
-        background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px; padding: 0.25rem 0.6rem; font-size: 0.82rem;
-        font-weight: 600; color: #e2e8f0;
-    }
-    .path-arrow { color: #6366f1; font-size: 1.1rem; margin: 0 0.2rem; }
-
-    /* Breadcrumb trail */
-    .breadcrumb-trail {
-        display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1rem;
-        padding: 0.5rem 0.75rem; background: rgba(15, 23, 42, 0.5);
-        border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);
-    }
-    .breadcrumb-item {
-        font-size: 0.78rem; color: #94a3b8; cursor: pointer;
-        transition: color 0.2s;
-    }
-    .breadcrumb-item:hover { color: #818cf8; }
-    .breadcrumb-sep { color: #4b5563; font-size: 0.78rem; }
-
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.25); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.45); }
-
-    div.stButton > button {
-        background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%) !important;
-        color: white !important; border: none !important; border-radius: 10px !important;
-        font-weight: 600 !important; font-size: 0.92rem !important;
-        padding: 0.55rem 1.4rem !important;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25) !important;
-    }
-    div.stButton > button:hover {
-        transform: scale(1.015) translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4) !important;
-    }
-    div.stButton > button:active { transform: scale(0.98) !important; }
-</style>
-""", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# INJECT SHARED DESIGN SYSTEM CSS
+# ══════════════════════════════════════════════════════════════════════════════
+inject_global_css()
 
 # ── Initialize session state ──
 defaults = {
@@ -273,7 +147,6 @@ def focus_on_node(node_id):
         })
     st.session_state.ke_expanded_nodes = {node_id}
     st.session_state.ke_selected_node = node_id
-    # Update breadcrumb
     bc = st.session_state.ke_breadcrumb
     if not bc or bc[-1] != node_id:
         bc.append(node_id)
@@ -287,13 +160,15 @@ def load_graph_stats():
         st.session_state.ke_graph_stats = stats
 
 
-# ── HEADER ──
-st.markdown("""
-<div class="ke-header">
-    <h1>🕸️ Knowledge Explorer</h1>
-    <p>Interactive graph visualization of industrial entities and their relationships</p>
-</div>
-""", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# CINEMATIC HERO HEADER (via design_system)
+# ══════════════════════════════════════════════════════════════════════════════
+hero_header(
+    title="🕸️ Knowledge Explorer",
+    subtitle="Interactive graph visualization of industrial entities and their relationships",
+    badge_text="🏆 Hackathon 2026",
+    stats=[{"value": "🕸️", "label": "Graph View", "color": "#818cf8"}],
+)
 
 if not hasattr(st.session_state, '_fetch_cache'):
     st.session_state._fetch_cache = {}
@@ -307,24 +182,25 @@ if not st.session_state.ke_visible_nodes:
     with st.spinner("Loading initial graph..."):
         load_initial_graph()
 
-# Load stats if not cached
 if not st.session_state.ke_graph_stats:
     load_graph_stats()
 
-# ═══════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
 # MAIN LAYOUT: Sidebar | Graph | Detail Panel
-# ═══════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
 
 sidebar_col, graph_col, detail_col = st.columns([1, 3, 1.5])
 
 # ── SIDEBAR ──
 with sidebar_col:
-    st.markdown("### 🔍 Search & Filter")
+    section_header("🔍", "Search & Filter", "Find entities and filter by type")
+
     with st.form("ke_search_form", clear_on_submit=False):
         search_query = st.text_input("Search entity", placeholder="e.g. P-101, OISD-118...", key="ke_search")
         search_submitted = st.form_submit_button("🔍 Search")
 
-    # Interactive color legend with toggle checkboxes
+    # Interactive color legend
     st.markdown("#### 🎨 Node Types")
     enabled_types = []
     for ntype in ALL_NODE_TYPES:
@@ -333,34 +209,14 @@ with sidebar_col:
         if st.checkbox(label, value=True, key=f"ke_filter_{ntype}"):
             enabled_types.append(ntype)
 
-    st.markdown("---")
+    gradient_divider()
 
     # Graph stats mini dashboard
     stats = st.session_state.ke_graph_stats
     if stats:
         st.markdown("#### 📊 Graph Stats")
-        st.markdown(f"""
-        <div class="stats-grid">
-            <div class="stats-card">
-                <div class="stats-value">{stats.get('total_nodes', 0)}</div>
-                <div class="stats-label">Total Nodes</div>
-            </div>
-            <div class="stats-card">
-                <div class="stats-value">{stats.get('total_edges', 0)}</div>
-                <div class="stats-label">Total Edges</div>
-            </div>
-            <div class="stats-card">
-                <div class="stats-value">{stats.get('avg_degree', 0)}</div>
-                <div class="stats-label">Avg Connections</div>
-            </div>
-            <div class="stats-card">
-                <div class="stats-value">{stats.get('connected_components', 0)}</div>
-                <div class="stats-label">Components</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(stats_grid(stats), unsafe_allow_html=True)
 
-        # Node type breakdown
         nt = stats.get("node_types", {})
         if nt:
             with st.expander("📋 Entity Breakdown", expanded=False):
@@ -369,22 +225,21 @@ with sidebar_col:
                     label = NODE_TYPE_LABELS.get(etype, etype)
                     st.markdown(
                         f'<span style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem;">'
-                        f'<span style="width:8px;height:8px;border-radius:50%;background:{color};display:inline-block;"></span>'
-                        f'<span style="font-size:0.82rem;color:#e2e8f0;">{label}: <strong>{cnt}</strong></span></span>',
+                        f'<span style="width:8px;height:8px;border-radius:50%;background:{color};display:inline-block;box-shadow:0 0 6px {color};"></span>'
+                        f'<span style="font-size:0.82rem;color:#e2e8f0;font-family:\'Space Grotesk\',sans-serif;">{label}: <strong>{cnt}</strong></span></span>',
                         unsafe_allow_html=True,
                     )
 
-    st.markdown("---")
+    gradient_divider()
 
-    # Visible graph counts
     num_nodes = len(st.session_state.ke_visible_nodes)
     num_edges = len(st.session_state.ke_visible_edges)
-    st.metric("Visible Nodes", num_nodes)
-    st.metric("Visible Edges", num_edges)
+    c1, c2 = st.columns(2)
+    c1.metric("Visible Nodes", num_nodes)
+    c2.metric("Visible Edges", num_edges)
 
-    st.markdown("---")
+    gradient_divider()
 
-    # Action buttons
     col_a, col_b = st.columns(2)
     with col_a:
         if st.button("🔄 Reset", use_container_width=True):
@@ -408,9 +263,8 @@ with sidebar_col:
                 st.rerun()
 
     # ── Path Finding Panel ──
-    st.markdown("---")
-    st.markdown("#### 🔗 Path Finder")
-    st.caption("Find shortest path between two entities")
+    gradient_divider()
+    section_header("🔗", "Path Finder", "Find shortest path between two entities")
 
     path_source = st.text_input("From entity", placeholder="e.g. COMP-C01", key="ke_path_src")
     path_target = st.text_input("To entity", placeholder="e.g. OISD-116", key="ke_path_tgt")
@@ -426,7 +280,6 @@ with sidebar_col:
         else:
             st.warning("Please enter both source and target entity IDs.")
 
-    # Display path result
     pr = st.session_state.ke_path_result
     if pr:
         if "error" in pr:
@@ -447,7 +300,7 @@ with sidebar_col:
                         break
                 st.markdown(
                     f'<span class="path-node">'
-                    f'<span style="width:8px;height:8px;border-radius:50%;background:{color};display:inline-block;"></span>'
+                    f'<span style="width:8px;height:8px;border-radius:50%;background:{color};display:inline-block;box-shadow:0 0 6px {color};"></span>'
                     f'{node_id}</span>',
                     unsafe_allow_html=True,
                 )
@@ -455,14 +308,12 @@ with sidebar_col:
                     st.markdown('<span class="path-arrow">→</span>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-            # Show edge relations
             path_edges = pr.get("path_edges", [])
             if path_edges:
                 with st.expander("🔗 Relationship details"):
                     for pe in path_edges:
                         st.markdown(f"**{pe['from']}** — *{pe['relation']}* → **{pe['to']}**")
 
-            # Visualize path in graph
             col_path_viz, col_path_clear = st.columns(2)
             with col_path_viz:
                 if st.button("📊 Visualize Path", use_container_width=True, key="ke_viz_path_btn"):
@@ -470,7 +321,6 @@ with sidebar_col:
                     st.session_state.ke_visible_edges = []
                     for pe in path_edges:
                         st.session_state.ke_visible_edges.append(pe)
-                    # Expand all path nodes
                     for node_id in path_nodes:
                         st.session_state.ke_expanded_nodes.add(node_id)
                         meta = fetch_json(f"{API_URL}/graph/node/{quote(node_id)}", timeout=5)
@@ -488,9 +338,8 @@ with sidebar_col:
                 st.rerun()
 
     # ── Export Graph ──
-    st.markdown("---")
+    gradient_divider()
     st.markdown("#### 📤 Export")
-    # Filter nodes by enabled_types before export
     filtered_nodes = []
     for nid in st.session_state.ke_visible_nodes:
         meta = st.session_state.ke_node_metadata_cache.get(nid, {})
@@ -514,7 +363,8 @@ with sidebar_col:
         mime="application/json",
         use_container_width=True,
     )
-    st.caption(f"Exporting {len(filtered_nodes)} nodes / {len(filtered_edges)} edges (filtered by enabled types)")
+    st.caption(f"Exporting {len(filtered_nodes)} nodes / {len(filtered_edges)} edges")
+
 
 # ── Handle search ──
 if search_query and search_submitted:
@@ -642,7 +492,7 @@ with graph_col:
 
     # ── Toggle Relationship Table View ──
     if st.session_state.ke_visible_edges:
-        st.markdown("---")
+        gradient_divider()
         if st.button("📋 Toggle Relationship Table", key="ke_toggle_table"):
             st.session_state.ke_show_table = not st.session_state.ke_show_table
 
@@ -664,7 +514,7 @@ with detail_col:
     selected = st.session_state.ke_selected_node
 
     if selected:
-        st.markdown("### 📋 Entity Details")
+        section_header("📋", "Entity Details", "Connections and metadata")
 
         meta = st.session_state.ke_node_metadata_cache.get(selected)
         if not meta:
@@ -679,25 +529,13 @@ with detail_col:
             degree = meta.get("degree", 0)
             doc_id = meta.get("doc_id")
 
-            st.markdown(f"""
-            <div class="entity-card">
-                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
-                    <span style="width:14px;height:14px;border-radius:50%;background:{color};display:inline-block;"></span>
-                    <strong style="font-size:1.1rem;">{selected}</strong>
-                </div>
-                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                    <span class="stat-chip"><span class="dot" style="background:{color};"></span>{ntype.replace('_', ' ').title()}</span>
-                    <span class="stat-chip">⬡ {degree} connections</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(entity_card_html(selected, ntype, color, degree), unsafe_allow_html=True)
 
             if doc_id:
                 st.markdown(f"**📄 Source Document:** `{doc_id}`")
 
-            st.markdown("---")
+            gradient_divider()
 
-            # Connected entities grouped by type
             st.markdown("#### 🔗 Connected Entities")
             neighbor_types = meta.get("neighbor_types", {})
             if neighbor_types:
@@ -711,13 +549,7 @@ with detail_col:
                             if nb["id"] == nid:
                                 relation = nb.get("relation", "")
                                 break
-                        st.markdown(f"""
-                        <div class="neighbor-row">
-                            <span class="n-dot" style="background:{ncolor};"></span>
-                            <span><strong>{nid}</strong></span>
-                            <span class="n-relation">{relation}</span>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(neighbor_row_html(nid, ncolor, relation), unsafe_allow_html=True)
                         if st.button(f"→ {nid}", key=f"ke_nav_{nid}", help=f"Focus on {nid}"):
                             focus_on_node(nid)
                             st.rerun()
@@ -726,9 +558,9 @@ with detail_col:
             else:
                 st.info("No direct connections found.")
 
-            st.markdown("---")
+            gradient_divider()
 
-            # Quick path from selected node
+            # Quick path
             st.markdown("#### 🔗 Quick Path")
             path_target_quick = st.text_input("Find path to...", placeholder="e.g. OISD-116", key="ke_quick_path")
             if st.button("🔍 Find Path", key="ke_quick_path_btn", use_container_width=True):
@@ -745,7 +577,7 @@ with detail_col:
                         elif pr:
                             st.error(pr.get("error", "No path found"))
 
-            st.markdown("---")
+            gradient_divider()
 
             # Ask AI
             st.markdown("#### 🤖 Ask AI")
@@ -787,9 +619,9 @@ with detail_col:
         else:
             st.warning("Could not load entity details.")
     else:
-        st.markdown("### 📋 Entity Details")
+        section_header("📋", "Entity Details", "Click a node to explore")
         st.info("Click a node in the graph to see its details here.")
-        st.markdown("---")
+        gradient_divider()
         st.markdown("""
 **How to use Knowledge Explorer:**
 
