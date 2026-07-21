@@ -160,6 +160,14 @@ def load_graph_stats():
         st.session_state.ke_graph_stats = stats
 
 
+# ── Handle query parameter node focusing ──
+if "focus_node" in st.query_params:
+    focus_node = st.query_params["focus_node"]
+    st.query_params.clear()
+    focus_on_node(focus_node)
+    st.rerun()
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CINEMATIC HERO HEADER (via design_system)
 # ══════════════════════════════════════════════════════════════════════════════
@@ -391,8 +399,7 @@ with graph_col:
             for n in st.session_state.ke_graph_data_cache.get("nodes", []):
                 all_nodes_data[n["id"]] = n
 
-        agraph_nodes, agraph_edges, displayed_node_ids = [], [], set()
-
+        nodes_list = []
         for nid in st.session_state.ke_visible_nodes:
             ndata = all_nodes_data.get(nid)
             if not ndata and nid in st.session_state.ke_node_metadata_cache:
@@ -406,68 +413,88 @@ with graph_col:
                 continue
 
             color = ndata.get("color", NODE_TYPE_COLORS.get(ntype, "#6b7280"))
-            degree = ndata.get("size", 10) - 5 if isinstance(ndata.get("size"), (int, float)) else 5
-
             if nid == st.session_state.ke_selected_node:
-                color = "#fbbf24"
-                size = max(degree * 3, 25)
-            else:
-                size = max(degree * 2, 12)
+                color = "#fbbf24"  # Gold for selected node
 
-            label = nid if len(nid) <= 22 else nid[:20] + ".."
-            agraph_nodes.append(Node(id=nid, label=label, color=color, size=size,
-                                     title=f"{nid}\nType: {ntype}\nConnections: {degree}",
-                                     borderWidth=3 if nid == st.session_state.ke_selected_node else 1))
-            displayed_node_ids.add(nid)
+            nodes_list.append({
+                "id": nid,
+                "type": ntype,
+                "color": color,
+                "degree": ndata.get("size", 10) - 5 if isinstance(ndata.get("size"), (int, float)) else 5
+            })
 
+        edges_list = []
+        displayed_node_ids = {n["id"] for n in nodes_list}
         for edge in st.session_state.ke_visible_edges:
             src, tgt = edge.get("from", ""), edge.get("to", "")
             if src in displayed_node_ids and tgt in displayed_node_ids:
-                agraph_edges.append(Edge(source=src, target=tgt,
-                                         label=edge.get("relation", "")[:18],
-                                         title=edge.get("relation", "")))
+                edges_list.append({
+                    "from": src,
+                    "to": tgt,
+                    "relation": edge.get("relation", "related_to")
+                })
 
-        if not agraph_nodes:
+        if not nodes_list:
             st.info("No nodes match the current filters. Adjust filters in the sidebar.")
         else:
-            st.caption(f"Showing **{len(agraph_nodes)}** nodes · **{len(agraph_edges)}** edges  ·  Click a node to expand & see details →")
+            st.caption(f"Showing **{len(nodes_list)}** nodes · **{len(edges_list)}** edges  ·  Click a node to expand & focus")
 
-            config = Config(
-                width="100%", height=620, directed=False, hierarchical=False,
-                node={"font": {"size": 11, "color": "#374151"}},
-                edge={"font": {"size": 9, "color": "#9ca3af"}, "smooth": {"type": "continuous"}},
-                physics={"enabled": True, "solver": "barnesHut",
-                         "barnesHut": {"gravitationalConstant": -4000, "centralGravity": 0.12,
-                                       "springLength": 120, "springConstant": 0.04, "damping": 0.09, "avoidOverlap": 0.6},
-                         "stabilization": {"enabled": True, "iterations": 150, "fit": True}, "minVelocity": 0.75},
-                interaction={"hover": True, "tooltipDelay": 100},
-            )
+            nodes_json = json.dumps(nodes_list)
+            edges_json = json.dumps(edges_list)
 
-            returned_value = agraph(nodes=agraph_nodes, edges=agraph_edges, config=config)
+            html_code = """
+            <div id="3d-graph" style="width:100%;height:620px;border-radius:16px;overflow:hidden;border:1px solid rgba(99,102,241,0.25);background:#060813;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 30px rgba(99,102,241,0.05);"></div>
+            <script>
+              function initGraph() {
+                const elem = document.getElementById('3d-graph');
+                if (!elem) { setTimeout(initGraph, 50); return; }
+                const rawNodes = {nodes_json}; const rawEdges = {edges_json};
+                const links = rawEdges.map(e => ({source: e.from, target: e.to, relation: e.relation || 'linked_to'}));
+                const degrees = {};
+                links.forEach(l => { degrees[l.source] = (degrees[l.source] || 0) + 1; degrees[l.target] = (degrees[l.target] || 0) + 1; });
+                const nodes = rawNodes.map(n => ({
+                  id: n.id, 
+                  label: n.id, 
+                  type: n.type, 
+                  color: n.color || '#6366f1', 
+                  val: Math.max(Math.sqrt(degrees[n.id] || 1) * 3, 2.5)
+                }));
+                
+                const Graph = ForceGraph3D()(elem).graphData({nodes, links}).backgroundColor('#060813')
+                  .nodeColor(node => node.color).nodeVal(node => node.val)
+                  .nodeLabel(node => {
+                    const t = node.type.replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
+                    return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
+                  })
+                  .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
+                  .linkWidth(1.2).linkColor(() => 'rgba(99,102,241,0.25)')
+                  .linkDirectionalParticles(4).linkDirectionalParticleSpeed(0.007).linkDirectionalParticleWidth(2.0).linkDirectionalParticleColor(() => '#a5b4fc');
+                
+                Graph.controls().autoRotate = true; Graph.controls().autoRotateSpeed = 0.5;
+                let rt; const ct = Graph.controls();
+                ct.addEventListener('start', () => { ct.autoRotate = false; clearTimeout(rt); });
+                ct.addEventListener('end', () => { rt = setTimeout(() => { ct.autoRotate = true; }, 5000); });
+                
+                Graph.onNodeClick(node => {
+                  // Beautiful flight orbit animation
+                  const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
+                  Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 1500);
+                  
+                  // Notify Streamlit after animation
+                  setTimeout(() => {
+                    try {
+                      window.parent.location.href = window.parent.location.origin + window.parent.location.pathname + "?focus_node=" + encodeURIComponent(node.id);
+                    } catch(e) {
+                      window.location.href = window.location.origin + window.location.pathname + "?focus_node=" + encodeURIComponent(node.id);
+                    }
+                  }, 1200);
+                });
+              }
+            </script>
+            <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
+            """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
-            if returned_value is not None:
-                clicked_id = None
-                try:
-                    if isinstance(returned_value, str):
-                        clicked_id = returned_value
-                    elif isinstance(returned_value, dict):
-                        clicked_id = returned_value.get("id")
-                        if not clicked_id and "nodes" in returned_value:
-                            nodes_val = returned_value["nodes"]
-                            if isinstance(nodes_val, list) and nodes_val:
-                                clicked_id = nodes_val[0]
-                    elif isinstance(returned_value, list) and returned_value:
-                        clicked_id = returned_value[0]
-                except Exception:
-                    pass
-
-                if clicked_id and clicked_id in displayed_node_ids and clicked_id != st.session_state.ke_selected_node:
-                    st.session_state.ke_ai_query = None
-                    st.session_state.ke_ai_show_result = False
-                    st.session_state.ke_selected_node = clicked_id
-                    with st.spinner(f"Expanding {clicked_id}..."):
-                        expand_node(clicked_id)
-                    st.rerun()
+            components.html(html_code, height=640)
 
     # ── Toggle Relationship Table View ──
     if st.session_state.ke_visible_edges:
