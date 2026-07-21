@@ -227,6 +227,25 @@ with tab_chat:
 
     st.markdown(info_banner(caption_icon, "Interactive Query Console", caption_text), unsafe_allow_html=True)
 
+    # Model Routing Controls
+    st.write("")
+    c_route_1, c_route_2 = st.columns([2, 8])
+    with c_route_1:
+        st.markdown("<div style='padding-top: 10px; font-weight: 600; font-size: 1.05rem;'>⚡ Router Control:</div>", unsafe_allow_html=True)
+    with c_route_2:
+        routing_mode_label = st.radio(
+            label="Router Mode Selection",
+            options=["🤖 Auto Classifier", "⚡ Fast Answer (8B)", "🧠 Deep Reasoning (550B)"],
+            index=0,
+            horizontal=True,
+            label_visibility="collapsed"
+        )
+        routing_mode = {
+            "🤖 Auto Classifier": "auto",
+            "⚡ Fast Answer (8B)": "fast",
+            "🧠 Deep Reasoning (550B)": "deep"
+        }[routing_mode_label]
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
     if "last_answer" not in st.session_state:
@@ -292,7 +311,7 @@ with tab_chat:
         try:
             import httpx
             with httpx.Client(timeout=120) as client:
-                with client.stream("POST", f"{API_URL}/query/stream", json={"question": user_query, "top_k": 5}, headers={"Accept": "text/event-stream"}) as resp:
+                with client.stream("POST", f"{API_URL}/query/stream", json={"question": user_query, "top_k": 5, "routing_mode": routing_mode}, headers={"Accept": "text/event-stream"}) as resp:
                     if resp.status_code != 200:
                         st.error(f"API error {resp.status_code}")
                     else:
@@ -325,7 +344,7 @@ with tab_chat:
         except ImportError:
             with st.spinner("Generating answer..."):
                 try:
-                    resp = requests.post(f"{API_URL}/query", json={"question": user_query, "top_k": 5}, timeout=120)
+                    resp = requests.post(f"{API_URL}/query", json={"question": user_query, "top_k": 5, "routing_mode": routing_mode}, timeout=120)
                     if resp.status_code == 200:
                         data = resp.json()
                         answer = data.get("answer", ""); sources = data.get("sources", [])
