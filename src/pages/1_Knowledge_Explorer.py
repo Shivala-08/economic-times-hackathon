@@ -181,7 +181,6 @@ if not health:
 if not st.session_state.ke_visible_nodes:
     with st.spinner("Loading initial graph..."):
         load_initial_graph()
-        graph_load_skeleton.empty()
 
 if not st.session_state.ke_graph_stats:
     load_graph_stats()
@@ -196,8 +195,6 @@ sidebar_col, graph_col, detail_col = st.columns([1, 3, 1.5])
 # ── SIDEBAR ──
 with sidebar_col:
     section_header("🔍", "Search & Filter", "Find entities and filter by type")
-    graph_load_skeleton = st.empty()
-    graph_load_skeleton.markdown(skeleton_card() + skeleton_card(), unsafe_allow_html=True)
 
     with st.form("ke_search_form", clear_on_submit=False):
         search_query = st.text_input("Search entity", placeholder="e.g. P-101, OISD-118...", key="ke_search")
