@@ -120,8 +120,9 @@ class NvidiaLLM:
 
     def _find_working_client(self, target_model: str, prompt: str,
                              max_tokens: int, enable_thinking: bool,
-                             reasoning_budget: int, timeout: float = 15.0):
-        """Try each API key until one succeeds; yield (idx, completion).
+                             reasoning_budget: int, timeout: float = 15.0,
+                             start_key_idx: int = 0):
+        """Try each API key starting from start_key_idx until one succeeds; yield (idx, completion).
 
         Yields a single tuple on the first successful API call, then returns.
         Raises RuntimeError if all keys are exhausted.
@@ -132,7 +133,8 @@ class NvidiaLLM:
         is_nemotron = "nemotron" in target_model.lower()
         extra_body = self._build_extra_body(is_nemotron, enable_thinking, reasoning_budget)
 
-        for idx, api_key in enumerate(self._keys, start=1):
+        for idx in range(start_key_idx + 1, len(self._keys) + 1):
+            api_key = self._keys[idx - 1]
             try:
                 logger.info(
                     f"NVIDIA NIM — key {idx}/{len(self._keys)} "
@@ -177,41 +179,65 @@ class NvidiaLLM:
     def generate(self, prompt: str, max_tokens: int = 640, enable_thinking: bool = True, reasoning_budget: int = 1024, model: Optional[str] = None) -> str:
         """Try each API key in order, accumulate tokens, return full answer."""
         target_model = model or self.model
-        for idx, completion in self._find_working_client(
-            target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
-            timeout=15.0,
-        ):
-            answer_parts = []
-            for chunk in completion:
-                if not chunk.choices:
-                    continue
-                delta = chunk.choices[0].delta
-                reasoning = getattr(delta, "reasoning_content", None)
-                if reasoning:
-                    logger.debug(f"[thinking] {reasoning}")
-                if delta.content:
-                    answer_parts.append(delta.content)
-            return "".join(answer_parts)
+        start_key_idx = 0
+        last_error = None
+
+        while start_key_idx < len(self._keys):
+            try:
+                for idx, completion in self._find_working_client(
+                    target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
+                    timeout=15.0, start_key_idx=start_key_idx
+                ):
+                    start_key_idx = idx - 1
+                    answer_parts = []
+                    for chunk in completion:
+                        if not chunk.choices:
+                            continue
+                        delta = chunk.choices[0].delta
+                        reasoning = getattr(delta, "reasoning_content", None)
+                        if reasoning:
+                            logger.debug(f"[thinking] {reasoning}")
+                        if delta.content:
+                            answer_parts.append(delta.content)
+                    return "".join(answer_parts)
+            except Exception as e:
+                logger.warning(f"Error during execution with NVIDIA key {start_key_idx + 1}: {e}. Retrying next key.")
+                last_error = e
+                start_key_idx += 1
+
+        raise RuntimeError(f"All NVIDIA keys exhausted. Last error: {last_error}")
 
     def stream_generate(self, prompt: str, max_tokens: int = 640,
                         enable_thinking: bool = True, reasoning_budget: int = 1024,
                         model: Optional[str] = None) -> Generator[str, None, None]:
         """Yield answer tokens one-by-one as they arrive from NVIDIA NIM."""
         target_model = model or self.model
-        for idx, completion in self._find_working_client(
-            target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
-            timeout=30.0,
-        ):
-            for chunk in completion:
-                if not chunk.choices:
-                    continue
-                delta = chunk.choices[0].delta
-                reasoning = getattr(delta, "reasoning_content", None)
-                if reasoning:
-                    logger.debug(f"[thinking] {reasoning}")
-                if delta.content:
-                    yield delta.content
-            return
+        start_key_idx = 0
+        last_error = None
+
+        while start_key_idx < len(self._keys):
+            try:
+                for idx, completion in self._find_working_client(
+                    target_model, prompt, max_tokens, enable_thinking, reasoning_budget,
+                    timeout=30.0, start_key_idx=start_key_idx
+                ):
+                    start_key_idx = idx - 1
+                    for chunk in completion:
+                        if not chunk.choices:
+                            continue
+                        delta = chunk.choices[0].delta
+                        reasoning = getattr(delta, "reasoning_content", None)
+                        if reasoning:
+                            logger.debug(f"[thinking] {reasoning}")
+                        if delta.content:
+                            yield delta.content
+                    return
+            except Exception as e:
+                logger.warning(f"Error during stream execution with NVIDIA key {start_key_idx + 1}: {e}. Retrying next key.")
+                last_error = e
+                start_key_idx += 1
+
+        raise RuntimeError(f"All NVIDIA keys exhausted in stream. Last error: {last_error}")
 
 
 
