@@ -187,13 +187,13 @@ if not st.session_state.ke_graph_stats:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# MAIN LAYOUT: Sidebar | Graph | Detail Panel
+# MAIN LAYOUT: Graph Canvas & Detail Panel
 # ══════════════════════════════════════════════════════════════════════════════
 
-sidebar_col, graph_col, detail_col = st.columns([1, 3, 1.5])
+graph_col, detail_col = st.columns([3.5, 1.5])
 
-# ── SIDEBAR ──
-with sidebar_col:
+# ── SIDEBAR CONTROLS ──
+with st.sidebar:
     section_header("🔍", "Search & Filter", "Find entities and filter by type")
 
     with st.form("ke_search_form", clear_on_submit=False):
@@ -211,27 +211,6 @@ with sidebar_col:
 
     gradient_divider()
 
-    # Graph stats mini dashboard
-    stats = st.session_state.ke_graph_stats
-    if stats:
-        st.markdown("#### 📊 Graph Stats")
-        st.markdown(stats_grid(stats), unsafe_allow_html=True)
-
-        nt = stats.get("node_types", {})
-        if nt:
-            with st.expander("📋 Entity Breakdown", expanded=False):
-                for etype, cnt in sorted(nt.items(), key=lambda x: -x[1]):
-                    color = NODE_TYPE_COLORS.get(etype, "#6b7280")
-                    label = NODE_TYPE_LABELS.get(etype, etype)
-                    st.markdown(
-                        f'<span style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem;">'
-                        f'<span style="width:8px;height:8px;border-radius:50%;background:{color};display:inline-block;box-shadow:0 0 6px {color};"></span>'
-                        f'<span style="font-size:0.82rem;color:#e2e8f0;font-family:\'Space Grotesk\',sans-serif;">{label}: <strong>{cnt}</strong></span></span>',
-                        unsafe_allow_html=True,
-                    )
-
-    gradient_divider()
-
     num_nodes = len(st.session_state.ke_visible_nodes)
     num_edges = len(st.session_state.ke_visible_edges)
     c1, c2 = st.columns(2)
@@ -240,27 +219,27 @@ with sidebar_col:
 
     gradient_divider()
 
-    col_a, col_b = st.columns(2)
-    with col_a:
-        if st.button("🔄 Reset", use_container_width=True):
-            for k in defaults:
-                st.session_state[k] = defaults[k] if not isinstance(defaults[k], set) else set()
-            st.session_state.ke_breadcrumb = []
-            st.session_state.ke_path_result = None
-            if hasattr(st.session_state, '_fetch_cache'):
-                st.session_state._fetch_cache = {}
+    # Stacked View Actions to prevent vertical text wrapping
+    if st.button("🔄 Reset View", use_container_width=True, key="ke_reset_btn"):
+        for k in defaults:
+            st.session_state[k] = defaults[k] if not isinstance(defaults[k], set) else set()
+        st.session_state.ke_breadcrumb = []
+        st.session_state.ke_path_result = None
+        if hasattr(st.session_state, '_fetch_cache'):
+            st.session_state._fetch_cache = {}
+        st.rerun()
+
+    if st.button("📥 Load Complete Network", use_container_width=True, key="ke_full_btn"):
+        if hasattr(st.session_state, '_fetch_cache'):
+            st.session_state._fetch_cache = {}
+        data = fetch_json(f"{API_URL}/graph?max_nodes=500", use_cache=False)
+        if data and data.get("nodes"):
+            st.session_state.ke_visible_nodes = {n["id"] for n in data["nodes"]}
+            st.session_state.ke_visible_edges = data.get("edges", [])
+            for n in data["nodes"]:
+                st.session_state.ke_expanded_nodes.add(n["id"])
             st.rerun()
-    with col_b:
-        if st.button("📥 Full Graph", use_container_width=True):
-            if hasattr(st.session_state, '_fetch_cache'):
-                st.session_state._fetch_cache = {}
-            data = fetch_json(f"{API_URL}/graph?max_nodes=500", use_cache=False)
-            if data and data.get("nodes"):
-                st.session_state.ke_visible_nodes = {n["id"] for n in data["nodes"]}
-                st.session_state.ke_visible_edges = data.get("edges", [])
-                for n in data["nodes"]:
-                    st.session_state.ke_expanded_nodes.add(n["id"])
-                st.rerun()
+
 
     # ── Path Finding Panel ──
     gradient_divider()
@@ -376,7 +355,7 @@ if search_query and search_submitted:
         with st.spinner(f"Focusing on {top_result['id']}..."):
             focus_on_node(top_result["id"])
         if len(search_data["results"]) > 1:
-            with sidebar_col:
+            with st.sidebar:
                 st.markdown("#### 🎯 Search Results")
                 for r in search_data["results"][:10]:
                     if st.button(f"{r['id']} ({r['type']}, ⬡ {r['degree']})", key=f"ke_sr_{r['id']}"):
