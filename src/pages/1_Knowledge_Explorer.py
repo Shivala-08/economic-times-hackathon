@@ -556,9 +556,9 @@ with graph_col:
                   // Notify Streamlit after animation
                   setTimeout(() => {
                     try {
-                      window.parent.location.href = window.parent.location.origin + window.parent.location.pathname + "?focus_node=" + encodeURIComponent(node.id);
+                      window.parent.location.search = "?focus_node=" + encodeURIComponent(node.id);
                     } catch(e) {
-                      window.location.href = window.location.origin + window.location.pathname + "?focus_node=" + encodeURIComponent(node.id);
+                      console.warn("Failed to set query param on parent:", e);
                     }
                   }, 1200);
                 });
