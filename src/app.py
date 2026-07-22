@@ -538,15 +538,17 @@ with tab_graph:
                        return false;
                      }
                    }
-                   
-                   const scriptEl = document.createElement('script');
-                   scriptEl.text = isWebGLSupported() ? `{js_3d}` : `{js_2d}`;
-                   document.head.appendChild(scriptEl);
                  </script>
                  <script>
-                   function initGraph() {
-                     const use3D = isWebGLSupported() && (typeof ForceGraph3D !== 'undefined');
-                     const GraphConstructor = use3D ? ForceGraph3D : ForceGraph;
+                   {js_3d}
+                 </script>
+                 <script>
+                   {js_2d}
+                 </script>
+                  <script>
+                    function initGraph() {
+                      const use3D = isWebGLSupported() && (typeof ForceGraph3D !== 'undefined');
+                      const GraphConstructor = use3D ? ForceGraph3D : ForceGraph;
                      
                      if (typeof GraphConstructor === 'undefined') {
                        setTimeout(initGraph, 50);
