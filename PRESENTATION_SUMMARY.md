@@ -1,4 +1,4 @@
-# 🏆 Industrial Knowledge Intelligence Platform
+# 🏆 Synapse
 ## ET AI Hackathon 2026 — Problem Statement 8
 ### Final Presentation Summary
 
@@ -225,7 +225,7 @@ streamlit run src/app.py --server.port 8501
 
 ## 🏆 Summary
 
-The Industrial Knowledge Intelligence Platform demonstrates that production-grade RAG systems can achieve:
+The Synapse demonstrates that production-grade RAG systems can achieve:
 - **100% accuracy** on regulatory compliance questions
 - **92.5% latency reduction** through optimization
 - **Real-time streaming** for perceived performance

@@ -1,4 +1,4 @@
-# Industrial Knowledge Intelligence — Optimization Pass Report
+# Synapse — Optimization Pass Report
 
 ## Executive Summary
 
