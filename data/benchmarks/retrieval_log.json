@@ -5,13 +5,13 @@
     "status": "PASS",
     "similarity": 0.862,
     "expected_source_docs": [
-      "OISD-117",
-      "OISD-116"
+      "OISD-116",
+      "OISD-117"
     ],
     "retrieved_source_docs": [
+      "safety_manual.txt",
       "OISD-116.txt",
-      "OISD-130.txt",
-      "safety_manual.txt"
+      "OISD-130.txt"
     ],
     "chunk_sources": [
       {
@@ -57,13 +57,13 @@
     "status": "PASS",
     "similarity": 0.9164,
     "expected_source_docs": [
-      "OISD-117",
-      "OISD-116"
+      "OISD-116",
+      "OISD-117"
     ],
     "retrieved_source_docs": [
+      "safety_manual.txt",
       "OISD-116.txt",
-      "OISD-117.txt",
-      "safety_manual.txt"
+      "OISD-117.txt"
     ],
     "chunk_sources": [
       {
