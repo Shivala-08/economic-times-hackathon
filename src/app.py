@@ -549,7 +549,17 @@ with tab_graph:
                     });
                   }
                 </script>
-                <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
+                <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
+                <script>
+                  if (typeof ForceGraph3D === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = "{static_url}/static/js/3d-force-graph.js";
+                    script.onload = initGraph;
+                    document.head.appendChild(script);
+                  } else {
+                    initGraph();
+                  }
+                </script>
                 """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
                 components.html(html_code, height=640)
