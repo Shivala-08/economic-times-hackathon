@@ -473,7 +473,7 @@ with graph_col:
                 const Graph = ForceGraph3D()(elem).graphData({nodes, links}).backgroundColor('#060813')
                   .nodeColor(node => node.color).nodeVal(node => node.val)
                   .nodeLabel(node => {
-                    const t = node.type.replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
+                    const t = (node.type || 'unknown').replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
                     return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
                   })
                   .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
@@ -511,17 +511,7 @@ with graph_col:
                 });
               }
             </script>
-            <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
-            <script>
-              if (typeof ForceGraph3D === 'undefined') {
-                const script = document.createElement('script');
-                script.src = "{static_url}/static/js/3d-force-graph.js";
-                script.onload = initGraph;
-                document.head.appendChild(script);
-              } else {
-                initGraph();
-              }
-            </script>
+            <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/dist/3d-force-graph.min.js" onload="initGraph()"></script>
             """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
             components.html(html_code, height=640)
