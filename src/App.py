@@ -112,22 +112,8 @@ def show_entity_graph(entity_id: str):
 hero_header(
     title="Synapse",
     subtitle="AI-Powered Knowledge Intelligence",
-    badge_text="v1.0",
-    extra_right="""
-        <div style="display: flex; gap: 1.2rem; align-items: center;">
-            <div style="text-align: right; padding-right: 1.2rem; border-right: 1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:0.68rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Engine</div>
-                <div style="font-size:0.9rem;color:#10b981;font-weight:700;">ACTIVE</div>
-            </div>
-            <div style="text-align: right; padding-right: 1.2rem; border-right: 1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:0.68rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Security</div>
-                <div style="font-size:0.9rem;color:#818cf8;font-weight:700;">ENTERPRISE</div>
-            </div>
-            <div style="text-align: right;">
-                <div style="font-size:0.68rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Version</div>                    <div style="font-size:0.9rem;color:#a78bfa;font-weight:700;">v1.0</div>
-            </div>
-        </div>
-    """,
+    badge_text="",
+    extra_right="",
 )
 
 
@@ -135,7 +121,7 @@ hero_header(
 # SIDEBAR
 # ══════════════════════════════════════════════════════════════════════════════
 with st.sidebar:
-    sidebar_brand(name="SYNAPSE", badge="v1.0")
+    sidebar_brand(name="SYNAPSE")
 
     st.markdown("### **System Status**")
     try:
@@ -196,7 +182,6 @@ with st.sidebar:
         pass
 
     gradient_divider()
-    sidebar_footer()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
