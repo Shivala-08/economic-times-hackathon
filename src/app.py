@@ -505,6 +505,10 @@ with tab_graph:
                 <div id="3d-graph" style="width:100%;height:620px;border-radius:16px;overflow:hidden;border:1px solid rgba(99,102,241,0.25);background:#090d16;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 30px rgba(99,102,241,0.05);"></div>
                 <script>
                   function initGraph() {
+                    if (typeof ForceGraph3D === 'undefined') {
+                      setTimeout(initGraph, 50);
+                      return;
+                    }
                     const elem = document.getElementById('3d-graph');
                     if (!elem) { setTimeout(initGraph, 50); return; }
                     const rawNodes = {nodes_json}; const rawEdges = {edges_json};
@@ -545,15 +549,7 @@ with tab_graph:
                     });
                   }
                 </script>
-                <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
-                <script>
-                  if (typeof ForceGraph3D === 'undefined') {
-                    document.write('<script src="{static_url}/static/js/3d-force-graph.js"><\\/script>');
-                  }
-                </script>
-                <script>
-                  setTimeout(initGraph, 100);
-                </script>
+                <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
                 """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
                 components.html(html_code, height=640)
