@@ -533,11 +533,11 @@ with graph_col:
                   try {
                     const chargeForce = Graph.d3Force('charge');
                     if (chargeForce && typeof chargeForce.strength === 'function') {
-                      chargeForce.strength(use3D ? -50 : -35);
+                      chargeForce.strength(use3D ? -25 : -15);
                     }
                     const linkForce = Graph.d3Force('link');
                     if (linkForce && typeof linkForce.distance === 'function') {
-                      linkForce.distance(use3D ? 50 : 35);
+                      linkForce.distance(use3D ? 25 : 18);
                     }
                   } catch(err) {
                     console.warn("Failed to apply layout forces:", err);
