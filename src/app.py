@@ -470,7 +470,6 @@ with tab_graph:
             if not nodes:
                 st.info("Graph is empty. Initialise the corpus first.")
             else:
-                # Retrieve the true, uncapped total nodes and edges of the full graph (matching the sidebar metrics)
                 total_n = len(nodes)
                 total_e = len(edges)
                 try:
@@ -499,13 +498,17 @@ with tab_graph:
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Load local 3d-force-graph.js script inline to bypass all CORS and network blocks
-                js_content = ""
+                js_3d = ""
+                js_2d = ""
                 try:
-                    js_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "js", "3d-force-graph.js")
-                    if os.path.exists(js_path):
-                        with open(js_path, "r", encoding="utf-8") as f:
-                            js_content = f.read()
+                    js_3d_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "js", "3d-force-graph.js")
+                    if os.path.exists(js_3d_path):
+                        with open(js_3d_path, "r", encoding="utf-8") as f:
+                            js_3d = f.read()
+                    js_2d_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "js", "force-graph.js")
+                    if os.path.exists(js_2d_path):
+                        with open(js_2d_path, "r", encoding="utf-8") as f:
+                            js_2d = f.read()
                 except Exception as err:
                     st.error(f"Error loading inline script: {err}")
 
@@ -529,56 +532,76 @@ with tab_graph:
                    });
                  </script>
                  <script>
-                   {js_content}
+                   function isWebGLSupported() {
+                     try {
+                       const canvas = document.createElement('canvas');
+                       return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+                     } catch (e) {
+                       return false;
+                     }
+                   }
+                   
+                   const scriptEl = document.createElement('script');
+                   scriptEl.text = isWebGLSupported() ? `{js_3d}` : `{js_2d}`;
+                   document.head.appendChild(scriptEl);
                  </script>
                  <script>
-                  function initGraph() {
-                    if (typeof ForceGraph3D === 'undefined') {
-                      setTimeout(initGraph, 50);
-                      return;
-                    }
-                    const elem = document.getElementById('3d-graph');
-                    if (!elem) { setTimeout(initGraph, 50); return; }
-                    const rawNodes = {nodes_json}; const rawEdges = {edges_json};
-                    const links = rawEdges.map(e => ({source: e.from, target: e.to, relation: e.relation || 'linked_to'}));
-                    const degrees = {};
-                    links.forEach(l => { degrees[l.source] = (degrees[l.source] || 0) + 1; degrees[l.target] = (degrees[l.target] || 0) + 1; });
-                    const nodes = rawNodes.map(n => ({id: n.id, label: n.id, type: n.type, color: n.color || '#6366f1', val: Math.max(Math.sqrt(degrees[n.id] || 1) * 1.5, 1.5)}));
-                    const Graph = ForceGraph3D()(elem).graphData({nodes, links}).backgroundColor('#090d16')
-                      .nodeColor(node => node.color).nodeVal(node => node.val)
-                      .nodeLabel(node => {
-                        const t = (node.type || 'unknown').replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
-                        return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
-                      })
-                      .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
-                      .linkWidth(0.8).linkColor(() => 'rgba(255, 255, 255, 0.15)');
-                    
-                    setTimeout(() => {
-                      try {
-                        const chargeForce = Graph.d3Force('charge');
-                        if (chargeForce && typeof chargeForce.strength === 'function') {
-                          chargeForce.strength(-220);
-                        }
-                        const linkForce = Graph.d3Force('link');
-                        if (linkForce && typeof linkForce.distance === 'function') {
-                          linkForce.distance(90);
-                        }
-                      } catch(err) {
-                        console.warn("Failed to apply layout forces:", err);
-                      }
-                    }, 150);
-                    
-                    Graph.onNodeClick(node => {
-                      const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
-                      Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 2000);
-                      let ov = document.getElementById('node-info-overlay');
-                      if (!ov) { ov = document.createElement('div'); ov.id='node-info-overlay'; ov.style.cssText='position:absolute;bottom:15px;right:15px;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border:1px solid rgba(99,102,241,0.4);border-radius:12px;padding:15px;width:240px;color:#fff;font-family:sans-serif;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;z-index:999;'; elem.appendChild(ov); }
-                      ov.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="font-size:14px;color:#818cf8;">${node.id}</strong><span style="font-size:10px;font-weight:600;text-transform:uppercase;padding:2px 6px;background:rgba(99,102,241,0.2);border-radius:4px;color:#a5b4fc;">${node.type}</span></div><div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;color:#94a3b8;line-height:1.5;">Connections: <strong>${degrees[node.id]||0}</strong><br>Status: <span style="color:#10b981;">CONNECTED</span></div><div style="margin-top:8px;text-align:right;"><button onclick="document.getElementById('node-info-overlay').remove()" style="background:transparent;border:none;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;">Dismiss</button></div>`;
-                    });
-                  }
-                  initGraph();
-                </script>
-                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_content}", js_content)
+                   function initGraph() {
+                     const use3D = isWebGLSupported() && (typeof ForceGraph3D !== 'undefined');
+                     const GraphConstructor = use3D ? ForceGraph3D : ForceGraph;
+                     
+                     if (typeof GraphConstructor === 'undefined') {
+                       setTimeout(initGraph, 50);
+                       return;
+                     }
+                     const elem = document.getElementById('3d-graph');
+                     if (!elem) { setTimeout(initGraph, 50); return; }
+                     const rawNodes = {nodes_json}; const rawEdges = {edges_json};
+                     const links = rawEdges.map(e => ({source: e.from, target: e.to, relation: e.relation || 'linked_to'}));
+                     const degrees = {};
+                     links.forEach(l => { degrees[l.source] = (degrees[l.source] || 0) + 1; degrees[l.target] = (degrees[l.target] || 0) + 1; });
+                     const nodes = rawNodes.map(n => ({id: n.id, label: n.id, type: n.type, color: n.color || '#6366f1', val: Math.max(Math.sqrt(degrees[n.id] || 1) * 1.5, 1.5)}));
+                     
+                     const Graph = GraphConstructor()(elem).graphData({nodes, links}).backgroundColor('#090d16')
+                       .nodeColor(node => node.color).nodeVal(node => node.val)
+                       .nodeLabel(node => {
+                         const t = (node.type || 'unknown').replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
+                         return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
+                       })
+                       .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
+                       .linkWidth(use3D ? 0.8 : 1.2).linkColor(() => 'rgba(255, 255, 255, 0.15)');
+                     
+                     setTimeout(() => {
+                       try {
+                         const chargeForce = Graph.d3Force('charge');
+                         if (chargeForce && typeof chargeForce.strength === 'function') {
+                           chargeForce.strength(use3D ? -220 : -140);
+                         }
+                         const linkForce = Graph.d3Force('link');
+                         if (linkForce && typeof linkForce.distance === 'function') {
+                           linkForce.distance(use3D ? 90 : 60);
+                         }
+                       } catch(err) {
+                         console.warn("Failed to apply layout forces:", err);
+                       }
+                     }, 150);
+                     
+                     Graph.onNodeClick(node => {
+                       if (use3D) {
+                         const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
+                         Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 2000);
+                       } else {
+                         Graph.centerAt(node.x, node.y, 1000);
+                         Graph.zoom(2.2, 1000);
+                       }
+                       let ov = document.getElementById('node-info-overlay');
+                       if (!ov) { ov = document.createElement('div'); ov.id='node-info-overlay'; ov.style.cssText='position:absolute;bottom:15px;right:15px;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border:1px solid rgba(99,102,241,0.4);border-radius:12px;padding:15px;width:240px;color:#fff;font-family:sans-serif;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;z-index:999;'; elem.appendChild(ov); }
+                       ov.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="font-size:14px;color:#818cf8;">${node.id}</strong><span style="font-size:10px;font-weight:600;text-transform:uppercase;padding:2px 6px;background:rgba(99,102,241,0.2);border-radius:4px;color:#a5b4fc;">${node.type}</span></div><div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;color:#94a3b8;line-height:1.5;">Connections: <strong>${degrees[node.id]||0}</strong><br>Status: <span style="color:#10b981;">CONNECTED</span></div><div style="margin-top:8px;text-align:right;"><button onclick="document.getElementById('node-info-overlay').remove()" style="background:transparent;border:none;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;">Dismiss</button></div>`;
+                     });
+                   }
+                   initGraph();
+                 </script>
+                 """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_3d}", js_3d).replace("{js_2d}", js_2d)
 
                 components.html(html_code, height=640)
         else:

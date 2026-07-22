@@ -445,13 +445,18 @@ with graph_col:
         else:
             st.caption(f"Showing **{len(nodes_list)}** nodes · **{len(edges_list)}** edges  ·  Click a node to expand & focus")
 
-            # Load local 3d-force-graph.js script inline to bypass all CORS and network blocks
-            js_content = ""
+            # Load both 3D and 2D script files
+            js_3d = ""
+            js_2d = ""
             try:
-                js_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "static", "js", "3d-force-graph.js")
-                if os.path.exists(js_path):
-                    with open(js_path, "r", encoding="utf-8") as f:
-                        js_content = f.read()
+                js_3d_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "static", "js", "3d-force-graph.js")
+                if os.path.exists(js_3d_path):
+                    with open(js_3d_path, "r", encoding="utf-8") as f:
+                        js_3d = f.read()
+                js_2d_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "static", "js", "force-graph.js")
+                if os.path.exists(js_2d_path):
+                    with open(js_2d_path, "r", encoding="utf-8") as f:
+                        js_2d = f.read()
             except Exception as err:
                 st.error(f"Error loading inline script: {err}")
 
@@ -476,11 +481,25 @@ with graph_col:
               });
             </script>
             <script>
-              {js_content}
+              function isWebGLSupported() {
+                try {
+                  const canvas = document.createElement('canvas');
+                  return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+                } catch (e) {
+                  return false;
+                }
+              }
+              
+              const scriptEl = document.createElement('script');
+              scriptEl.text = isWebGLSupported() ? `{js_3d}` : `{js_2d}`;
+              document.head.appendChild(scriptEl);
             </script>
             <script>
               function initGraph() {
-                if (typeof ForceGraph3D === 'undefined') {
+                const use3D = isWebGLSupported() && (typeof ForceGraph3D !== 'undefined');
+                const GraphConstructor = use3D ? ForceGraph3D : ForceGraph;
+                
+                if (typeof GraphConstructor === 'undefined') {
                   setTimeout(initGraph, 50);
                   return;
                 }
@@ -498,25 +517,25 @@ with graph_col:
                   val: Math.max(Math.sqrt(degrees[n.id] || 1) * 1.5, 1.5)
                 }));
                 
-                const Graph = ForceGraph3D()(elem).graphData({nodes, links}).backgroundColor('#060813')
+                const Graph = GraphConstructor()(elem).graphData({nodes, links}).backgroundColor('#060813')
                   .nodeColor(node => node.color).nodeVal(node => node.val)
                   .nodeLabel(node => {
                     const t = (node.type || 'unknown').replace('_',' ').toUpperCase(); const c = node.color || '#6366f1'; const d = degrees[node.id] || 0;
                     return `<div style="background:rgba(9,13,22,0.96);backdrop-filter:blur(12px);border:1px solid ${c};box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 12px ${c}33;border-radius:10px;padding:12px 16px;min-width:180px;color:#f1f5f9;font-family:sans-serif;font-size:12px;pointer-events:none;line-height:1.5;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};"></span><strong style="color:#fff;font-size:13px;">${node.id}</strong></div><div style="color:#94a3b8;font-size:10px;margin-bottom:4px;">CLASS: <span style="color:${c};font-weight:700;letter-spacing:0.03em;">${t}</span></div><div style="color:#cbd5e1;font-size:10px;">CONNECTIONS: <strong style="color:#fff;">${d}</strong></div></div>`;
                   })
                   .linkLabel(link => `<div style="background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:4px 8px;color:#cbd5e1;font-family:sans-serif;font-size:11px;">${link.relation}</div>`)
-                  .linkWidth(0.8).linkColor(() => 'rgba(255, 255, 255, 0.15)');
+                  .linkWidth(use3D ? 0.8 : 1.2).linkColor(() => 'rgba(255, 255, 255, 0.15)');
                 
                 // Adjust layout forces to spread nodes out (Obsidian look)
                 setTimeout(() => {
                   try {
                     const chargeForce = Graph.d3Force('charge');
                     if (chargeForce && typeof chargeForce.strength === 'function') {
-                      chargeForce.strength(-220);
+                      chargeForce.strength(use3D ? -220 : -140);
                     }
                     const linkForce = Graph.d3Force('link');
                     if (linkForce && typeof linkForce.distance === 'function') {
-                      linkForce.distance(90);
+                      linkForce.distance(use3D ? 90 : 60);
                     }
                   } catch(err) {
                     console.warn("Failed to apply layout forces:", err);
@@ -524,9 +543,13 @@ with graph_col:
                 }, 150);
                 
                 Graph.onNodeClick(node => {
-                  // Beautiful flight orbit animation
-                  const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
-                  Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 1500);
+                  if (use3D) {
+                    const d = 50; const dr = 1 + d/Math.hypot(node.x,node.y,node.z);
+                    Graph.cameraPosition({x:node.x*dr,y:node.y*dr,z:node.z*dr}, node, 1500);
+                  } else {
+                    Graph.centerAt(node.x, node.y, 1000);
+                    Graph.zoom(2.2, 1000);
+                  }
                   
                   // Notify Streamlit after animation
                   setTimeout(() => {
@@ -540,7 +563,7 @@ with graph_col:
               }
               initGraph();
             </script>
-            """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_content}", js_content)
+            """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_3d}", js_3d).replace("{js_2d}", js_2d)
 
             components.html(html_code, height=640)
 
