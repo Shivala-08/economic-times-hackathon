@@ -7,6 +7,11 @@ GLOBAL_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+    /* Capitalize page names in the sidebar */
+    span[data-testid="stSidebarNavLinkText"], section[data-testid="stSidebarNav"] span {
+        text-transform: capitalize !important;
+    }
+
     :root {
         --bg-primary: #060813;
         --bg-secondary: #0a0e1a;
