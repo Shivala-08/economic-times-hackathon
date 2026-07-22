@@ -13,6 +13,7 @@ demo_screenshots/
 data/benchmarks/retrieval_log.json
 
 static/js/
-*.lognode_modules/
+*.log
+node_modules/
 package.json
 package-lock.json
