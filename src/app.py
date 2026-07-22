@@ -564,7 +564,7 @@ with tab_graph:
                     });
                   }
                 </script>
-                <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/dist/3d-force-graph.min.js" onload="initGraph()"></script>
+                <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
                 """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
 
                 components.html(html_code, height=640)
