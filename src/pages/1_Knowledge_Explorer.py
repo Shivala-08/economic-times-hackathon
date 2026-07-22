@@ -445,6 +445,16 @@ with graph_col:
         else:
             st.caption(f"Showing **{len(nodes_list)}** nodes · **{len(edges_list)}** edges  ·  Click a node to expand & focus")
 
+            # Load local 3d-force-graph.js script inline to bypass all CORS and network blocks
+            js_content = ""
+            try:
+                js_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "static", "js", "3d-force-graph.js")
+                if os.path.exists(js_path):
+                    with open(js_path, "r", encoding="utf-8") as f:
+                        js_content = f.read()
+            except Exception as err:
+                st.error(f"Error loading inline script: {err}")
+
             nodes_json = json.dumps(nodes_list)
             edges_json = json.dumps(edges_list)
 
@@ -464,6 +474,9 @@ with graph_col:
                   </div>`;
                 }
               });
+            </script>
+            <script>
+              {js_content}
             </script>
             <script>
               function initGraph() {
@@ -525,9 +538,9 @@ with graph_col:
                   }, 1200);
                 });
               }
+              initGraph();
             </script>
-            <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
-            """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
+            """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_content}", js_content)
 
             components.html(html_code, height=640)
 

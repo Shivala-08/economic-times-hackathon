@@ -499,6 +499,16 @@ with tab_graph:
                 </div>
                 """, unsafe_allow_html=True)
 
+                # Load local 3d-force-graph.js script inline to bypass all CORS and network blocks
+                js_content = ""
+                try:
+                    js_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "js", "3d-force-graph.js")
+                    if os.path.exists(js_path):
+                        with open(js_path, "r", encoding="utf-8") as f:
+                            js_content = f.read()
+                except Exception as err:
+                    st.error(f"Error loading inline script: {err}")
+
                 nodes_json = json.dumps(nodes); edges_json = json.dumps(edges)
 
                 html_code = """
@@ -517,6 +527,9 @@ with tab_graph:
                        </div>`;
                      }
                    });
+                 </script>
+                 <script>
+                   {js_content}
                  </script>
                  <script>
                   function initGraph() {
@@ -563,9 +576,9 @@ with tab_graph:
                       ov.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="font-size:14px;color:#818cf8;">${node.id}</strong><span style="font-size:10px;font-weight:600;text-transform:uppercase;padding:2px 6px;background:rgba(99,102,241,0.2);border-radius:4px;color:#a5b4fc;">${node.type}</span></div><div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;color:#94a3b8;line-height:1.5;">Connections: <strong>${degrees[node.id]||0}</strong><br>Status: <span style="color:#10b981;">CONNECTED</span></div><div style="margin-top:8px;text-align:right;"><button onclick="document.getElementById('node-info-overlay').remove()" style="background:transparent;border:none;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;">Dismiss</button></div>`;
                     });
                   }
+                  initGraph();
                 </script>
-                <script src="{static_url}/static/js/3d-force-graph.js" onload="initGraph()"></script>
-                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{static_url}", API_URL)
+                """.replace("{nodes_json}", nodes_json).replace("{edges_json}", edges_json).replace("{js_content}", js_content)
 
                 components.html(html_code, height=640)
         else:
