@@ -56,7 +56,7 @@ flowchart TD
     %% UI Consumers
     subgraph UI ["User Interface (app.py)"]
         Cons[Interactive Query Console] --> Q
-        KE[Knowledge Explorer: streamlit_agraph] --> E2
+        KE[Knowledge Explorer: WebGL 3D Graph] --> E2
     end
 
     %% Styles
@@ -76,7 +76,7 @@ The project codebase is organized as follows:
 │   ├── benchmarks/             # Ground-truth Q&A pairs for evaluation
 │   │   └── qa_pairs.json
 │   ├── corpus/                 # Source document corpus
-│   │   ├── real/               # Regulatory guides (OISD, DGMS, Factory Act)
+│   │   ├── real/               # Regulatory guides (OISD, DGMS, Factory Act, NTPC, BHEL)
 │   │   ├── synthetic/          # Generated logs (CSV work orders, permits, etc.)
 │   │   └── uploads/            # Persistent user-uploaded files
 │   ├── chroma_db/              # ChromaDB vector store files
@@ -88,7 +88,7 @@ The project codebase is organized as follows:
 ├── src/                        # System source code
 │   ├── main.py                 # FastAPI application and endpoints
 │   ├── config.py               # Pydantic configuration & environment variables
-│   ├── app.py                  # Streamlit frontend application (agraph-visualized)
+│   ├── app.py                  # Streamlit frontend application
 │   ├── api/                    # API Route controllers
 │   ├── pipeline/               # Ingestion pipeline modules
 │   │   ├── parser.py           # TXT, PDF, DOCX, and CSV Row parsers
@@ -114,97 +114,67 @@ The project codebase is organized as follows:
 
 ---
 
-## 🛠️ Key Components & Status
+## 📖 Step-by-Step User & Feature Guide
 
-### 1. Document Ingestion & Parsing
-- Parses PDF files page-by-page using `pdfplumber`.
-- Parses Microsoft Word files (.docx) using `python-docx`.
-- Parses plain text files (.txt) using standardized encoders.
-- Parses industrial logs (.csv) using `pandas` row-by-row. Each row (e.g. work orders, incident reports, permits) is transformed into a self-describing, search-friendly textual block and embedded individually.
+This guide details how to use and navigate all of the features built into the **Industrial Knowledge Intelligence Platform**.
 
-### 2. Entity Extraction & NLP
-- Integrated **spaCy** (`en_core_web_sm`) alongside pre-compiled domain-specific **Regex patterns**.
-- Automatically extracts:
-  - **Equipment tags** (e.g., `EQ-1001`, `PUMP-A01`, `TNK-T02`, `COMP-C01`)
-  - **Work permits** (e.g., `PRM-2026-5000`)
-  - **Work orders** (e.g., `WO-2026-1000`)
-  - **Inspection logs** (e.g., `INS-2026-8000`)
-  - **Incident reports** (e.g., `INC-2026-9000`)
-  - **Regulation references** (e.g., `OISD-116`, `DGMS Circular 2022-05`, `Factory Act Section 36`)
-  - **Plants & Locations** (e.g., `Refinery Unit A`, `Steel Mill D`)
-  - **Hazards & Injury Severities** (e.g., `Fire hazard`, `Lost Time`)
-  - **Personnel** (using spaCy NER `PERSON`)
+### 💬 1. Interactive Query Console (Chat RAG)
+Use this console to submit queries regarding regulations, permits, plant conditions, or operations.
 
-### 3. Knowledge Graph
-- Constructed using **NetworkX** to map relationships between files, equipment, regulations, hazards, and plants.
-- Establishes explicit links (e.g., `EQUIPMENT --[REGULATED_BY]--> REGULATION`, `WORK_ORDER --[PERFORMS_ON]--> EQUIPMENT`, `INCIDENT --[OCCURRED_AT]--> PLANT`).
-- Serialized to `data/knowledge_graph.json` and supports graph traversal queries for context expansion.
+1. **Select Model Engine (Router Control):**
+   - **Auto Classifier (Default):** The system automatically detects query complexity. Simple lookup queries (e.g. *What is tag EQ-1002?*) route to a **Fast Answer** model; complex regulatory gap analysis queries route to **Deep Reasoning**.
+   - **Fast Answer (8B):** Directly queries `meta/llama-3.1-8b-instruct` without a thinking budget (ideal for speed).
+   - **Deep Reasoning (550B):** Forces the query to execute through `nvidia/nemotron-3-ultra-550b-a55b` with a 1024-token thinking budget to output structured rationales.
+2. **Ask Questions:** Type your safety or regulatory question in the prompt box and submit.
+3. **Response Breakdown:**
+   - **Answer Box:** A streaming text response detailing safety guidelines or gap analysis.
+   - **Thinking Process Accordion:** (For Nemotron) Shows the exact, raw reasoning process the model walked through.
+   - **Sources & Citations Card:** Lists the specific document sections retrieved, including chunk indexes and similarity distances.
+   - **Confidence Score:** Renders a badge representing the retrieval similarity rating.
+4. **Rating Feedback:** Click **Rate Good (👍)** or **Rate Bad (👎)** to log feedback. Rated logs are persisted to SQLite and CSV.
 
-### 4. Regulatory Compliance Checker
-- Automated compliance check module comparing regulatory requirements against ingested plant procedures to identify gaps, compliance status, and highlight supporting evidence.
+### 🕸️ 2. Obsidian-Style Knowledge Network Explorer
+Click **Knowledge Explorer** in the sidebar (or go to the **Knowledge Network** tab on the homepage) to open the interactive entity graph.
 
----
+1. **Widescreen Canvas:** The graph rendering area utilizes WebGL to display a large, interactive 3D network topology. Click and drag to orbit, scroll to zoom, or drag nodes to modify forces.
+2. **Spacious Sidebar Controls:**
+   - **Search Entity Form:** Type a node name (e.g., `COMP-C01`) and press Search to center the graph camera directly on it.
+   - **Node Type Legend Filters:** Check or uncheck color-coded checkboxes (🔵 for Equipment, 🔴 for Regulations, 🟢 for Plants, etc.) to dynamically toggle node category visibility.
+   - **Reset View:** Resets graph filters and focuses back on the default view.
+   - **Load Complete Network:** Expands the active view to query up to 500 nodes.
+3. **Interactive Fly-To camera flight paths:** Click any node in the graph. The camera performs a smooth 1-second flight orbit to center the node, and the right-hand **Detail Panel** dynamically loads its database metadata, tags, and citations.
+4. **Path Finder:** Type a **From Entity** (e.g. `COMP-C01`) and a **To Entity** (e.g. `OISD-116`) and click **Find Path** to run Dijsktra shortest-path traversal. The visual hops are rendered instantly in green with relationship labels.
+5. **Export Graph:** Click **Export Graph (JSON)** to download the currently visible node list and edges as a JSON file.
 
-## 🛠️ Project Timeline & Status
+### 📂 3. Document Library & Ingestion
+Navigate to the **Documents** tab to audit files.
 
-### Day 1 — Foundations (Completed)
-- [x] Initialized project repository and Python virtual environment (`.venv`).
-- [x] Configured project settings using `pydantic-settings` loaded from `.env`.
-- [x] Generated seed templates for regulatory guidelines (OISD, DGMS Circulars, and Factory Act sections).
-- [x] Implemented Faker-based generator for synthetic plant data (work orders, work permits, inspection logs, and incident reports).
-- [x] Prepared ground-truth dataset comprising 18 complex Q&A pairs for system evaluation.
-- [x] Configured and verified local vector database connectivity (ChromaDB).
-
-### Day 2 — Ingestion Pipeline & UI Skeleton (Completed)
-- [x] **Document Parsing Module (`parser.py`)**: Structured parsers for plain text, PDFs, Word, and CSV rows.
-- [x] **Ingestion Pipeline Coordinator (`ingest.py`)**: Coordinates parsing, chunking, embedding, and indexing status updates.
-- [x] **FastAPI Ingestion & Search Server (`main.py`)**: Created endpoints for initialize, upload, documents, and query.
-- [x] **Streamlit Web UI (`app.py`)**: Created interface with Chat Q&A, Document Library, and Control Center tabs.
-
-### Day 3 — Entities & Knowledge Graph (Completed)
-- [x] **spaCy + Regex Entity Extractor (`extractor.py`)**: Extracts equipment tags, regulations, permits, plant locations, and hazards.
-- [x] **NetworkX Knowledge Graph (`knowledge_graph.py`)**: Constructs and persists typed nodes and relationships row-by-row to prevent cross-contamination.
-- [x] **FastAPI Graph & Search Endpoints (`main.py`)**: Implemented `/graph`, `/graph/search`, `/graph/node/{node_id}`, and `/graph/top`.
-- [x] **Streamlit Graph Visualization (`app.py` & `pages/1_Knowledge_Explorer.py`)**: Integrated interactive visualizer utilizing stabilized Vis.js parameters and created a detailed Knowledge Explorer page.
-- [x] **Unit Testing (`tests/test_knowledge_graph.py`)**: Added test coverage validating graph queries, subgraphs, and stats.
+1. **File Registry Grid:** Shows a table of all ingested documents, file types, sizes, chunk counts, and spaCy entities extracted.
+2. **User Document Uploader:** Drag and drop any `.txt`, `.csv`, `.docx`, or `.pdf` file. The server parses the file, chunks it at 1024 tokens, calculates vector embeddings, runs NER, constructs relationships, and indexes it into ChromaDB in real-time.
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Advanced Hackathon Upgrades
 
-### 1. Set Up Environment
-Ensure you have Python 3.10+ installed:
-```bash
-# Clone the repository
-git clone https://github.com/Shivala-08/economic-times-hackathon.git
-cd economic-times-hackathon
+The system has been updated with several premium features to handle scanned documents, prevent rate-limiting crashes, and maximize visual aesthetics.
 
-# Initialize virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+### 1. Scanned PDF Transcription & Ingestion
+In industrial settings, many regulatory guides (such as `OISD-GDN-192.pdf`) are scanned images without a selectable text layer, causing standard PDF libraries like `pdfplumber` to extract 0 characters.
+- **Verification Module (`check_pdfs.py`):** Added a pre-check script to inspect font layer metadata across all PDFs and classify them as digital or scanned.
+- **Fallback Ingestion:** We provided a verified text transcription equivalent for `OISD-GDN-192.txt`, allowing the system to fully parse, chunk, embed, and index it.
+- **Bulk PDF Indexing:** Ingested all 5 remaining digital regulatory PDFs (`Ilomanual.pdf`, `HSE-brochure.pdf`, `Bhel-contractor-manual.pdf`, `THE-OCCUPATIONAL-SAFETY-HEALTH-AND-WORKING-CONDITIONS-CODE.pdf`, `NTPC_Safety_Rules.pdf`). 
+- **Graph Expansion:** The entity database grew from **219 nodes to 1,051 nodes & 1,256 edges**, enriching the retrieval context.
 
-# Install dependencies
-pip install -r requirements.txt
-```
+### 2. Stream-Scoped Multi-Key API Key Rotation
+Using public APIs under load during hackathons frequently triggers `ResourceExhausted` rate limit exceptions.
+- **The Issue:** Traditional key rotation only catches errors during client initialization. For streaming queries, rate limits are only raised *during token iteration* (`for chunk in completion`).
+- **The Solution:** Upgraded `generate` and `stream_generate` inside `llm.py` to wrap stream iteration inside a retry block. If an active key is exhausted mid-response, the client automatically grabs the next key (out of 10 available), resumes the stream, and completes the response without displaying error boxes to users.
 
-### 2. Ingest the Data & Build the Graph
-Populate the vector database and construct the knowledge graph from the pre-bundled document corpus:
-```bash
-PYTHONPATH=. python src/pipeline/ingest.py
-```
-
-### 3. Launch the Backend
-Start the FastAPI server:
-```bash
-PYTHONPATH=. uvicorn src.main:app --host 0.0.0.0 --port 8000
-```
-
-### 4. Launch the Frontend
-In a separate terminal tab (with active virtual environment), run:
-```bash
-streamlit run src/app.py --server.port 8501
-```
-Open **`http://localhost:8501`** in your browser to interact with the application.
+### 3. WebGL Obsidian-Style Graph Customization
+Streamlit's default `streamlit_agraph` is slow, lacks animation, and has a plain background. We replaced it with `3d-force-graph.js` inside an iframe and customized it:
+- **Clean Solid Lines:** Removed directional particle dots, replacing them with clean, solid, semi-transparent links.
+- **D3 Layout Spacing:** Added a 150ms delay (`setTimeout`) and a `try-catch` wrapper when applying D3 forces. This prevents race conditions from causing black canvas crashes and configures a strong D3 charge repulsion (`strength(-220)`) to spread nodes out across the screen.
+- **Color-Coded Legend Checkboxes:** Side checklist labels are prepended with colored emojis (`🔵`, `🔴`, `🟢`, `🟡`, `🟣`, `🌸`, `🌐`, `🟠`) matching the WebGL node categories.
 
 ---
 
@@ -247,74 +217,54 @@ The system underwent a three-tier optimization pass that improved accuracy from 
 | **Slowest Question** | ~46,600 ms | **1,364 ms** | −97.1% |
 | **Fastest Question** | ~5,000 ms | **566 ms** | −88.7% |
 
-> **Latency breakdown:**
-> - **771ms (steady-state):** Models pre-loaded, semantic cache populated after warm-up queries
-> - **4,448ms (cold start):** Fresh server restart, cache empty, first queries slow
-> - **9,191ms (standalone):** `run_benchmark_now.py` runs completely cold with ~15s first-query overhead
+---
 
-### Section-Aware Chunking (Q009 Fix)
+## 🚀 Quick Start
 
-To fix Q009's chunk dilution issue, OISD-118 was split into 3 section-specific files:
-- `OISD-118_Section1.txt` — Process Safety Information
-- `OISD-118_Section2.txt` — Process Hazard Analysis (HAZOP studies)
-- `OISD-118_Section3.txt` — Operating Procedures
+### 1. Set Up Environment
+Ensure you have Python 3.10+ installed:
+```bash
+# Clone the repository
+git clone https://github.com/Shivala-08/economic-times-hackathon.git
+cd economic-times-hackathon
 
-Each section now gets its own chunk with its own embedding, allowing the LLM to retrieve Section 2 (HAZOP studies) specifically. Q009 similarity improved from 0.328 to 0.661.
+# Initialize virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
 
-### Retrieval Source Logging
+# Install dependencies
+pip install -r requirements.txt
+```
 
-Added retrieval source logging to diagnose future regressions. The benchmark now captures:
-- Document IDs of retrieved chunks
-- Chunk indices and distances
-- Expected vs. retrieved source documents
+### 2. Launch the Platform (Fast Startup)
+Use our pre-bundled startup script to clean up ports and launch both the backend and frontend in the background:
+```bash
+./start.sh
+```
+This script will:
+1. Kill any stale processes on ports `8000` (FastAPI) and `8501` (Streamlit).
+2. Launch FastAPI backend in the background (logs: `backend.log`).
+3. Launch Streamlit frontend in the background (logs: `frontend.log`).
 
-Logs saved to `data/benchmarks/retrieval_log.json` after each benchmark run.
+Open **`http://localhost:8501`** in your browser. (The backend takes ~9 seconds to load and pre-warm models on the first request).
 
-### Regression Investigation: Q004 & Q016
-
-During corpus re-initialization, Q004 (emergency response teams) and Q016 (safety training) temporarily regressed due to **cold-start retrieval variance**. Both questions now pass with sim=1.000 after server warm-up. No code changes were needed — the regression resolved after warming up the server with representative queries.
+To stop the servers, run:
+```bash
+./stop.sh
+```
 
 ---
 
-## 🧪 Running the Benchmark
+## 🧪 Running the Benchmark & Tests
 
-### Option A: Standalone Script (no server required)
+### Running the Q&A Benchmark
 ```bash
-# Run the full 18-question benchmark directly
+# Run the full 18-question ground-truth benchmark evaluation directly
 PYTHONPATH=. python3 run_benchmark_now.py
 ```
-This script loads all models in-process and reports per-question accuracy, latency, similarity scores, and category breakdown. First run takes ~15s for model warm-up; subsequent queries average ~3.2s.
+This script loads models in-process and reports per-question accuracy, latency, similarity scores, and category breakdown. Logs are saved to `data/benchmarks/retrieval_log.json`.
 
-### Option B: Via FastAPI Endpoint
-```bash
-# Terminal 1: Start the server
-PYTHONPATH=. uvicorn src.main:app --host 0.0.0.0 --port 8000
-
-# Terminal 2: Run the benchmark
-curl -s 'http://localhost:8000/benchmark/run?max_questions=18' | python3 -m json.tool
-```
-The server-based benchmark benefits from in-memory model caching and semantic cache warm-up between queries, resulting in faster overall execution.
-
-### Benchmark Output
-After each benchmark run, a detailed retrieval log is saved to `data/benchmarks/retrieval_log.json` containing:
-- Document IDs of retrieved chunks for each question
-- Chunk indices and distances
-- Expected vs. retrieved source documents
-- Similarity scores and pass/fail status
-
-This log helps diagnose regressions by capturing the exact retrieval behavior for each query.
-
-### Benchmark Configuration
-- **Ground truth:** `data/benchmarks/qa_pairs.json` (18 Q&A pairs across 15 categories)
-- **Scoring:** Embedding cosine similarity ≥ 0.55 + source document match
-- **Model:** `nvidia/nemotron-3-ultra-550b-a55b` via NVIDIA NIM (10-key rotation)
-- **Scoring threshold:** Configured in `src/config.py` → `similarity_threshold = 0.55`
-
----
-
-## 🔬 Running Verification Tests
-
-Run the following test commands to verify system health:
+### Running Verification Tests
 ```bash
 # Verify ChromaDB vector store
 PYTHONPATH=. python tests/test_chromadb.py
