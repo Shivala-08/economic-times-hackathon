@@ -943,7 +943,7 @@ bash start.sh
 
 ## 15. Conclusion
 
-The Industrial Knowledge Intelligence Platform demonstrates that production-grade RAG systems can achieve:
+The Synapse demonstrates that production-grade RAG systems can achieve:
 
 - **100% accuracy** on regulatory compliance questions through hybrid retrieval (vector + graph) and cross-encoder re-ranking
 - **92.5% latency reduction** through adaptive query routing, semantic caching, and streaming
