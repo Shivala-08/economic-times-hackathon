@@ -1,4 +1,4 @@
-# AI for Industrial Knowledge Intelligence — Build Roadmap
+# Synapse — Build Roadmap
 ## ET AI Hackathon 2026 — Problem Statement 8
 
 ---

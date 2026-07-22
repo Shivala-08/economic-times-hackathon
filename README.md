@@ -1,4 +1,4 @@
-# AI for Industrial Knowledge Intelligence
+# Synapse
 
 **ET AI Hackathon 2026 — Problem Statement 8**
 
@@ -116,7 +116,7 @@ The project codebase is organized as follows:
 
 ## 📖 Step-by-Step User & Feature Guide
 
-This guide details how to use and navigate all of the features built into the **Industrial Knowledge Intelligence Platform**.
+This guide details how to use and navigate all of the features built into the **Synapse**.
 
 ### 💬 1. Interactive Query Console (Chat RAG)
 Use this console to submit queries regarding regulations, permits, plant conditions, or operations.
