@@ -8,7 +8,13 @@ GLOBAL_CSS = """
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
     /* Capitalize page names in the sidebar */
-    span[data-testid="stSidebarNavLinkText"], section[data-testid="stSidebarNav"] span {
+    div[data-testid="stSidebarNav"] span,
+    span[data-testid="stSidebarNavLinkText"],
+    [data-testid="stSidebarNavLink"] span,
+    .e1dbuyne5 span,
+    .e1dbuyne8 span,
+    a[href$="/app"] span {
+        text-transform: capitalize !important;
         text-transform: capitalize !important;
     }
 
