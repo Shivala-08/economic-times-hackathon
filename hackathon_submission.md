@@ -1,8 +1,8 @@
-# 🏭 Industrial Knowledge Intelligence Platform
+# 🧠 Synapse — AI-Powered Knowledge Intelligence
 
 ## ET AI Hackathon 2026 — Problem Statement 8
 
-**Team:** AI for Industrial Knowledge Intelligence  
+**Team:** Synapse  
 **Submission Date:** July 22, 2026  
 **Repository:** [economic-times-hackathon](https://github.com/Shivala-08/economic-times-hackathon)
 
@@ -66,7 +66,7 @@ Industrial plants operate 7–12 disconnected information systems: regulatory st
 
 ### Our Solution
 
-The Industrial Knowledge Intelligence Platform unifies all these sources into a single queryable system that:
+Synapse unifies all these sources into a single queryable system that:
 
 - **Ingests** heterogeneous documents (PDF, DOCX, CSV, TXT) through a parsing pipeline
 - **Extracts** domain-specific entities (equipment tags, regulation codes, permits, hazards) using spaCy + regex
