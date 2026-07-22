@@ -575,11 +575,11 @@ with tab_graph:
                        try {
                          const chargeForce = Graph.d3Force('charge');
                          if (chargeForce && typeof chargeForce.strength === 'function') {
-                           chargeForce.strength(use3D ? -220 : -140);
+                            chargeForce.strength(use3D ? -50 : -35);
                          }
                          const linkForce = Graph.d3Force('link');
                          if (linkForce && typeof linkForce.distance === 'function') {
-                           linkForce.distance(use3D ? 90 : 60);
+                            linkForce.distance(use3D ? 50 : 35);
                          }
                        } catch(err) {
                          console.warn("Failed to apply layout forces:", err);
