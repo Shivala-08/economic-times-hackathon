@@ -451,6 +451,21 @@ with graph_col:
             html_code = """
             <div id="3d-graph" style="width:100%;height:620px;border-radius:16px;overflow:hidden;border:1px solid rgba(99,102,241,0.25);background:#060813;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 30px rgba(99,102,241,0.05);"></div>
             <script>
+              window.addEventListener('error', function(e) {
+                const elem = document.getElementById('3d-graph');
+                if (elem) {
+                  elem.style.background = '#1e1b4b';
+                  elem.innerHTML = `<div style="color:#fca5a5;padding:20px;font-family:monospace;font-size:12px;white-space:pre-wrap;line-height:1.5;">
+                    <strong style="font-size:14px;color:#ef4444;">❌ JavaScript Error Detected:</strong><br/><br/>
+                    <strong>Message:</strong> ${e.message}<br/>
+                    <strong>File:</strong> ${e.filename}<br/>
+                    <strong>Line:</strong> ${e.lineno}:${e.colno}<br/><br/>
+                    <strong>Stack Trace:</strong><br/>${e.error ? e.error.stack : 'N/A'}
+                  </div>`;
+                }
+              });
+            </script>
+            <script>
               function initGraph() {
                 if (typeof ForceGraph3D === 'undefined') {
                   setTimeout(initGraph, 50);
