@@ -47,10 +47,13 @@ app = FastAPI(
 
 # Serve static assets (e.g. bundled JS libraries)
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 _static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static")
 if os.path.isdir(_static_dir):
-    app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")
+    static_app = StaticFiles(directory=str(_static_dir))
+    static_app = CORSMiddleware(static_app, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+    app.mount("/static", static_app, name="static")
 
 app.add_middleware(
     CORSMiddleware,
