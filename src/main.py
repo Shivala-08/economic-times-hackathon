@@ -1,4 +1,4 @@
-"""Industrial Knowledge Intelligence — Main API Application.
+"""Synapse — AI-Powered Knowledge Intelligence — Main API Application.
 
 Day 4: Real LLM integration (Ollama, no API key), /benchmark/run, /feedback,
         /debug/search added.

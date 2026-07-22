@@ -31,8 +31,8 @@ from src.ui.design_system import (
 
 # ── Page Config ──
 st.set_page_config(
-    page_title="Knowledge Explorer — Industrial Knowledge Intelligence",
-    page_icon="🕸️",
+    page_title="Knowledge Explorer — Synapse",
+    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -178,10 +178,10 @@ if "focus_node" in st.query_params:
 # CINEMATIC HERO HEADER (via design_system)
 # ══════════════════════════════════════════════════════════════════════════════
 hero_header(
-    title="🕸️ Knowledge Explorer",
+    title="Knowledge Explorer",
     subtitle="Interactive graph visualization of industrial entities and their relationships",
     badge_text="v4.0",
-    stats=[{"value": "🕸️", "label": "Graph View", "color": "#818cf8"}],
+    stats=[{"value": "🧠", "label": "Graph View", "color": "#818cf8"}],
 )
 
 if not hasattr(st.session_state, '_fetch_cache'):
@@ -489,10 +489,12 @@ with graph_col:
                   return false;
                 }
               }
-              
-              const scriptEl = document.createElement('script');
-              scriptEl.text = isWebGLSupported() ? `{js_3d}` : `{js_2d}`;
-              document.head.appendChild(scriptEl);
+            </script>
+            <script>
+              {js_3d}
+            </script>
+            <script>
+              {js_2d}
             </script>
             <script>
               function initGraph() {

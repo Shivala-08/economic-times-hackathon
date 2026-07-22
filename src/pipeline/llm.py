@@ -19,7 +19,7 @@ from src.config import settings
 # ── Prompts ────────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = (
-    "You are an Industrial Knowledge Intelligence AI for an oil & gas / manufacturing plant. "
+    "You are Synapse, an AI-powered knowledge intelligence assistant for industrial safety and compliance. "
     "You answer safety and compliance questions using ONLY retrieved document context. "
     "Never fabricate facts. Always cite sources using [Source N] labels. "
     "Keep your answer concise and direct (strictly 1-3 sentences). "

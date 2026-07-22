@@ -1,4 +1,4 @@
-"""AI for Industrial Knowledge Intelligence — Configuration."""
+"""Synapse — AI-Powered Knowledge Intelligence — Configuration."""
 
 from pathlib import Path
 from pydantic_settings import BaseSettings
@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # App
-    app_name: str = "Industrial Knowledge Intelligence"
-    app_version: str = "0.1.0"
+    app_name: str = "Synapse"
+    app_version: str = "1.0.0"
     debug: bool = True
 
     # Paths

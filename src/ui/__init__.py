@@ -1,4 +1,4 @@
-"""Shared UI components and design system for Industrial Knowledge Intelligence.
+"""Shared UI components and design system for Synapse.
 
 Re-exports everything from sub-modules so existing imports like
 ``from src.ui.design_system import inject_global_css`` keep working.

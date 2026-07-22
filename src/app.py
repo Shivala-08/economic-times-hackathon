@@ -1,13 +1,12 @@
-"""Streamlit UI for Industrial Knowledge Intelligence — Premium Edition.
+"""Synapse — AI-Powered Knowledge Intelligence UI.
 
-Premium upgrades:
+Features:
   • Cinematic animated hero header with gradient glow
   • Glassmorphism cards and panels
   • Neon glow accents and animated borders
-  • Animated stat counters
-  • Premium chat interface with typing indicators
-  • Micro-interactions on every element
-  • Floating dock-style tabs with glow
+  • Real-time streaming chat interface
+  • Interactive 3D knowledge graph visualization
+  • Adaptive query routing with complexity classification
 """
 
 import sys
@@ -34,7 +33,7 @@ except ImportError:
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Industrial Knowledge Intelligence — Real-Time Safety & Regulation RAG Search",
+    page_title="Synapse — AI-Powered Knowledge Intelligence",
     page_icon="K",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -111,9 +110,9 @@ def show_entity_graph(entity_id: str):
 # HERO HEADER
 # ══════════════════════════════════════════════════════════════════════════════
 hero_header(
-    title="Industrial Knowledge Platform",
-    subtitle="Unified RAG & Entity Graph Intelligence System",
-    badge_text="v4.0",
+    title="Synapse",
+    subtitle="AI-Powered Knowledge Intelligence",
+    badge_text="v1.0",
     extra_right="""
         <div style="display: flex; gap: 1.2rem; align-items: center;">
             <div style="text-align: right; padding-right: 1.2rem; border-right: 1px solid rgba(255,255,255,0.08);">
@@ -125,8 +124,7 @@ hero_header(
                 <div style="font-size:0.9rem;color:#818cf8;font-weight:700;">ENTERPRISE</div>
             </div>
             <div style="text-align: right;">
-                <div style="font-size:0.68rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Version</div>
-                <div style="font-size:0.9rem;color:#a78bfa;font-weight:700;">v4.0</div>
+                <div style="font-size:0.68rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Version</div>                    <div style="font-size:0.9rem;color:#a78bfa;font-weight:700;">v1.0</div>
             </div>
         </div>
     """,
@@ -137,7 +135,7 @@ hero_header(
 # SIDEBAR
 # ══════════════════════════════════════════════════════════════════════════════
 with st.sidebar:
-    sidebar_brand(name="IND-KNOWLEDGE", badge="v4.0")
+    sidebar_brand(name="SYNAPSE", badge="v1.0")
 
     st.markdown("### **System Status**")
     try:

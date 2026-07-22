@@ -485,7 +485,7 @@ def inject_global_css() -> None:
             d.setAttribute('name', 'description');
             p.head.appendChild(d);
         }
-        d.setAttribute('content', 'Industrial Knowledge Intelligence platform combining RAG, Hybrid Search (BM25 + Vector), and Knowledge Graphs for real-time safety, plant, and regulation intelligence.');
+        d.setAttribute('content', 'Synapse — AI-powered knowledge intelligence combining RAG, Hybrid Search, and Knowledge Graphs for real-time regulatory intelligence.');
 
         // 2. Meta Keywords
         let k = p.querySelector('meta[name="keywords"]');
@@ -503,7 +503,7 @@ def inject_global_css() -> None:
             o.setAttribute('property', 'og:title');
             p.head.appendChild(o);
         }
-        o.setAttribute('content', 'Industrial Knowledge Intelligence — Real-Time Safety & Regulation RAG Search');
+        o.setAttribute('content', 'Synapse — AI-Powered Knowledge Intelligence');
     } catch (e) {
         console.error('SEO injection failed:', e);
     }

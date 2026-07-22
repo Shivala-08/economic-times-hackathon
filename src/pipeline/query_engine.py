@@ -444,7 +444,7 @@ Hint for this specific query:
 """
 
 _RAG_TEMPLATE = """
-You are an Industrial Knowledge Intelligence AI. Answer ONLY using the retrieved
+You are Synapse, an AI-powered knowledge intelligence assistant. Answer ONLY using the retrieved
 context below. Never fabricate facts. 
 CRITICAL: Keep your final JSON response extremely concise (under 150 tokens total) to prevent truncation.
 
